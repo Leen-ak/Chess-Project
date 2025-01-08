@@ -1,0 +1,31 @@
+﻿body {
+    background-color: #232323;
+    color: #bbb4aa;
+    /*display: flex;
+    align-content: center;
+    justify-content:center;
+    margin: 0; */
+}
+
+.login-container {
+    width: 100%;
+    background-color: #090a0f; 
+    overflow: hidden; 
+    display: flex; 
+}
+
+.image-logo{
+    flex: 1; 
+    /*background-size: cover;
+    background-position: center; */
+}
+
+image-section img {
+    width: 10%;
+}
+
+.form-contro {
+    flex: 1;
+    background: transparent;
+}
+
