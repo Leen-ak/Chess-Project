@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace ExcWebsite;
+namespace DAL;
 
 public partial class SomeSchoolContext : DbContext
 {
@@ -24,7 +22,7 @@ public partial class SomeSchoolContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer("Server = (localdb)\\MSSQLLocalDB; Database = ChessDatabase; Trusted_Connection = True");
-        optionsBuilder.UseLazyLoadingProxies(); 
+        optionsBuilder.UseLazyLoadingProxies();
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

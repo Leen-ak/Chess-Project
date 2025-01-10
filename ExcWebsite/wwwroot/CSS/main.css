@@ -1,31 +1,253 @@
-﻿body {
+﻿body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
     background-color: #232323;
     color: #bbb4aa;
-    /*display: flex;
-    align-content: center;
-    justify-content:center;
-    margin: 0; */
+    font-family: 'Abel', sans-serif;
+}
+
+.navbar {
+    background-color: #232323;
+    box-shadow: 0px 0px 5px #0f1316;
+}
+
+.navbar-brand {
+    color: #bbb4aa;
+}
+
+h2 {
+    margin: 5%;
 }
 
 .login-container {
+    position: absolute;
+    margin: 0;
+    top: 14%;
+    bottom: 8%;
+    left: 10%;
+    right: 10%;
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    width: 80%;
+    height: auto;
+    overflow: hidden;
+    box-shadow: 2px 4px 10px #0f1316;
+}
+
+.signup-container {
+    position: absolute;
+    margin: 0%;
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
     width: 100%;
-    background-color: #090a0f; 
-    overflow: hidden; 
-    display: flex; 
+    height: 100%;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity, visibility;
+    z-index: 1;
 }
 
-.image-logo{
-    flex: 1; 
-    /*background-size: cover;
-    background-position: center; */
+    .signup-container.active {
+        opacity: 1;
+        visibility: visible;
+        z-index: 1;
+    }
+
+.image-section img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
-image-section img {
-    width: 10%;
-}
-
-.form-contro {
+.image-section {
+    display: flex;
     flex: 1;
-    background: transparent;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    transition: transform 1s ease-in-out;
 }
 
+.form-container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    margin: 0%;
+    width: 50%;
+    padding: 8%;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    margin: 0%;
+    width: 50%;
+    padding: 8%;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+#signup-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+.input-group {
+    position: relative;
+    width: 100%;
+}
+
+#login-form input, #signup-form input {
+    background: transparent;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px 10px;
+    border: 2px solid #bbb4aa;
+    color: #bbb4aa;
+    padding-left: 12%;
+    outline: none;
+    transition: 0.5s ease;
+}
+
+input:-webkit-autofill {
+    background-color: transparent !important;
+    color: #bbb4aa !important;
+    border-color: #bbb4aa !important;
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: #bbb4aa !important;
+}
+
+input:focus ~ label,
+input:valid ~ label {
+    top: 1px;
+    left: 10px;
+    font-size: 15px;
+    color: #bbb4aa;
+    background-color: #232323;
+}
+
+label {
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 0.3s ease all;
+    pointer-events: none;
+    color: #E6E3D3;
+    background-color: #232323;
+}
+
+.password-icon, .user-logo {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.forget-pass {
+    position: absolute;
+    top: 100%;
+    right: 70%;
+    transition: transform 1s;
+}
+
+    .forget-pass:hover {
+        transform: scale(1.1);
+    }
+
+.login-button {
+    width: 125px;
+    padding: 8px 0;
+    border-radius: 10px;
+    background-color: transparent;
+    border: 2px solid #bbb4aa;
+    color: #bbb4aa;
+    align-self: center;
+    transition: transform 1s;
+}
+
+#login-btn {
+    margin-top: 8%;
+}
+
+#signup-btn {
+    margin-top: 2%;
+}
+
+.login-button:hover {
+    background-color: #bbb4aa;
+    color: #232323;
+    transform: scale(1.1);
+}
+
+.btn-group {
+    position: absolute;
+    top: 3%;
+    left: 90%;
+    border-color: #bbb4aa;
+    width: 120px;
+    z-index: 2;
+}
+
+.btn.btn-primary, .btn {
+    background: transparent;
+    border: 1px solid #bbb4aa;
+    border-radius: 40px;
+    font-size: 10px;
+    padding: 2%;
+    color: #bbb4aa;
+}
+
+    .btn:hover {
+        background: #bbb4aa;
+        color: #232323;
+        border-color: #bbb4aa;
+    }
+
+/*right section sign up*/
+.image-section.right {
+    transform: translateX(100%);
+}
+
+.btn-group.btn-right {
+    position: absolute;
+    top: 3%;
+    left: 90%;
+}
+
+/*left section login in*/
+.image-section.left {
+    transform: translateX(0);
+}
+
+.btn-group.btn-left {
+    position: absolute;
+    top: 3%;
+    left: 1%;
+}
+
+#signup.active {
+    background-color: #bbb4aa;
+    color: #232323;
+}
+
+#login.active {
+    background-color: #bbb4aa;
+    color: #232323;
+}
