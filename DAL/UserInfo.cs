@@ -3,19 +3,21 @@ using System.Collections.Generic;
 
 namespace DAL;
 
-public partial class UserInfo
+public partial class UserInfo : ChessEntity
 {
-    public int UserID { get; set; }
+    //public int Id { get; set; }
 
     public string? Firstname { get; set; }
 
     public string? Lastname { get; set; }
 
-    public string? Phonenumber { get; set; }
+    public string? UserName { get; set; }
 
     public string? Email { get; set; }
 
-    public DateOnly? DateOfBirth { get; set; }
+    public string? Password { get; set; }
+
+    //public byte[] Timer { get; set; } = null!;
 
     public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 }

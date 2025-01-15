@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL;
 
-public partial class SomeSchoolContext : DbContext
+public partial class ChessContext : DbContext
 {
-    public SomeSchoolContext()
+    public ChessContext()
     {
     }
 
-    public SomeSchoolContext(DbContextOptions<SomeSchoolContext> options)
+    public ChessContext(DbContextOptions<ChessContext> options)
         : base(options)
     {
     }
@@ -21,18 +21,22 @@ public partial class SomeSchoolContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server = (localdb)\\MSSQLLocalDB; Database = ChessDatabase; Trusted_Connection = True");
+        optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB; Database=ChessDatabase; Trusted_Connection=True");
         optionsBuilder.UseLazyLoadingProxies();
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.UserAccountID).HasName("PK_UserAccountID");
+            entity.HasKey(e => e.Id).HasName("PK_UserAccountID");
 
             entity.ToTable("Account");
 
             entity.Property(e => e.Password).HasMaxLength(60);
+            entity.Property(e => e.Timer)
+                .IsRowVersion()
+                .IsConcurrencyToken();
             entity.Property(e => e.Username).HasMaxLength(60);
 
             entity.HasOne(d => d.User).WithMany(p => p.Accounts)
@@ -42,14 +46,18 @@ public partial class SomeSchoolContext : DbContext
 
         modelBuilder.Entity<UserInfo>(entity =>
         {
-            entity.HasKey(e => e.UserID).HasName("PK_UserID");
+            entity.HasKey(e => e.Id).HasName("PK_UserID");
 
             entity.ToTable("UserInfo");
 
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.Firstname).HasMaxLength(60);
             entity.Property(e => e.Lastname).HasMaxLength(60);
-            entity.Property(e => e.Phonenumber).HasMaxLength(20);
+            entity.Property(e => e.Password).HasMaxLength(30);
+            entity.Property(e => e.Timer)
+                .IsRowVersion()
+                .IsConcurrencyToken();
+            entity.Property(e => e.UserName).HasMaxLength(60);
         });
 
         OnModelCreatingPartial(modelBuilder);

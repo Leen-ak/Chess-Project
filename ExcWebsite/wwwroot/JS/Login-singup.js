@@ -1,8 +1,38 @@
 ﻿$(() => {
+    $("#signup-btn").on("click", () => {
+        setUpUserInfo(); 
+    });
 
 })
 
-//so i have
+const setUpUserInfo = () => {
+    const userData = {
+        FirstName: $("firstname").val(),
+        LastName: $("#lastname").val(),
+        UserName: $("#username-signup").val(),
+        Email: $("#email").val(),
+        Password: $("#password").val(),
+        ConfirmPassword: $("#password-confirm").val()
+    }; 
+
+    //Send data to to the API 
+    $.ajax({
+        url: 'api/LoginPage',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(userData), //convert js object to json
+        success: (response) => {
+            alert("User added successfully: " + response.msg);
+            console.log(response); 
+        },
+
+        error: (error) => {
+            alert("Error adding user: " + error.responseText);
+            console.log(error); 
+        }
+    });
+}
+
 //if they have an account
 //login
 //i will take the text info
@@ -17,12 +47,3 @@
 //if it exsite your eamil is already exist
 // if it is not
 // add the info to the database
-
-const setUpUserInfo = () => {
-    const name = $("#firstname").val();
-    const lastname = $("#lastname").val();
-    const username = $("#username-signup").val();
-    const email = $("#email").val();
-    const password = $("#password").val();
-    const passwordConf = $("#password-confirm").val();
-}
