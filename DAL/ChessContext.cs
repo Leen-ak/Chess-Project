@@ -8,6 +8,7 @@ public partial class ChessContext : DbContext
 {
     public ChessContext()
     {
+
     }
 
     public ChessContext(DbContextOptions<ChessContext> options)
