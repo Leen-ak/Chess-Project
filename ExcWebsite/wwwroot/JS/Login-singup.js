@@ -9,6 +9,9 @@
 
 })
 
+//if they did not have an account
+//sign up
+//take the info
 const setUpUserInfo = () => {
     const userData = {
         FirstName: $("#firstname").val(),
@@ -18,43 +21,72 @@ const setUpUserInfo = () => {
         Password: $("#signup-password").val()
         //ConfirmPassword: $("#password-confirm").val()
     }; 
+
     console.log("User info is: ", userData); 
+    passwordCheck();
+    console.log(passwordCheck.weak); 
+    //Send data to to the API
+    if (passwordCheck()) {
+        $.ajax({
+            url: 'https://localhost:7223/api/LoginPage',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(userData), //convert js object to json
+            success: (response) => {
+                alert("User added successfully: " + response.msg);
+                console.log("Response from the server: ", response);
+            },
 
-    //sessionStorage.setItem("userData", userData);
-    //console.log("The data after setItem to the sessionStorage: ", userData); 
-    //const storedData = JSON.parse(sessionStorage.getItem("userData"));
-    //console.log("StoredData in sessionStorage is: ", storedData);
-    //alert("User data saved to sessionStorage"); 
-
-    //Send data to to the API 
-    $.ajax({
-        url: 'https://localhost:7223/api/LoginPage',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(userData), //convert js object to json
-        success: (response) => {
-            alert("User added successfully: " + response.msg);
-            console.log("Response from the server: ", response); 
-        },
-
-        error: (error) => {
-            alert("Error adding user: " + error.responseText);
-            console.log("Error Details: ", error); 
-        }
-    });
+            error: (error) => {
+                alert("Error adding user: " + error.responseText);
+                console.log("Error Details: ", error);
+            }
+        });
+    }
 }
 
-//if they have an account
-//login
-//i will take the text info
-//compare to database
-//if it matach the user name and password
-//then move to the next page
 
-//if they did not have an account
-//sign up
-//take the info
-//check if ther is a match in database for -> email!
-//if it exsite your eamil is already exist
-// if it is not
-// add the info to the database
+//password vildation - weak, meduim, strong
+const passwordCheck = () => {
+    let weak = false;
+    let medium = false
+    let strong = false;
+    const password = $("#signup-password").val();
+    const passwordLength = password.length;
+    const isNumber = /\d/.test(password); //if nummber
+    const isLetter = /[a-z]/.test(password); //if letter
+    const isUpperCase = /[A-Z]/.test(password); //if uppercase
+    const specialChars = /[!@#$%^&*_-]/.test(password);   
+
+    if (passwordLength <= 8) {
+        console.log("Password should be greater than 8 Characters");
+
+        if (isNumber || isLetter || isUpperCase || specialChars) {
+            console.log("one is true, so it is a weak password");
+            weak = true;
+            return false; 
+        }
+    }
+    else if (passwordLength > 8 && passwordLength < 12) {
+        if ((isNumber || isLetter) && (isUpperCase || specialChars)) {
+            console.log("Some is true, so it is a meduim password");
+            medium = true;
+            return true; 
+        }    
+    }
+    else if (passwordLength > 12) {
+        if (isNumber && isLetter && isUpperCase && specialChars) {
+            console.log("all consitions is true so it is a strong password");
+            strong = true;
+            return true
+        }
+    }
+    else {
+        console.log("Aother");
+        return false; 
+    }
+};
+
+//const usernameCheck = () => {
+
+//}
