@@ -7,7 +7,6 @@ using ViewModels;
 
 namespace ExcWebsite.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class LoginPageController : ControllerBase
@@ -33,5 +32,41 @@ namespace ExcWebsite.Controllers
         //we need updating info if the user forget the password 
 
         //we need delete if the user wants to delete the account 
+
+        //Get by UserName 
+        [HttpGet("username/{username}")]
+        public async Task<IActionResult> GetByUsername(string username)
+        {
+            try
+            {
+                UserVM viewModel = new() { UserName = username };
+                await viewModel.GetByUsername();
+                return Ok(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        //Get by Email
+        [HttpGet("email/{email}")]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            try
+            {
+                UserVM viewModel = new() { Email = email };
+                await viewModel.GetByEmail();
+                return Ok(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

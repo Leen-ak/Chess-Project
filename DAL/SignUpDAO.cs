@@ -22,10 +22,38 @@ namespace DAL
             catch(Exception ex)
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " + 
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 throw; 
             }
             return NewUser.Id;
+        }
+
+        public async Task<UserInfo?> GetByUsername(string username)
+        {
+            try
+            {
+               return await _repo.GetOne(user => user.UserName == username);
+            }
+            catch (Exception ex) 
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw; 
+            }
+        }
+
+        public async Task<UserInfo?> GetByEmail(string email)
+        {
+            try
+            {
+                return await _repo.GetOne(user => user.Email == email); 
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                  MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
         }
     }
 }
