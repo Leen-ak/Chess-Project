@@ -1,4 +1,4 @@
-# Full-Stack Chess Website
+# Full-Stack Chess Website - In Progress 
 This project is a **Full-Stack Chess Website** designed to provide users with an engaging online chess-playing experience. 
 The website allows users to play chess against friends, AI opponents, or random players online while tracking their performance through rankings.
 
