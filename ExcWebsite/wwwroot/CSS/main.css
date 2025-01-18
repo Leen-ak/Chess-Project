@@ -152,14 +152,14 @@ label {
     background-color: #232323;
 }
 
-.password-icon, .user-logo, .toggle-password{
+.password-icon, .user-logo, .toggle-password, .email-icon {
     position: absolute;
     top: 50%;
     left: 10px;
     transform: translateY(-50%);
 }
 
-.password-icon, .user-logo {
+.password-icon, .user-logo, .email-icon {
     pointer-events: none;
 }
 
