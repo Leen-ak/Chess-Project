@@ -11,7 +11,6 @@
 
 //if they did not have an account
 //sign up
-//take the info
 const setUpUserInfo = () => {
     const userData = {
         FirstName: $("#firstname").val(),
@@ -23,9 +22,14 @@ const setUpUserInfo = () => {
     }; 
 
     console.log("User info is: ", userData); 
+
+    //Checking the strength of the password 
     passwordCheck();
-    console.log(passwordCheck.weak); 
-    //Send data to to the API
+
+    //Get the API for the username to compare 
+    usernameCheck();
+
+    //Send data to the Server
     if (passwordCheck()) {
         $.ajax({
             url: 'https://localhost:7223/api/LoginPage',
@@ -67,7 +71,7 @@ const passwordCheck = () => {
             return false; 
         }
     }
-    else if (passwordLength > 8 && passwordLength < 12) {
+    else if (passwordLength > 8 && passwordLength <= 12) {
         if ((isNumber || isLetter) && (isUpperCase || specialChars)) {
             console.log("Some is true, so it is a meduim password");
             medium = true;
@@ -87,6 +91,24 @@ const passwordCheck = () => {
     }
 };
 
-//const usernameCheck = () => {
+const usernameCheck = async () => {
+    try {
+        const username = $("#username-signup").val();
+        const response = await fetch(`https://localhost:7223/api/LoginPage/username/${username}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await response.json();
 
-//}
+        if (response.ok) {
+            console.log("The user is already exist.");
+        }
+
+        console.log("The data from username api: ", data);
+    }
+    catch (error) {
+        console.log('Error: ', error);
+    }
+};
