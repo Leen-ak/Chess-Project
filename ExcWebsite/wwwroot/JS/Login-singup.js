@@ -1,10 +1,7 @@
 ﻿$(() => {
-    console.log("Testing..."); 
     $("#signup-btn").on("click", (event) => {
         event.preventDefault();
-        console.log("Testing2..."); 
         setUpUserInfo(); 
-        console.log("After the test.");
     });
 
 })
@@ -21,13 +18,14 @@ const setUpUserInfo = () => {
         //ConfirmPassword: $("#password-confirm").val()
     }; 
 
-    console.log("User info is: ", userData); 
-
     //Checking the strength of the password 
     passwordCheck();
 
     //Get the API for the username to compare 
-    usernameCheck();
+    validateUsernameUniqueness();
+
+    //Get the API for the email to compare
+    validateEmailUniqueness(); 
 
     //Send data to the Server
     if (passwordCheck()) {
@@ -78,7 +76,7 @@ const passwordCheck = () => {
             return true; 
         }    
     }
-    else if (passwordLength > 12) {
+    else if (passwordLength > 8) {
         if (isNumber && isLetter && isUpperCase && specialChars) {
             console.log("all consitions is true so it is a strong password");
             strong = true;
@@ -91,7 +89,7 @@ const passwordCheck = () => {
     }
 };
 
-const usernameCheck = async () => {
+const validateUsernameUniqueness = async () => {
     try {
         const username = $("#username-signup").val();
         const response = await fetch(`https://localhost:7223/api/LoginPage/username/${username}`, {
@@ -101,14 +99,40 @@ const usernameCheck = async () => {
             },
         });
         const data = await response.json();
+        console.log("The data from username api: ", data);
 
         if (response.ok) {
-            console.log("The user is already exist.");
+            if (data.userName === username)
+                console.log("The username is already exist.");
+            else
+                console.log("The username is not exist."); 
         }
-
-        console.log("The data from username api: ", data);
     }
     catch (error) {
         console.log('Error: ', error);
     }
 };
+
+const validateEmailUniqueness = async () => {
+    try {
+        const email = $("#email").val();
+        const response = await fetch(`https://localhost:7223/api/LoginPage/email/${email}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await response.json();
+        console.log("The data from email api: ", data);
+
+        if (response.ok) {
+            if (data.email === email) 
+                console.log("The email already exists.");
+            else
+                console.log("The email does not exist.");
+        }
+    }
+    catch (error) {
+        console.log('Error: ', error);
+    }
+}
