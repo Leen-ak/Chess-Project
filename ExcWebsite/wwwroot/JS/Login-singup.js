@@ -12,12 +12,13 @@ const setUpUserInfo = () => {
     const userData = {
         FirstName: $("#firstname").val(),
         LastName: $("#lastname").val(),
-        UserName: $("#username-signup").val(),
+        UserName: $("#usernameSignup").val(),
         Email: $("#email").val(),
-        Password: $("#signup-password").val()
-        //ConfirmPassword: $("#password-confirm").val()
-    }; 
-
+        Password: $("#signupPassword").val(),
+        ConfirmPassword: $("#passwordConfirm").val(),
+    };
+    console.log("The password is: ", userData.password); 
+    console.log("The confirm Password is: ", userData.ConfirmPassword); 
     //Checking the strength of the password 
     //passwordCheck();
 
@@ -40,7 +41,7 @@ const setUpUserInfo = () => {
             },
 
             error: (error) => {
-                alert("Error adding user: " + error.responseText);
+                console.log("Error adding user", error.responseText);
                 console.log("Error Details: ", error);
             }
         });
@@ -53,7 +54,7 @@ const setUpUserInfo = () => {
 
 const validateUsernameUniqueness = async () => {
     try {
-        const username = $("#username-signup").val();
+        const username = $("#usernameSignup").val();
         const response = await fetch(`https://localhost:7223/api/LoginPage/username/${username}`, {
             method: 'GET',
             headers: {
@@ -65,7 +66,7 @@ const validateUsernameUniqueness = async () => {
 
         if (response.ok) {
             if (data.userName === username)
-                console.log("The username is already exist.");
+                alert("The username is already exist.");
             else
                 console.log("The username is not exist."); 
         }
@@ -88,8 +89,8 @@ const validateEmailUniqueness = async () => {
         console.log("The data from email api: ", data);
 
         if (response.ok) {
-            if (data.email === email) 
-                console.log("The email already exists.");
+            if (data.email === email)
+                alert("The email already exists.");
             else
                 console.log("The email does not exist.");
         }
@@ -106,9 +107,9 @@ $.validator.addMethod("passwordCheck", function (password, element) {
     const isUpperCase = /[A-Z]/.test(password);
     const specialChars = /[!@#$%^&*_-]/.test(password);
 
-    if (passwordLength <= 8)
+    if (passwordLength < 8)
         return false;
-    else if (passwordLength > 8 && passwordLength <= 12)
+    else if (passwordLength >= 8 && passwordLength <= 12)
         return (isNumber || isLetter) && (isUpperCase || specialChars);
     else if (passwordLength > 12)
         return (isNumber && isLetter && isUpperCase && specialChars);
@@ -122,14 +123,34 @@ $("#signup-form").validate({
         usernameSignup: { maxlength: 30, required: true },
         email: { maxlength: 64, required: true, email: true },
         signupPassword: { maxlength: 64, required: true, passwordCheck: true },
-        passwordConfirm: { maxlength: 64, required: true, equalTo: "#signup-password" }
+        passwordConfirm: { maxlength: 64, required: true, equalTo: "#signupPassword" }
     },
     messages: {
-        firstname: "Firstname is required", 
-        lastname: "Lastname is required",
-        usernameSignup: "Username is required",
-        email: "Email is required",
-        signupPassword: "Should be more than 8 chars",
-        passwordConfirm: "Passwords do not match",
+        firstname: {
+            required: "Firstname is required",
+            maxlength: "Firstname cannot be more than 30 characters"
+        },
+        lastname: {
+            required: "Lastname is required",
+            maxlength: "Lastname cannot be more than 30 characters"
+        },
+        usernameSignup: {
+            required: "Username is required",
+            maxlength: "Username cannot be more than 30 characters"
+        },
+        email: {
+            required: "Email is required",
+            maxlength: "Email cannot be more than 64 characters",
+            email: "Please enter a valid email"
+        },
+        signupPassword: {
+            required: "Should be more than 8 chars",
+            maxlength: "Passwords cannot be more than 64 characters"
+        },
+        passwordConfirm: {
+            required: "Passwords do not match",
+            maxlength: "Passwords do not match",
+            equalTo: "Passwords do not match"
+        }
     }
 });

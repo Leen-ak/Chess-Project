@@ -18,7 +18,7 @@ namespace ExcWebsite.Controllers
             try
             {
                 await viewModel.Add();
-                return viewModel.Id > 1 ? Ok(new { msg = "User " + viewModel.FirstName + "added!" })
+                return viewModel.Id > 1 ? Ok(new { msg = "User " + viewModel.FirstName + " added!" })
                     : Ok(new { msg = "User " + viewModel.FirstName + " not added!" }); 
             }
             catch (Exception ex) 
