@@ -4,6 +4,7 @@
         setUpUserInfo(); 
     });
 
+
 })
 
 //if they did not have an account
@@ -145,7 +146,8 @@ $("#signup-form").validate({
         },
         signupPassword: {
             required: "Should be more than 8 chars",
-            maxlength: "Passwords cannot be more than 64 characters"
+            maxlength: "Passwords cannot be more than 64 characters",
+            passwordCheck: "Should be more than 8 cahrs"
         },
         passwordConfirm: {
             required: "Passwords do not match",
@@ -154,3 +156,19 @@ $("#signup-form").validate({
         }
     }
 });
+
+const togglePasswordVisibility = (inputSelector, toggleButton) => {
+    const password = $(inputSelector);
+    const passwordType = password.attr("type");
+
+    if (passwordType === "password") {
+        password.attr("type", "text");
+        $(toggleButton).text("visibility_off");
+    } else {
+        password.attr("type", "password");
+        $(toggleButton).text("visibility");
+    }
+};
+
+$("#toggle-password").on("click", function () { togglePasswordVisibility("#signupPassword", this) });
+$("#toggle-confirmPassword").on("click", function () { togglePasswordVisibility("#passwordConfirm", this) });

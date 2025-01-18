@@ -152,24 +152,27 @@ label {
     background-color: #232323;
 }
 
-.password-icon, .user-logo {
+.password-icon, .user-logo, .toggle-password{
     position: absolute;
     top: 50%;
     left: 10px;
     transform: translateY(-50%);
+}
+
+.password-icon, .user-logo {
     pointer-events: none;
 }
 
-.forget-pass {
-    position: absolute;
-    top: 100%;
-    right: 70%;
-    transition: transform 1s;
-}
-
-    .forget-pass:hover {
-        transform: scale(1.1);
+    .forget-pass {
+        position: absolute;
+        top: 100%;
+        right: 70%;
+        transition: transform 1s;
     }
+
+ .forget-pass:hover {
+    transform: scale(1.1);
+ }
 
 .login-button {
     width: 125px;
@@ -214,11 +217,11 @@ label {
     color: #bbb4aa;
 }
 
-    .btn:hover {
-        background: #bbb4aa;
-        color: #232323;
-        border-color: #bbb4aa;
-    }
+.btn:hover {
+    background: #bbb4aa;
+    color: #232323;
+    border-color: #bbb4aa;
+}
 
 /*right section sign up*/
 .image-section.right {
