@@ -19,7 +19,7 @@ const setUpUserInfo = () => {
     }; 
 
     //Checking the strength of the password 
-    passwordCheck();
+    //passwordCheck();
 
     //Get the API for the username to compare 
     validateUsernameUniqueness();
@@ -28,7 +28,7 @@ const setUpUserInfo = () => {
     validateEmailUniqueness(); 
 
     //Send data to the Server
-    if (passwordCheck()) {
+    if ($("#signup-form").valid()) {
         $.ajax({
             url: 'https://localhost:7223/api/LoginPage',
             method: 'POST',
@@ -45,49 +45,11 @@ const setUpUserInfo = () => {
             }
         });
     }
+    else 
+        console.log("Validation failed. Please fix the errors and try again.");
+    
+
 }
-
-
-//password vildation - weak, meduim, strong
-const passwordCheck = () => {
-    let weak = false;
-    let medium = false
-    let strong = false;
-    const password = $("#signup-password").val();
-    const passwordLength = password.length;
-    const isNumber = /\d/.test(password); //if nummber
-    const isLetter = /[a-z]/.test(password); //if letter
-    const isUpperCase = /[A-Z]/.test(password); //if uppercase
-    const specialChars = /[!@#$%^&*_-]/.test(password);   
-
-    if (passwordLength <= 8) {
-        console.log("Password should be greater than 8 Characters");
-
-        if (isNumber || isLetter || isUpperCase || specialChars) {
-            console.log("one is true, so it is a weak password");
-            weak = true;
-            return false; 
-        }
-    }
-    else if (passwordLength > 8 && passwordLength <= 12) {
-        if ((isNumber || isLetter) && (isUpperCase || specialChars)) {
-            console.log("Some is true, so it is a meduim password");
-            medium = true;
-            return true; 
-        }    
-    }
-    else if (passwordLength > 8) {
-        if (isNumber && isLetter && isUpperCase && specialChars) {
-            console.log("all consitions is true so it is a strong password");
-            strong = true;
-            return true
-        }
-    }
-    else {
-        console.log("Aother");
-        return false; 
-    }
-};
 
 const validateUsernameUniqueness = async () => {
     try {
@@ -136,3 +98,38 @@ const validateEmailUniqueness = async () => {
         console.log('Error: ', error);
     }
 }
+
+$.validator.addMethod("passwordCheck", function (password, element) {
+    const passwordLength = password.length;
+    const isNumber = /\d/.test(password); 
+    const isLetter = /[a-z]/.test(password); 
+    const isUpperCase = /[A-Z]/.test(password);
+    const specialChars = /[!@#$%^&*_-]/.test(password);
+
+    if (passwordLength <= 8)
+        return false;
+    else if (passwordLength > 8 && passwordLength <= 12)
+        return (isNumber || isLetter) && (isUpperCase || specialChars);
+    else if (passwordLength > 12)
+        return (isNumber && isLetter && isUpperCase && specialChars);
+    return false;
+});
+
+$("#signup-form").validate({
+    rules: {
+        firstname: { maxlength: 30, required: true },
+        lastname: { maxlength: 30, required: true },
+        usernameSignup: { maxlength: 30, required: true },
+        email: { maxlength: 64, required: true, email: true },
+        signupPassword: { maxlength: 64, required: true, passwordCheck: true },
+        passwordConfirm: { maxlength: 64, required: true, equalTo: "#signup-password" }
+    },
+    messages: {
+        firstname: "Firstname is required", 
+        lastname: "Lastname is required",
+        usernameSignup: "Username is required",
+        email: "Email is required",
+        signupPassword: "Should be more than 8 chars",
+        passwordConfirm: "Passwords do not match",
+    }
+});
