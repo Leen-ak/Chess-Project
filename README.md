@@ -27,15 +27,16 @@ The website allows users to play chess against friends, AI opponents, or random 
 
 ## Technologies Used
 ### Frontend
-- **HTML/CSS/JavaScript**: Core web technologies for building the user interface.
-- **React**: To create a dynamic and responsive user interface.
+- **HTML/CSS/JavaScript:** Core web technologies for building the user interface.
+- **React:** To create a dynamic and responsive user interface.
+- **jQuery:** Used for DOM manipulation and AJAX requests where necessary.
 
 ### Backend
-- **Node.js** and **Express.js**: For managing server-side logic and API endpoints.
-- **WebSocket**: For real-time communication between players.
+- **NET Core / ASP.NET Core:**  Used for creating the REST API and handling server-side operations.
+- **Entity Framework Core:** ORM used to interact with the relational database efficiently.
 
 ### Database
-- **SQL Server**: To store user accounts, game records, and leaderboard data.
+- **SQL Server:** Relational database used for data storage and management.
 
 ### AI Engine
 - **Chess.js**: For handling chess game rules and logic.
