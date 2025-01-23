@@ -5,6 +5,71 @@
     <title></title>
 </head>
 <body>
-    <h1>Hello</h1>
+    <nav class="navbar navbar-expand-md navbar-dark">
+        <a class="navbar-brand mx-3" href="#">The Chess Gambit</a>
+        <button class="navbar-toggler mx-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mx-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Game</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">AI</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact Us</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container home">
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="card userBoard">
+                    <div class="card-body userBody">
+                        <h2 class="card-title">Username Page</h2>
+                        <div class="sumarry">
+                            <ul>
+                                <li>Total Games Played</li>
+                                <li>Games Won</li>
+                                <li>Games Lost</li>
+                                <li>Friends Ranking</li>
+                            </ul>
+                        </div>
+                        <div class="most-games">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 chessBoard">
+                <div class="card">
+                    <img src="../images/chess-game.jpg" alt="Chess Game Image" class="card-img-top" />
+                    <h2 class="card-title">Standard Chess</h2>
+                    <button class="btn btn-primary">Play Now</button>
+                </div>
+            </div>
+
+            <div class="col-md-3 friendBoard">
+                <div class="card">
+                    <div class="card-body"></div>
+                    <h2 class="card-title">Friends Board</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/lib/js/bootstrap.min.js"></script>
+    <script src="/lib/js/jquery.min.js"></script>
+    <script src="/lib/js/jquery.validate.min.js"></script>
 </body>
 </html>
