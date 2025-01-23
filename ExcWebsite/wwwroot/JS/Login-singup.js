@@ -4,7 +4,11 @@
         setUpUserInfo(); 
     });
 
-
+    $("#login-btn").on("click", (event) => {
+        event.preventDefault(); 
+        console.log("Login button clicked"); 
+        usernameLogin(); 
+    });
 })
 
 //if they did not have an account
@@ -20,8 +24,6 @@ const setUpUserInfo = () => {
     };
     console.log("The password is: ", userData.password); 
     console.log("The confirm Password is: ", userData.ConfirmPassword); 
-    //Checking the strength of the password 
-    //passwordCheck();
 
     //Get the API for the username to compare 
     validateUsernameUniqueness();
@@ -49,8 +51,6 @@ const setUpUserInfo = () => {
     }
     else 
         console.log("Validation failed. Please fix the errors and try again.");
-    
-
 }
 
 const validateUsernameUniqueness = async () => {
@@ -145,9 +145,9 @@ $("#signup-form").validate({
             email: "Please enter a valid email"
         },
         signupPassword: {
-            required: "Should be more than 8 chars",
-            maxlength: "Passwords cannot be more than 64 characters",
-            passwordCheck: "Should be more than 8 cahrs"
+            required: "Password should be more than 8 chars",
+            maxlength: "Password cannot be more than 64 characters",
+            passwordCheck: "Password should be more than 8 cahrs"
         },
         passwordConfirm: {
             required: "Passwords do not match",
@@ -165,6 +165,7 @@ const togglePasswordVisibility = (inputSelector, toggleButton) => {
         password.attr("type", "text");
         $(toggleButton).text("visibility_off");
     } else {
+        console.log("it is here"); 
         password.attr("type", "password");
         $(toggleButton).text("visibility");
     }
@@ -172,3 +173,42 @@ const togglePasswordVisibility = (inputSelector, toggleButton) => {
 
 $("#toggle-password").on("click", function () { togglePasswordVisibility("#signupPassword", this) });
 $("#toggle-confirmPassword").on("click", function () { togglePasswordVisibility("#passwordConfirm", this) });
+
+//login page
+const usernameLogin = async () => {
+    try {
+        const username = $("#username").val();
+        const password = $("#login-password").val();
+        console.log("The username: ", username);
+        console.log("The password is: ", password);
+
+        const response = await fetch(`https://localhost:7223/api/LoginPage/username/${username}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await response.json();
+        console.log("The data from username api: ", data);
+
+        if (response.ok) {
+            if (data.userName === username) {
+                alert("The username exists in the database");
+
+                if (data.password === password) {
+                    alert("The user password matches the database password");
+                    window.location.href = "..//HTML/Home.html"; 
+                }
+                else
+                    alert("Incorrect password");
+            }
+            else
+                alert("The username does not exist");
+        }
+    }
+    catch (error) {
+        console.log('Error: ', error);
+    }
+}; 
+
+
