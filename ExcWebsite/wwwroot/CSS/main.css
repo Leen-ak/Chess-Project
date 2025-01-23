@@ -159,7 +159,7 @@ label {
     transform: translateY(-50%);
 }
 
-.password-icon, .user-logo, .email-icon {
+.user-logo, .email-icon {
     pointer-events: none;
 }
 

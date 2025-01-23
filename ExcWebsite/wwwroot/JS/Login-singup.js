@@ -173,6 +173,7 @@ const togglePasswordVisibility = (inputSelector, toggleButton) => {
 
 $("#toggle-password").on("click", function () { togglePasswordVisibility("#signupPassword", this) });
 $("#toggle-confirmPassword").on("click", function () { togglePasswordVisibility("#passwordConfirm", this) });
+$("#password-icon").on("click", function () { togglePasswordVisibility("#login-password", this) });
 
 //login page
 const usernameLogin = async () => {
