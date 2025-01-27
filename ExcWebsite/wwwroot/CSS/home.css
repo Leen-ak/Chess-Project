@@ -63,6 +63,16 @@
     justify-content: center;
 }
 
+.chessCard {
+    transform: scale(1);
+    transition: transform 1s;
+}
+
+.chessCard:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
 h2 {
     font-size: 14px;
     padding-top: 5%;
@@ -138,7 +148,6 @@ h1 {
     font-size: 22px;
 }
 
-
 .friend-item {
     display: flex;
     align-items: center; /* Aligns items vertically */
@@ -146,6 +155,13 @@ h1 {
     border-radius: 10px; /* Rounded corners */
     position: relative;
     box-shadow: 0px 1px 4px #0f1316;
+    transform: scale(1);
+    transition: transform 1s;
+}
+
+.friend-item:hover {
+    cursor: pointer;
+    transform: scale(1.1);
 }
 
 .image-container {
