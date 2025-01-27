@@ -137,3 +137,41 @@ h1 {
     color: rgb(99, 99, 235);
     font-size: 22px;
 }
+
+
+.friend-item {
+    display: flex;
+    align-items: center; /* Aligns items vertically */
+    padding: 5px 10px;
+    border-radius: 10px; /* Rounded corners */
+    position: relative;
+    box-shadow: 0px 1px 4px #0f1316;
+}
+
+.image-container {
+    position: relative;
+    width: 50px;
+    height: 50px;
+}
+
+.friend-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    border: 2px solid #202225;
+}
+
+.status-bullet {
+    position: absolute;
+    bottom: 5%;
+    left: 70%;
+    width: 18px;
+    height: 18px;
+    background-color: #43b581;
+    border: 4px solid #232323;
+    border-radius: 50%;
+}
+
+.friend-name {
+    margin: 15px;
+}
