@@ -147,7 +147,7 @@ $("#signup-form").validate({
         signupPassword: {
             required: "Password should be more than 8 chars",
             maxlength: "Password cannot be more than 64 characters",
-            passwordCheck: "Password should be more than 8 cahrs"
+            passwordCheck: "Password should be more than 8 chars"
         },
         passwordConfirm: {
             required: "Passwords do not match",
