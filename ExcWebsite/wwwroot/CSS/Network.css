@@ -1,0 +1,107 @@
+﻿body {
+    width: 100%;
+    background-color: #232323;
+    color: #bbb4aa;
+    font-family: 'Abel', sans-serif;
+}
+
+h1 {
+    font-size: 24px;
+    margin: 20% 0;
+}
+
+.navbar {
+    background-color: #232323;
+    box-shadow: 0px 0px 5px #0f1316;
+}
+
+.network-summary {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+.summary-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.user-image {
+    border-radius: 100%;
+}
+
+
+.network-board {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.network-card {
+    align-items: center;
+    background-color: #232323;
+    width: 15%;
+    height: auto;
+    padding: 20px 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: scale(1);
+    transition: transform 1s;
+}
+
+    .network-card:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+    }
+
+    .network-card img {
+        border-radius: 100%;
+        width: 40%;
+        padding: 20px 5px;
+    }
+
+h2 {
+    font-size: 20px;
+}
+
+.button-section {
+    padding: 10px;
+}
+
+.btn.btn-primary, .btn {
+    background: transparent;
+    border: 1px solid #bbb4aa;
+    border-radius: 40px;
+    font-size: 10px;
+    padding: 2%;
+    margin-bottom: 6%;
+    color: #bbb4aa;
+    width: 100px;
+}
+
+.button.btn.btn-primary {
+    text-align: center;
+    justify-content: center;
+}
+
+.btn:hover {
+    background: #bbb4aa;
+    color: #232323;
+    border-color: #bbb4aa;
+}
+
