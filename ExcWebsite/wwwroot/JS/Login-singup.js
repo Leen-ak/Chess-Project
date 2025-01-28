@@ -2,12 +2,13 @@
     $("#signup-btn").on("click", (event) => {
         event.preventDefault();
         setUpUserInfo(); 
+        clearSignupInput();
     });
 
     $("#login-btn").on("click", (event) => {
         event.preventDefault(); 
-        console.log("Login button clicked"); 
-        usernameLogin(); 
+        usernameLogin();
+        clearLoginInput(); 
     });
 })
 
@@ -51,6 +52,20 @@ const setUpUserInfo = () => {
     }
     else 
         console.log("Validation failed. Please fix the errors and try again.");
+}
+
+const clearSignupInput = () => {
+    $("#firstname").val("");
+    $("#lastname").val("");
+    $("#usernameSignup").val ("");
+    $("#email").val("");
+    $("#signupPassword").val("");
+    $("#passwordConfirm"), val("");
+}
+
+const clearLoginInput = () => {
+    $("#username").val("");
+    $("#login-password").val("");
 }
 
 const validateUsernameUniqueness = async () => {
@@ -106,7 +121,7 @@ $.validator.addMethod("passwordCheck", function (password, element) {
     const isNumber = /\d/.test(password); 
     const isLetter = /[a-z]/.test(password); 
     const isUpperCase = /[A-Z]/.test(password);
-    const specialChars = /[!@#$%^&*_-]/.test(password);
+    const specialChars = /[!@#$%^&*_\.\-]/.test(password);
 
     if (passwordLength < 8)
         return false;
