@@ -5,12 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/lib/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/home.css" />
     <title></title>
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark">
-        <a class="navbar-brand mx-3" href="#">The Chess Gambit</a>
+        <a class="navbar-brand mx-3" href="../HTML/mainPage.html">The Chess Gambit</a>
         <button class="navbar-toggler mx-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -21,13 +28,19 @@
                     <a class="nav-link" href="#">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Game</a>
+                    <a class="nav-link" href="../HTML/Home.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">AI</a>
+                    <a class="nav-link" href="#">Network</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Messages</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contact Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../HTML/mainPage.html">Logout</a>
                 </li>
             </ul>
         </div>
@@ -35,7 +48,6 @@
 
     <div class="container home p-3">
         <div class="row">
-
             <div class="col-md-3">
                 <div class="card userBoard">
                     <div class="card-body userBody">
@@ -45,7 +57,7 @@
                             <img src="../images/pic.jpg" class="card-img-top">
                         </div>
 
-                        <h2 class="header-name">Leen Aboukhalil</h2>
+                        <h2 id="header-name"></h2>
 
                         <div class="sumarry">
                             <ul class="game-stats">
@@ -181,5 +193,6 @@
     <script src="/lib/js/bootstrap.min.js"></script>
     <script src="/lib/js/jquery.min.js"></script>
     <script src="/lib/js/jquery.validate.min.js"></script>
+    <script src="../JS/Home.js"></script>
 </body>
 </html>

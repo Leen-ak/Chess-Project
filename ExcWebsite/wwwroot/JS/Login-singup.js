@@ -213,6 +213,7 @@ const usernameLogin = async () => {
 
                 if (data.password === password) {
                     alert("The user password matches the database password");
+                    setCookie("username", username, 1);
                     window.location.href = "..//HTML/Home.html"; 
                 }
                 else
@@ -224,7 +225,11 @@ const usernameLogin = async () => {
     }
     catch (error) {
         console.log('Error: ', error);
-    }
+    }   
 }; 
 
-
+const setCookie = (name, value, days) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name} = ${value}; expires = ${expires.toUTCString()}; path=/`;
+}
