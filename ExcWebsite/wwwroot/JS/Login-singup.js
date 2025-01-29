@@ -60,7 +60,7 @@ const clearSignupInput = () => {
     $("#usernameSignup").val ("");
     $("#email").val("");
     $("#signupPassword").val("");
-    $("#passwordConfirm"), val("");
+    $("#passwordConfirm").val("");
 }
 
 const clearLoginInput = () => {
@@ -233,3 +233,8 @@ const setCookie = (name, value, days) => {
     expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
     document.cookie = `${name} = ${value}; expires = ${expires.toUTCString()}; path=/`;
 }
+
+
+//note
+//1. the confirm password does not clean up
+//2. the password visibility does not go off after the signup or login
