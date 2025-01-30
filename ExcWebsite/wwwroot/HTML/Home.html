@@ -51,13 +51,16 @@
             <div class="col-md-3">
                 <div class="card userBoard">
                     <div class="card-body userBody">
-                        <h1 class="card-title">User Statistics</h1>
+                        <h1 class="card-title" id="header-name"></h1>
 
-                        <div class="user-image">
-                            <img src="../images/pic.jpg" class="card-img-top">
+                        <div class="user-image-section">
+                            <img src="../images/user.png" class="card-img-top" id="user-image">
+                            <form id="uploadForm" enctype="multipart/form-data">
+                                <label for="fileInput" class="custom-file-upload">Choose Image</label>
+                                <input type="file" id="fileInput" accept="image/*" />
+                            </form>
                         </div>
 
-                        <h2 id="header-name"></h2>
 
                         <div class="sumarry">
                             <ul class="game-stats">
@@ -91,7 +94,7 @@
 
             <div class="col-md-6 chessBoard">
                 <div class="card-title">
-                    <h1>Chess Board</h1>
+                    <h1 class="card-title">Chess Board</h1>
                 </div>
                 <div class="grid-container">
                     <div class="card chessCard">

@@ -26,7 +26,7 @@
     background-color: #232323;
 }
 
-.btn.btn-primary, .btn {
+.btn.btn-primary, .btn{
     background: transparent;
     border: 1px solid #bbb4aa;
     border-radius: 40px;
@@ -73,14 +73,14 @@
     transform: scale(1.1);
 }
 
-h2 {
-    font-size: 14px;
-    padding-top: 5%;
+h2{
+    font-size: 22px;
+    padding-top: 4%; 
 }
 
-h1 {
-    font-size: 22px;
-    padding: 5%;
+h1{
+    font-size: 30px;
+    padding: 4%;
 }
 
 .sumarry {
@@ -190,4 +190,29 @@ h1 {
 
 .friend-name {
     margin: 15px;
+}
+
+.custom-file-upload {
+    background: transparent;
+    border: 1px solid #bbb4aa;
+    border-radius: 40px;
+    font-size: 15px;
+    padding: 5%;
+    color: #bbb4aa;
+    width: 55%;
+    cursor: pointer;
+}
+
+.custom-file-upload:hover {
+    background: #bbb4aa;
+    color: #232323;
+    border-color: #bbb4aa;
+}
+
+input[type="file"]{
+    display: none;
+}
+
+#uploadForm{
+    margin: 6%;
 }

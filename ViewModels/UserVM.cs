@@ -19,6 +19,7 @@ namespace ViewModels
         public string? UserName { get; set; }
         public string? Password { get; set; }
         public string? PasswordConfiguration { get; set; }
+        public string? Picture { get; set; }
         public string? Timer { get; set; }
 
         public UserVM() 
@@ -32,11 +33,12 @@ namespace ViewModels
             {
                 UserInfo user = new()
                 {
-                    Firstname = FirstName,
-                    Lastname = LastName,
-                    UserName = UserName,
-                    Email = Email,
-                    Password = Password
+                    Firstname = FirstName!,
+                    Lastname = LastName!,
+                    UserName = UserName!,
+                    Email = Email!,
+                    Password = Password!,
+                    Picture = Picture
                 };
                 Id = await _dao.Add(user);
             }
@@ -59,6 +61,7 @@ namespace ViewModels
                 UserName = user.UserName;
                 Email = user.Email;
                 Password = user.Password;
+                Picture = user.Picture;
                 Timer = Convert.ToBase64String(user.Timer!); 
             }
             catch (NullReferenceException nex)
@@ -85,6 +88,7 @@ namespace ViewModels
                 UserName = user.UserName;
                 Email = user.Email;
                 Password = user.Password;
+                Picture = user.Picture;
                 Timer = Convert.ToBase64String(user.Timer!);
             }
             catch (NullReferenceException nex)
