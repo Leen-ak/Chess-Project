@@ -5,7 +5,7 @@ namespace DAL;
 
 public partial class Follower : ChessEntity
 {
-  //  public int Id { get; set; }
+    //public int Id { get; set; }
 
     public int? FollowerId { get; set; }
 

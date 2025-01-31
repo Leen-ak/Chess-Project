@@ -26,8 +26,6 @@ public partial class ChessContext : DbContext
         optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB; Database=ChessDatabase; Trusted_Connection=True");
         optionsBuilder.UseLazyLoadingProxies();
     }
-
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -88,10 +86,6 @@ public partial class ChessContext : DbContext
             entity.Property(e => e.Firstname).HasMaxLength(60);
             entity.Property(e => e.Lastname).HasMaxLength(60);
             entity.Property(e => e.Password).HasMaxLength(30);
-            entity.Property(e => e.Picture)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasDefaultValue("/images/user.png");
             entity.Property(e => e.Timer)
                 .IsRowVersion()
                 .IsConcurrencyToken();

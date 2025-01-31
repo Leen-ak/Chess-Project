@@ -18,34 +18,37 @@ namespace ExcWebsite.Controllers
             if (file == null)
                 return BadRequest(new { msg = "No file uploaded." });
 
-
             try
             {
                 using var memoryStream = new MemoryStream();
                 await file.CopyToAsync(memoryStream);
-                string base64Image = Convert.ToBase64String(memoryStream.ToArray());
+
+                // ✅ Convert image to byte[] instead of string
+                byte[] imageBytes = memoryStream.ToArray();
 
                 UserVM user = new();
                 user.UserName = username;
                 await user.GetByUsername();
+
                 Debug.WriteLine($"After Update - Picture: {user.Picture}");
                 Debug.WriteLine($"User found: {user.Id}, Picture before update: {user.Picture}");
-                Debug.WriteLine($"Base64 Image Length: {base64Image.Length}");
-
+                Debug.WriteLine($"Image Byte Length: {imageBytes.Length}"); // ✅ Debug byte length
 
                 if (user.Id == null)
                     return NotFound(new { msg = "User not found." });
 
-                user.Picture = base64Image;
-                if (user.Picture == null)
+                // ✅ Assign the correct byte[] format to Picture
+                user.Picture = imageBytes;
+
+                if (user.Picture == null || user.Picture.Length == 0)
                     Debug.WriteLine("The picture is empty");
+
                 int retVal = await user.Update();
-                Debug.WriteLine(retVal); 
-                //return Ok(retVal);
+                Debug.WriteLine(retVal);
 
                 return retVal == 1
-                ? Ok(new { msg = "Profile picture updated successfully!" })
-                : BadRequest(new { msg = "Failed to update profile picture!", debug = retVal });
+                    ? Ok(new { msg = "Profile picture updated successfully!" })
+                    : BadRequest(new { msg = "Failed to update profile picture!", debug = retVal });
             }
             catch (Exception ex)
             {
@@ -54,5 +57,6 @@ namespace ExcWebsite.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
     }
 }

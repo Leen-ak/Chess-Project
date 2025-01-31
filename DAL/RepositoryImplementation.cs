@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -47,10 +48,28 @@ namespace DAL
             try
             {
                 T? currentEntity = await GetOne(ent => ent.Id == entity.Id);
-                _db.Entry(entity!).OriginalValues["Timer"] = entity.Timer;
-                _db.Entry(entity!).CurrentValues.SetValues(entity);
-                if (await _db.SaveChangesAsync() == 1)
+                if (currentEntity == null)
+                {
+                    Debug.WriteLine($"Entity with ID {entity.Id} not found.");
+                    return UpdateStatus.Failed; // Handle if entity is missing
+                }
+
+                Debug.WriteLine($"Before update: {currentEntity}");
+                Debug.WriteLine($"Incoming data: {entity}");
+
+                _db.Entry(currentEntity).CurrentValues.SetValues(entity);
+
+                var changes = _db.ChangeTracker.Entries<T>().Select(e => e.State).ToList();
+                Debug.WriteLine("Entity states before save: " + string.Join(", ", changes));
+
+                _db.Entry(currentEntity).State = EntityState.Modified;
+
+                int rowsAffected = await _db.SaveChangesAsync();
+
+                if (rowsAffected > 0)
                     operationStatus = UpdateStatus.Ok;
+                else
+                    Debug.WriteLine("No rows were updated. Entity might be unchanged.");
             }
             catch(DbUpdateConcurrencyException dbx)
             {

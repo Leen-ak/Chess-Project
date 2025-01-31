@@ -19,7 +19,7 @@ namespace ViewModels
         public string? UserName { get; set; }
         public string? Password { get; set; }
         public string? PasswordConfiguration { get; set; }
-        public string? Picture { get; set; }
+        public byte[]? Picture { get; set; }
         public string? Timer { get; set; }
 
         public UserVM() 
@@ -38,8 +38,9 @@ namespace ViewModels
                     UserName = UserName!,
                     Email = Email!,
                     Password = Password!,
-                    Picture = Picture
-                };
+                    Picture = Picture,
+                    Timer = Timer != null ? Convert.FromBase64String(Timer) : null
+                }; 
                 Id = await _dao.Add(user);
             }
             catch (Exception ex)

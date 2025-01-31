@@ -13,7 +13,7 @@ public partial class Account : ChessEntity
 
     public string Password { get; set; } = null!;
 
-   // public byte[] Timer { get; set; } = null!;
+  //  public byte[] Timer { get; set; } = null!;
 
     public virtual UserInfo? User { get; set; }
 }
