@@ -39,9 +39,29 @@ namespace DAL
             return _db.SaveChanges();
         }
 
-        public Task<UpdateStatus> Update(T entity)
+
+        //It is failing from here 
+        public async Task<UpdateStatus> Update(T entity)
         {
-            throw new NotImplementedException();
+            UpdateStatus operationStatus = UpdateStatus.Failed;
+            try
+            {
+                T? currentEntity = await GetOne(ent => ent.Id == entity.Id);
+                _db.Entry(entity!).OriginalValues["Timer"] = entity.Timer;
+                _db.Entry(entity!).CurrentValues.SetValues(entity);
+                if (await _db.SaveChangesAsync() == 1)
+                    operationStatus = UpdateStatus.Ok;
+            }
+            catch(DbUpdateConcurrencyException dbx)
+            {
+                operationStatus = UpdateStatus.Stale;
+                Console.WriteLine("Problem in " + MethodBase.GetCurrentMethod()!.Name + dbx.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Problem in " + MethodBase.GetCurrentMethod()!.Name + ex.Message);
+            }
+            return operationStatus;
         }
     }
 }

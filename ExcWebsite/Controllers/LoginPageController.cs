@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DAL;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Reflection;
@@ -68,5 +69,29 @@ namespace ExcWebsite.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        //[HttpPut]
+        //public async Task<ActionResult> Put(UserVM uservm)
+        //{
+        //    try
+        //    {
+        //        int retVal = await uservm.Update();
+        //        return retVal switch
+        //        {
+        //            1 => Ok(new { msg = uservm.UserName + "Information updated!" }),
+        //            -1 => Ok(new { msg = uservm.UserName + "Information not updated!" }),
+        //            -2 => Ok(new { msg = "Data is stale for " + uservm.UserName + ", User information not updated!" }),
+        //            _ => Ok(new { msg = uservm.UserName + "Not updated!" })
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        return StatusCode(StatusCodes.Status500InternalServerError);
+        //    }
+        //}
+
+     
     }
 }

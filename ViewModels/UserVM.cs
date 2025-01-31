@@ -50,6 +50,36 @@ namespace ViewModels
             }
         }
 
+        public async Task<int> Update()
+        {
+            int updateStatus;
+            try
+            {
+                UserInfo user = new()
+                {
+                    Id = (int)Id!,
+                    Firstname = FirstName!,
+                    Lastname = LastName!,
+                    UserName = UserName!,
+                    Email = Email!,
+                    Password = Password!,
+                    Picture = Picture,
+                    Timer = Timer != null ? Convert.FromBase64String(Timer) : null
+                };
+
+                Debug.WriteLine($"Updating User {user.Id} - New Picture Length: {user.Picture?.Length}");
+                updateStatus = Convert.ToInt16(await _dao.Update(user));
+                Debug.WriteLine($"Update return value: {updateStatus}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+            return updateStatus;
+        }
+
         public async Task GetByUsername()
         {
             try

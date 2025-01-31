@@ -28,6 +28,41 @@ namespace DAL
             return NewUser.Id;
         }
 
+        public async Task<UpdateStatus> Update(UserInfo updateUser)
+        {
+            UpdateStatus status;
+            try
+            {
+                Debug.WriteLine($"Attempting to update database for user: {updateUser.UserName}");
+                Debug.WriteLine($"Picture Length Before Update: {updateUser.Picture?.Length}");
+
+                var existingUser = await _repo.GetOne(u => u.Id == updateUser.Id);
+                if (existingUser == null)
+                {
+                    Debug.WriteLine("User not found in database!");
+                    return UpdateStatus.Failed;
+                }
+
+                Debug.WriteLine("User found in database. Proceeding with update...");
+                status = await _repo.Update(updateUser);
+                Debug.WriteLine($"Database update status: {status}");
+
+                return status;
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                status = UpdateStatus.Stale;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+            return status;
+        }
+
         public async Task<UserInfo?> GetByUsername(string username)
         {
             try
