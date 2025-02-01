@@ -2,12 +2,12 @@
     const username = getCookie("username");
     if (username) {
         $("#header-name").html(`<h1>${username}</h1>`);
+        GetPhoto();
     } else {
         console.log("The username not found"); 
     }
     $("#fileInput").on("change", UploadPhoto); 
 
-    GetPhoto();
 });
 
 const getCookie = (name) => {
@@ -21,7 +21,6 @@ const getCookie = (name) => {
 
 const UploadPhoto = (event) => {
     let file = event.target.files[0];
-    console.log(file); 
 
     if (file) {
         let reader = new FileReader();
@@ -32,11 +31,11 @@ const UploadPhoto = (event) => {
 
         //Create FormData to send the file to the server
         let formData = new FormData();
-        formData.append("username", "testUser");
+        formData.append("username", username);
         formData.append("file", file); 
 
         $.ajax({
-            url: 'https://localhost:7223/api/update-picture',
+            url: 'https://localhost:7223/update-picture',
             method: 'PUT',
             processData: false,
             contentType: false,
@@ -56,33 +55,21 @@ const UploadPhoto = (event) => {
 const GetPhoto = async () => {
     try {
         const username = getCookie("username");
-        const response = await fetch(`https://localhost:7223/api/LoginPage/${username}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        const response = await fetch(`https://localhost:7223/update-picture/username/${username}`, {
+            method: 'GET'
         });
 
-        const data = await response.json();
+        console.log("Response Status:", response.status);
+
         if (response.ok) {
-            console.log("profile picture: ", data.picture);
-
-            let profilePicture;
-
-            if (data.picture) {
-                profilePicture = `data:image/png;base46,${data.picture}`;
-            }
-            else {
-                console.log("default user picture");
-            }
-
+            const data = await response.json();
+            console.log("Parsed Data:", data);
+            let profilePicture = data.picture? `data:image/png;base64,${data.picture}` : "../images/default-user.png"; 
             $("#user-image").attr("src", profilePicture);
+        } else {
+            console.log("Server Error:", response.status);
         }
-        else {
-            console.log("Error fetching profile picture", response.status);
-        }
+    } catch (error) {
+        console.error("An error occurred:", error);
     }
-    catch (error) {
-        console.log("An rror occurred: ", error);
-    }
-}
+};
