@@ -10,7 +10,7 @@ namespace ExcWebsite.Controllers
     [ApiController]
     [Route("update-picture")]
     [Consumes("multipart/form-data")]
-    public class UserController :ControllerBase
+    public class UserController : ControllerBase
     {
         [HttpPut]
         public async Task<IActionResult> UpdatePicture(string username, IFormFile file)
@@ -58,5 +58,27 @@ namespace ExcWebsite.Controllers
             }
         }
 
+
+        [HttpGet("username/{username}")]
+        public async Task<IActionResult> GetUserPicture(string username)
+        {
+            try
+            {
+                HomeVM viewModel = new() { UserName = username };
+                await viewModel.GetPictureByUsername();
+
+                if(viewModel.Picture == null || viewModel.Picture.Length == 0)
+                    return NotFound(new { msg = "No profile picture found."});
+
+                string base46Image = Convert.ToBase64String(viewModel.Picture);
+                return Ok(new {picture = base46Image});
+            }
+            catch (Exception ex) 
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        } 
     }
 }

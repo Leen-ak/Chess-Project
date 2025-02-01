@@ -41,7 +41,6 @@ namespace DAL
         }
 
 
-        //It is failing from here 
         public async Task<UpdateStatus> Update(T entity)
         {
             UpdateStatus operationStatus = UpdateStatus.Failed;
@@ -51,7 +50,7 @@ namespace DAL
                 if (currentEntity == null)
                 {
                     Debug.WriteLine($"Entity with ID {entity.Id} not found.");
-                    return UpdateStatus.Failed; // Handle if entity is missing
+                    return UpdateStatus.Failed; 
                 }
 
                 Debug.WriteLine($"Before update: {currentEntity}");
