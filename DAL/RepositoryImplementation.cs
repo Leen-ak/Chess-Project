@@ -33,13 +33,17 @@ namespace DAL
             return await _db.Set<T>().FirstOrDefaultAsync(match);
         }
 
+        public async Task<List<T>> GetAll()
+        {
+            return await _db.Set<T>().ToListAsync();
+        }
+
         public async Task<int> Delete(int entity)
         {
             T? currentEntity = await GetOne(ent => ent.Id == entity);
             _db.Set<T>().Remove(currentEntity);
             return _db.SaveChanges();
         }
-
 
         public async Task<UpdateStatus> Update(T entity)
         {

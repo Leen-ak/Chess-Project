@@ -13,7 +13,7 @@ namespace ExcWebsite.Controllers
     public class UserController : ControllerBase
     {
         [HttpPut]
-        public async Task<IActionResult> UpdatePicture(string username, IFormFile file)
+        public async Task<IActionResult> UpdatePicture(IFormFile file, string username)
         {
             if (file == null)
                 return BadRequest(new { msg = "No file uploaded." });
@@ -23,7 +23,6 @@ namespace ExcWebsite.Controllers
                 using var memoryStream = new MemoryStream();
                 await file.CopyToAsync(memoryStream);
 
-                // ✅ Convert image to byte[] instead of string
                 byte[] imageBytes = memoryStream.ToArray();
 
                 UserVM user = new();
@@ -32,12 +31,11 @@ namespace ExcWebsite.Controllers
 
                 Debug.WriteLine($"After Update - Picture: {user.Picture}");
                 Debug.WriteLine($"User found: {user.Id}, Picture before update: {user.Picture}");
-                Debug.WriteLine($"Image Byte Length: {imageBytes.Length}"); // ✅ Debug byte length
+                Debug.WriteLine($"Image Byte Length: {imageBytes.Length}"); 
 
                 if (user.Id == null)
                     return NotFound(new { msg = "User not found." });
 
-                // ✅ Assign the correct byte[] format to Picture
                 user.Picture = imageBytes;
 
                 if (user.Picture == null || user.Picture.Length == 0)
@@ -67,18 +65,18 @@ namespace ExcWebsite.Controllers
                 HomeVM viewModel = new() { UserName = username };
                 await viewModel.GetPictureByUsername();
 
-                if(viewModel.Picture == null || viewModel.Picture.Length == 0)
-                    return NotFound(new { msg = "No profile picture found."});
+                if (viewModel.Picture == null || viewModel.Picture.Length == 0)
+                    return NotFound(new { msg = "No profile picture found." });
 
                 string base46Image = Convert.ToBase64String(viewModel.Picture);
-                return Ok(new {picture = base46Image});
+                return Ok(new { picture = base46Image });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        } 
+        }
     }
 }

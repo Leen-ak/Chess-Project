@@ -33,8 +33,6 @@ namespace DAL
             UpdateStatus status;
             try
             {
-                Debug.WriteLine($"Attempting to update database for user: {updateUser.UserName}");
-                Debug.WriteLine($"Picture Length Before Update: {updateUser.Picture?.Length}");
 
                 var existingUser = await _repo.GetOne(u => u.Id == updateUser.Id);
                 if (existingUser == null)
@@ -43,10 +41,7 @@ namespace DAL
                     return UpdateStatus.Failed;
                 }
 
-                Debug.WriteLine("User found in database. Proceeding with update...");
                 status = await _repo.Update(updateUser);
-                Debug.WriteLine($"Database update status: {status}");
-
                 return status;
 
             }

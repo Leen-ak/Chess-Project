@@ -14,7 +14,7 @@ namespace ExcWebsite.Controllers
     {
         //we need adding info when we are doing signup 
         [HttpPost]
-        public async Task<ActionResult> Post(UserVM viewModel)
+        public async Task<IActionResult> Post(UserVM viewModel)
         {
             try
             {

@@ -2,11 +2,11 @@
     const username = getCookie("username");
     if (username) {
         $("#header-name").html(`<h1>${username}</h1>`);
-        GetPhoto();
+            GetPhoto();
     } else {
-        console.log("The username not found"); 
+        console.log("The username not found");
     }
-    $("#fileInput").on("change", UploadPhoto); 
+    $("#fileInput").on("change", UploadPhoto);
 
 });
 
@@ -21,18 +21,25 @@ const getCookie = (name) => {
 
 const UploadPhoto = (event) => {
     let file = event.target.files[0];
+    const username = getCookie("username");
+
+    if (!username) {
+        console.error("Username is missing from cookies.");
+        return;
+    }
 
     if (file) {
         let reader = new FileReader();
         reader.onload = function (e) {
             $("#user-image").attr("src", e.target.result);
         };
-        reader.readAsDataURL(file); 
+        reader.readAsDataURL(file);
 
         //Create FormData to send the file to the server
         let formData = new FormData();
+        formData.append("file", file);
         formData.append("username", username);
-        formData.append("file", file); 
+       
 
         $.ajax({
             url: 'https://localhost:7223/update-picture',
@@ -46,7 +53,7 @@ const UploadPhoto = (event) => {
             },
             error: (error) => {
                 console.log("Error adding user ", error.responseText);
-                console.log("Error Details: ", error); 
+                console.log("Error Details: ", error);
             }
         });
     }
@@ -64,7 +71,7 @@ const GetPhoto = async () => {
         if (response.ok) {
             const data = await response.json();
             console.log("Parsed Data:", data);
-            let profilePicture = data.picture? `data:image/png;base64,${data.picture}` : "../images/default-user.png"; 
+            let profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/default-user.png";
             $("#user-image").attr("src", profilePicture);
         } else {
             console.log("Server Error:", response.status);
