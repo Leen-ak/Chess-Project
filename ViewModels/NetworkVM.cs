@@ -14,6 +14,7 @@ namespace ViewModels
     {
         readonly private NetworkDAO _dao; 
         public string? Username {  get; set; }
+        public  byte[]? Picture { get; set; }
         public NetworkVM() 
         {
             _dao = new NetworkDAO();
@@ -31,7 +32,8 @@ namespace ViewModels
                 {
                     NetworkVM netVM = new()
                     {
-                        Username = user.UserName
+                        Username = user.UserName,
+                        Picture = user.Picture
                     };
                     allUsername.Add(netVM);
                 }

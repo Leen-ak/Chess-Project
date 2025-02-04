@@ -71,7 +71,7 @@ const GetPhoto = async () => {
         if (response.ok) {
             const data = await response.json();
             console.log("Parsed Data:", data);
-            let profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/default-user.png";
+            let profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
             $("#user-image").attr("src", profilePicture);
         } else {
             console.log("Server Error:", response.status);
