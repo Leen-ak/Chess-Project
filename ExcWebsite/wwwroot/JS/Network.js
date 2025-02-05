@@ -13,6 +13,7 @@ const followingCount = () => {
 }
 
 const GetUsernames = async () => {
+    const username = getCookie("username");
     try {
         const response = await fetch('https://localhost:7223/api/Network', {
             method: 'GET',
@@ -28,7 +29,13 @@ const GetUsernames = async () => {
         //data.forEach(user => console.log("Picture:", user.picture));
 
         if (response.ok) {
-            data.forEach(user => buildUserCard(user)); 
+     
+            data.forEach(user => {
+                console.log(`The username is: ${username} and the data.user is: ${user.username}`);
+                if (username === user.username)
+                    return;
+                buildUserCard(user)
+            });
         }        
     }
     catch (error) {
