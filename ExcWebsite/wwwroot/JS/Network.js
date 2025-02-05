@@ -6,10 +6,24 @@ $(() => {
     const username = getCookie("username");
     getPhotot(username); 
     GetUsernames();
+    $("#following-btn").on("click", function () { 
+        $("#theModal").modal('show'); 
+    }); 
 });
 
-const followingCount = () => {
-    
+//adding friends 
+const followingCount = async () => {
+    try {
+        const response = await fetch('https://localhost:7223/api/Network', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+    catch (erro) {
+        console.log(error); 
+    }
 }
 
 const GetUsernames = async () => {
@@ -29,9 +43,7 @@ const GetUsernames = async () => {
         //data.forEach(user => console.log("Picture:", user.picture));
 
         if (response.ok) {
-     
             data.forEach(user => {
-                console.log(`The username is: ${username} and the data.user is: ${user.username}`);
                 if (username === user.username)
                     return;
                 buildUserCard(user)
@@ -72,22 +84,49 @@ const getPhotot = async (username) => {
     }
 }
 
-const buildUserCard = (data) => {
+const buildUserCard = async (data) => {
     const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
-    div = $(` 
-              <div class="card network-card" id="user-card">
-              <img src=${profilePicture} alt="Chess Game Image" class="card-img-top user-image" id="user-image"/>
-              <h2 class="card-title username">${data.username}</h2>
-              <div class="button-section">
-              <button class="btn" id="follow-btn">Follow</button>
-              </div>
-              </div>`
-    );
+    const username = getCookie("username");
 
-    div.find("#follow-btn").on("click", function () {
-        console.log("FOllow button click", data.username);
-        
-    });
+    const div = $(`
+        <div class="card network-card" id="user-card-${data.id}">
+            <img src="${profilePicture}" alt="Chess Game Image" class="card-img-top user-image" id="user-image-${data.id}" />
+            <h2 class="card-title username">${data.username}</h2>
+            <div class="button-section">
+                <button class="btn" id="follow-btn-${data.id}">Follow</button>
+            </div>
+        </div>
+    `);
 
-    div.appendTo($(".grid-container"));
-}
+    try {
+        const response = await fetch(`https://localhost:7223/api/LoginPage/username/${username}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const userData = await response.json(); 
+
+        div.find(`#follow-btn-${data.id}`).on("click", function () {
+            console.log("Follow button clicked:", data.username);
+            console.log("The user ID is:", data.id);
+            console.log("The picture is:", data.picture);
+            console.log(`The followerID is: ${userData.id} and the followingId is ${data.id}`);
+            //userData.id is me the follower and the data.id is the other user that i want to follow
+
+            //remve the div card that the user follow 
+            //$(`#user-card-${data.id}`).fadeOut(300, function () {
+            //    $(this).remove();
+           // });
+
+        });
+
+        div.appendTo($(".grid-container"));
+
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+

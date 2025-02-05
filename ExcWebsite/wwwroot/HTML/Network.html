@@ -18,6 +18,29 @@
     <title></title>
 </head>
 <body>
+
+    <div class="modal fade custom-modal" id="theModal" data-bs-backdrop="static" data-bs-keyboard="false" 
+         aria-hidden="true" aria-labelledby="theModelLabel" tabindex="-1">
+        <div class="modal-dialog" id="custom-dialog">
+            <div class="modal-content" id="custom-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Following</h2>
+                    <button type="button" class="btn-close" id="custom-close" data-bs-dismiss="modal" aria-label="close"></button>
+                </div>
+                <div class="modal-body" id="custom-body">
+                    <div class="card">
+                        <div class="card-body" id="custom-card">
+                            <div class="row">
+                               
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <nav class="navbar navbar-expand-md navbar-dark">
         <a class="navbar-brand mx-3" href="../HTML/mainPage.html">The Chess Gambit</a>
         <button class="navbar-toggler mx-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -54,11 +77,11 @@
                 <img src="../images/user.png" class="card-img-top" id="user-image">
             </div>
             <div class="col-md-4 summary-card">
-                <i class="fas fa-users"></i> Followers
+                <i class="fas fa-user-plus" id="following-btn"></i> Following
                 <p>0</p>
             </div>
             <div class="col-md-4 summary-card">
-                <i class="fas fa-user-plus"></i> Following
+                <i class="fas fa-users"></i> Followers
                 <p>0</p>
             </div>
         </div>

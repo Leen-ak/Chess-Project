@@ -104,3 +104,56 @@ h2 {
     border-color: #bbb4aa;
 }
 
+#custom-modal #modal-dialog {
+    max-width: 500px;
+    margin: 10% auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Modal Content Styling */
+#custom-content {
+    background-color: #232323;
+    color: #bbb4aa;
+    font-family: 'Abel', sans-serif;
+    border-radius: 15px;
+    border: none;
+    padding: 20px;
+}
+
+/* Modal Header */
+#custom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Custom Close Button */
+#custom-close {
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+#custom-close:hover {
+   color: #ff4b5c;
+}
+
+.btn-close{
+    filter: invert(1);
+}
+
+/* Modal Body */
+#custom-body {
+    padding: 20px 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #bbb4aa;
+    background-color: transparent;
+}
+
+#custom-card {
+    background-color: #232323;
+   
+}
+
+
