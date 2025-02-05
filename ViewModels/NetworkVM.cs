@@ -13,6 +13,9 @@ namespace ViewModels
     public class NetworkVM
     {
         readonly private NetworkDAO _dao; 
+        public int? Id { get; set; }
+        public int? FollowerId { get; set; }    
+        public int? FollowingId { get; set; }
         public string? Username {  get; set; }
         public  byte[]? Picture { get; set; }
         public NetworkVM() 
@@ -32,6 +35,7 @@ namespace ViewModels
                 {
                     NetworkVM netVM = new()
                     {
+                        Id = user.Id, 
                         Username = user.UserName,
                         Picture = user.Picture
                     };
@@ -46,5 +50,25 @@ namespace ViewModels
             }
             return allUsername; 
         }
+        
+        public async Task Add()
+        {
+            try
+            {
+                Follower user = new()
+                {
+                    FollowerId = FollowerId,
+                    FollowingId = FollowingId
+                };
+                Id = await _dao.Add(user);
+            }
+            catch(Exception ex) 
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
     }
 }

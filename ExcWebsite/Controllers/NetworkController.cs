@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ViewModels;
 using DAL;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ExcWebsite.Controllers
 {
@@ -26,6 +27,23 @@ namespace ExcWebsite.Controllers
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(NetworkVM userVM) 
+        {
+            try
+            {
+                await userVM.Add();
+                return userVM.Id > 0 ? Ok(new { msg = $"User {userVM.Id} added {userVM.FollowingId} as a friend!" }) 
+                    : Ok(new { msg = "Invalid following or follower ID" });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " "
+                    + MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

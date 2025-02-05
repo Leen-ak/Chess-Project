@@ -12,10 +12,12 @@ namespace DAL
     public class NetworkDAO
     {
         readonly IRepository<UserInfo> _repo;
+        readonly IRepository<Follower> _followRepo;
 
         public NetworkDAO() 
         { 
             _repo = new RepositoryImplementation<UserInfo>();
+            _followRepo = new RepositoryImplementation<Follower>();
         }
 
         public async Task<List<UserInfo>> GetAll()
@@ -33,5 +35,27 @@ namespace DAL
             }
             return allUsername;
         }
+
+        //add followers 
+        public async Task<int> Add(Follower user)
+        {
+            try
+            {
+                await _followRepo.Add(user);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+            return user.Id; 
+        }
+
+        //get followers
+
+        //delete followers 
+
+
     }
 }

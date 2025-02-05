@@ -2,7 +2,7 @@
     const username = getCookie("username");
     if (username) {
         $("#header-name").html(`<h1>${username}</h1>`);
-            GetPhoto();
+        GetPhoto(username);
     } else {
         console.log("The username not found");
     }
@@ -59,9 +59,8 @@ const UploadPhoto = (event) => {
     }
 }
 
-const GetPhoto = async () => {
+const GetPhoto = async (username) => {
     try {
-        const username = getCookie("username");
         const response = await fetch(`https://localhost:7223/update-picture/username/${username}`, {
             method: 'GET'
         });
@@ -80,3 +79,6 @@ const GetPhoto = async () => {
         console.error("An error occurred:", error);
     }
 };
+
+//TO DO
+//1. User adding the picture in js is not working but it warks with swagger 

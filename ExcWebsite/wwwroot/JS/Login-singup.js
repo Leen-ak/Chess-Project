@@ -23,8 +23,6 @@ const setUpUserInfo = () => {
         Password: $("#signupPassword").val(),
         ConfirmPassword: $("#passwordConfirm").val(),
     };
-    console.log("The password is: ", userData.password); 
-    console.log("The confirm Password is: ", userData.ConfirmPassword); 
 
     //Get the API for the username to compare 
     validateUsernameUniqueness();
@@ -235,6 +233,8 @@ const setCookie = (name, value, days) => {
 }
 
 
-//note
-//1. the confirm password does not clean up
-//2. the password visibility does not go off after the signup or login
+//TO DO
+//1. the password visibility does not go off after the signup or login
+//2. The eamil authonication
+//3. forget password
+//4. hashing for the password in database
