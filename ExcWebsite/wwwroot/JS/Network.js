@@ -5,6 +5,13 @@
     $("#following-btn").on("click", function () { 
         $("#theModal").modal('show'); 
     }); 
+
+    let currentCount = parseInt($("#following-count").text()) || 0;
+
+    if (currentCount === 0) {
+        console.log("it is aero");
+        $("#friend-list").html('<p class="no-followers-text">No followers yet</p>');
+    }
 });
 
 //adding friends 
@@ -120,6 +127,10 @@ const buildUserCard = async (data) => {
             $(`#user-card-${data.id}`).hide();
 
             let currentCount = parseInt($("#following-count").text()) || 0;
+            if (currentCount >= 0)
+                $("#friend-list").find('.no-followers-text').remove();
+                
+           
             currentCount++;
             console.log(currentCount);
             $("#following-count").text(currentCount);

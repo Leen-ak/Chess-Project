@@ -188,3 +188,18 @@ h2 {
     cursor: pointer;
     transition: background 0.3s ease;
 }
+
+#following-btn:hover {
+    cursor: pointer;
+}
+
+#follower-btn:hover{
+    cursor: pointer;
+}
+
+.no-followers-text {
+    text-align: center;
+    color: #bbb4aa;
+    font-size: 18px;
+    margin-top: 20px;
+}
