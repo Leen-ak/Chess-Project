@@ -83,7 +83,7 @@ h2 {
     padding: 10px;
 }
 
-.btn.btn-primary, .btn {
+.btn.btn-primary, .btn  {
     background: transparent;
     border: 1px solid #bbb4aa;
     border-radius: 40px;
@@ -99,7 +99,7 @@ h2 {
     justify-content: center;
 }
 
-.btn:hover {
+.btn:hover, .btn-unfollow:hover {
     background: #bbb4aa;
     color: #232323;
     border-color: #bbb4aa;
@@ -111,24 +111,20 @@ h2 {
     transition: transform 0.3s ease-in-out;
 }
 
-/* Modal Content Styling */
 #custom-content {
     background-color: #232323;
     color: #bbb4aa;
     font-family: 'Abel', sans-serif;
     border-radius: 15px;
-    border: none;
     padding: 20px;
 }
 
-/* Modal Header */
 #custom-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* Custom Close Button */
 #custom-close {
     font-size: 20px;
     cursor: pointer;
@@ -143,7 +139,6 @@ h2 {
     filter: invert(1);
 }
 
-/* Modal Body */
 #custom-body {
     padding: 20px 0;
     font-size: 16px;
@@ -152,10 +147,44 @@ h2 {
     background-color: transparent;
 }
 
-#custom-card {
+#custom-card, .modal-body .card {
     background-color: #232323;
-   
+    border: none; 
+    outline: none;
+    box-shadow: none;
 }
 
 /*after moving the div to the modal*/
+.following-item {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #2c2c2c;
+    padding: 10px 20px;
+    margin: 5px 20px;
+    border-radius: 10px;
+    border: 1px solid #444;
+}
 
+.following-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.following-username {
+    font-size: 18px;
+    flex-grow: 1;
+}
+
+.btn-unfollow {
+    background-color: transparent;
+    border: 1px solid #bbb4aa;
+    padding: 8px 18px;
+    color: #bbb4aa;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}

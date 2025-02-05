@@ -150,9 +150,9 @@ h1{
 
 .friend-item {
     display: flex;
-    align-items: center; /* Aligns items vertically */
+    align-items: center; 
     padding: 5px 10px;
-    border-radius: 10px; /* Rounded corners */
+    border-radius: 10px; 
     position: relative;
     box-shadow: 0px 1px 4px #0f1316;
     transform: scale(1);

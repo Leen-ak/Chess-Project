@@ -105,18 +105,21 @@ const buildUserCard = async (data) => {
         const userData = await response.json(); 
 
         div.find(`#follow-btn-${data.id}`).on("click", function () {
-            console.log("Follow button clicked:", data.username);
-            console.log("The user ID is:", data.id);
-            console.log("The picture is:", data.picture);
-            console.log(`The followerID is: ${userData.id} and the followingId is ${data.id}`);
-            //userData.id is me the follower and the data.id is the other user that i want to follow
+          
+            const followingItem = $(`
+                <div class="following-item" id="following-${data.id}">
+                    <img src="${profilePicture}" class="following-pic" alt="${data.username}" />
+                    <span class="following-username">${data.username}</span>
+                    <button class="btn-unfollow" data-id="${data.id}">Unfollow</button>
+                </div>
+            `);
+            $(`#user-card-${data.id}`).hide();
 
-            //remve the div card that the user follow 
-            $(`#user-card-${data.id}`).fadeOut(300, function () {
-                $(this).appendTo("#friend-list").fadeIn(300);
-            });
 
-            let currentCount = parseInt($("following-count").text()) || 0;
+            $("#friend-list").append(followingItem);  // Append to the modal
+            $(`#user-card-${data.id}`).hide();
+
+            let currentCount = parseInt($("#following-count").text()) || 0;
             currentCount++;
             console.log(currentCount);
             $("#following-count").text(currentCount);
