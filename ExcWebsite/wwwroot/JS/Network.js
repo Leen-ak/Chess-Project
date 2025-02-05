@@ -1,8 +1,4 @@
-﻿//first we need all the username that is in the database
-
-//what i will need
-
-$(() => {
+﻿$(() => {
     const username = getCookie("username");
     getPhotot(username); 
     GetUsernames();
@@ -116,10 +112,14 @@ const buildUserCard = async (data) => {
             //userData.id is me the follower and the data.id is the other user that i want to follow
 
             //remve the div card that the user follow 
-            //$(`#user-card-${data.id}`).fadeOut(300, function () {
-            //    $(this).remove();
-           // });
+            $(`#user-card-${data.id}`).fadeOut(300, function () {
+                $(this).appendTo("#friend-list").fadeIn(300);
+            });
 
+            let currentCount = parseInt($("following-count").text()) || 0;
+            currentCount++;
+            console.log(currentCount);
+            $("#following-count").text(currentCount);
         });
 
         div.appendTo($(".grid-container"));

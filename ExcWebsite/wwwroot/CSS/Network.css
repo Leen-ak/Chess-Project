@@ -55,10 +55,11 @@ h1 {
 .network-card {
     align-items: center;
     background-color: #232323;
+    border: 1px solid #444;
     width: 15%;
     height: auto;
     padding: 20px 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     transform: scale(1);
     transition: transform 1s;
 }
@@ -156,4 +157,5 @@ h2 {
    
 }
 
+/*after moving the div to the modal*/
 
