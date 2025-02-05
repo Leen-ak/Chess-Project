@@ -41,6 +41,14 @@ namespace DAL
         {
             try
             {
+                var existingFollowers = await _followRepo.GetAll();
+                bool exists = existingFollowers.Any(f => f.FollowerId == user.FollowerId && f.FollowingId == user.FollowingId);
+                
+                if(exists)
+                {
+                    throw new InvalidOperationException("The user is already following the selected user");
+                }
+
                 await _followRepo.Add(user);
             }
             catch(Exception ex)

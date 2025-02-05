@@ -73,3 +73,6 @@ GO
 SELECT * FROM UserInfo;
 GO
 
+SELECT * FROM dbo.Followers;
+GO
+

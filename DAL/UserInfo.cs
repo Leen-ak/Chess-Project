@@ -5,7 +5,7 @@ namespace DAL;
 
 public partial class UserInfo : ChessEntity
 {
-   // public int Id { get; set; }
+    //public int Id { get; set; }
 
     public string Firstname { get; set; } = null!;
 
@@ -19,7 +19,7 @@ public partial class UserInfo : ChessEntity
 
     public byte[]? Picture { get; set; }
 
- //   public byte[] Timer { get; set; } = null!;
+    //public byte[] Timer { get; set; } = null!;
 
     public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 

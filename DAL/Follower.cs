@@ -11,7 +11,7 @@ public partial class Follower : ChessEntity
 
     public int? FollowingId { get; set; }
 
-    public DateTime? CreatedAT { get; set; }
+    //public byte[] Timer { get; set; } = null!;
 
     public virtual UserInfo? FollowerNavigation { get; set; }
 

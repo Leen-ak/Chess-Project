@@ -26,6 +26,7 @@ public partial class ChessContext : DbContext
         optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB; Database=ChessDatabase; Trusted_Connection=True");
         optionsBuilder.UseLazyLoadingProxies();
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -59,9 +60,9 @@ public partial class ChessContext : DbContext
 
             entity.HasIndex(e => new { e.FollowerId, e.FollowingId }, "UQ_Follow").IsUnique();
 
-            entity.Property(e => e.CreatedAT)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+            entity.Property(e => e.Timer)
+                .IsRowVersion()
+                .IsConcurrencyToken();
 
             entity.HasOne(d => d.FollowerNavigation).WithMany(p => p.FollowerFollowerNavigations)
                 .HasForeignKey(d => d.FollowerId)
