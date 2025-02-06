@@ -72,5 +72,24 @@ namespace ViewModels
             }
         }
 
+        public async Task GetStatusByUserId()
+        {
+            try
+            {
+                if(Id == null)
+                {
+                    Debug.WriteLine("Error: Id is null in " + GetType().Name + " " + MethodBase.GetCurrentMethod()?.Name);
+                    return; 
+                }
+                Status = await _dao.GetStatusByUserId(Id!);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
     }
 }

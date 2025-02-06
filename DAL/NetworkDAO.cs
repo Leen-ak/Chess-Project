@@ -60,6 +60,22 @@ namespace DAL
             return user.Id; 
         }
 
+        //get status by userId 
+        public async Task<string?> GetStatusByUserId(int? userId)
+        {
+            try
+            {
+                Follower userStatus = await _followRepo.GetOne(user => user.Id == userId);
+                return userStatus != null ? userStatus?.Status : null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
         //get followers
 
         //delete followers 
