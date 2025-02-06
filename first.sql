@@ -46,6 +46,7 @@ CREATE TABLE Followers(
 Id INT IDENTITY,
 FollowerId INT,
 FollowingId INT,
+Status NVARCHAR(30),
 Timer ROWVERSION,
 CONSTRAINT PK_Id PRIMARY KEY (Id),
 CONSTRAINT FK_Follower FOREIGN KEY (FollowerId) REFERENCES UserInfo(Id),
@@ -56,6 +57,8 @@ GO
 CREATE INDEX IX_FollowerId on Followers (FollowerId);
 GO
 CREATE INDEX IX_FollowingId on Followers (FollowingId);
+GO
+CREATE INDEX IX_Status on Followers (Status);
 GO
 
 /* Create a stored procedure to retrieve all the username that is in the databse */

@@ -149,3 +149,19 @@ $(document).on("click", ".btn-unfollow", function () {
     }
 });
 
+//TO DO
+//1. adding the following to the database
+//2. followers logic
+//3. adding the followers to the database
+
+/*
+
+Sumarry of the steps of sending a request: 
+
+1️ Update Database → Add a Status column to track follow requests.
+2️ Modify Follow Action → Store requests as "Pending".
+3️ Create a Requests Page → Show pending follow requests.
+4️ Implement Accept/Reject → Users can approve or deny requests.
+5️ Notify the User → Optional notification when accepted.
+
+*/ 

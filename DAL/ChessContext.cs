@@ -27,6 +27,7 @@ public partial class ChessContext : DbContext
         optionsBuilder.UseLazyLoadingProxies();
     }
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -58,8 +59,11 @@ public partial class ChessContext : DbContext
 
             entity.HasIndex(e => e.FollowingId, "IX_FollowingId");
 
+            entity.HasIndex(e => e.Status, "IX_Status");
+
             entity.HasIndex(e => new { e.FollowerId, e.FollowingId }, "UQ_Follow").IsUnique();
 
+            entity.Property(e => e.Status).HasMaxLength(30);
             entity.Property(e => e.Timer)
                 .IsRowVersion()
                 .IsConcurrencyToken();
