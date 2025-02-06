@@ -7,11 +7,9 @@
     }); 
 
     let currentCount = parseInt($("#following-count").text()) || 0;
-
-    if (currentCount === 0) {
-        console.log("it is aero");
-        $("#friend-list").html('<p class="no-followers-text">No followers yet</p>');
-    }
+    if (currentCount === 0) 
+        $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
+    
 });
 
 //adding friends 
@@ -41,9 +39,6 @@ const GetUsernames = async () => {
 
         const data = await response.json();
         let profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
-        //$("#user-image").attr("src", profilePicture)
-        //data.forEach(user => console.log("Username:", user.username));
-        //data.forEach(user => console.log("Picture:", user.picture));
 
         if (response.ok) {
             data.forEach(user => {
@@ -112,7 +107,6 @@ const buildUserCard = async (data) => {
         const userData = await response.json(); 
 
         div.find(`#follow-btn-${data.id}`).on("click", function () {
-          
             const followingItem = $(`
                 <div class="following-item" id="following-${data.id}">
                     <img src="${profilePicture}" class="following-pic" alt="${data.username}" />
@@ -120,27 +114,38 @@ const buildUserCard = async (data) => {
                     <button class="btn-unfollow" data-id="${data.id}">Unfollow</button>
                 </div>
             `);
-            $(`#user-card-${data.id}`).hide();
 
-
-            $("#friend-list").append(followingItem);  // Append to the modal
             $(`#user-card-${data.id}`).hide();
+            $("#friend-list").append(followingItem);
 
             let currentCount = parseInt($("#following-count").text()) || 0;
             if (currentCount >= 0)
                 $("#friend-list").find('.no-followers-text').remove();
-                
-           
+
             currentCount++;
-            console.log(currentCount);
             $("#following-count").text(currentCount);
         });
 
         div.appendTo($(".grid-container"));
-
     } catch (error) {
         console.log(error);
     }
 };
 
+$(document).on("click", ".btn-unfollow", function () {
+    const userId = $(this).data("id");
+
+    $(`#user-card-${userId}`).fadeIn().appendTo(".grid-container");
+    $(`#following-${userId}`).remove();
+
+    let currentCount = parseInt($("#following-count").text()) || 0;
+    if (currentCount > 0) 
+        currentCount--;
+    
+    $("#following-count").text(currentCount);
+
+    if (currentCount === 0) {
+        $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
+    }
+});
 
