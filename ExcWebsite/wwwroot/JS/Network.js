@@ -106,7 +106,7 @@ const buildUserCard = async (data) => {
 
         const userData = await response.json(); 
 
-        div.find(`#follow-btn-${data.id}`).on("click", function () {
+        div.find(`#follow-btn-${data.id}`).on("click", async function () {
             const followingItem = $(`
                 <div class="following-item" id="following-${data.id}">
                     <img src="${profilePicture}" class="following-pic" alt="${data.username}" />
@@ -114,6 +114,34 @@ const buildUserCard = async (data) => {
                     <button class="btn-unfollow" data-id="${data.id}">Unfollow</button>
                 </div>
             `);
+
+            //here
+            console.log("followerID is: ", userData.id);
+            console.log("FolloingId id: ", data.id); 
+
+            const followData = {
+                followerId: userData.id,
+                followingId: data.id,
+                status: "Pending"
+            };
+
+            console.log(followData);
+
+            try {
+                const followResponse = await fetch('https://localhost:7223/api/Network', {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(followData)
+                });
+
+                if (followResponse.ok) {
+                    console.log("Follow request sent successfully");
+                }
+            }
+            catch (error) {
+                console.log("Error following user: ", error); 
+            }
+
 
             $(`#user-card-${data.id}`).hide();
             $("#friend-list").append(followingItem);

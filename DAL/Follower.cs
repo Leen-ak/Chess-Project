@@ -5,7 +5,7 @@ namespace DAL;
 
 public partial class Follower : ChessEntity
 { 
-    public int Id { get; set; }
+    //public int Id { get; set; }
 
     public int? FollowerId { get; set; }
 
@@ -13,7 +13,7 @@ public partial class Follower : ChessEntity
 
     public string? Status { get; set; }
 
-    public byte[] Timer { get; set; } = null!;
+    //public byte[] Timer { get; set; } = null!;
 
     public virtual UserInfo? FollowerNavigation { get; set; }
 

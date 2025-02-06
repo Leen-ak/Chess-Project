@@ -16,6 +16,7 @@ namespace ViewModels
         public int? Id { get; set; }
         public int? FollowerId { get; set; }    
         public int? FollowingId { get; set; }
+        public string? Status { get; set; }
         public string? Username {  get; set; }
         public  byte[]? Picture { get; set; }
         public NetworkVM() 
@@ -58,7 +59,8 @@ namespace ViewModels
                 Follower user = new()
                 {
                     FollowerId = FollowerId,
-                    FollowingId = FollowingId
+                    FollowingId = FollowingId,
+                    Status = Status
                 };
                 Id = await _dao.Add(user);
             }
