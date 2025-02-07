@@ -197,6 +197,10 @@ h2 {
     cursor: pointer;
 }
 
+#request-btn:hover{
+    cursor: pointer; 
+}
+
 .no-followers-text {
     text-align: center;
     color: #bbb4aa;

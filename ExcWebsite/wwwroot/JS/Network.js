@@ -1,57 +1,29 @@
 ﻿$(() => {
     const username = getCookie("username");
     getPhotot(username); 
-    GetUsernames();
+    GetUsernames(username);
+
+    //try {
+    //    const response = fetch(`https://localhost/7223/api/Network/userID/${username}`);
+    //}
+
+
     $("#following-btn").on("click", function () { 
         $("#theModal").modal('show'); 
     }); 
+    $("#follower-btn").on("click", function () {
+        $("#theModal").modal('show'); 
+    });
+    $("#request-btn").on("click", function () {
+        GetRequestStatus(username);
+        $("#theModal").modal('show'); 
+    });
 
     let currentCount = parseInt($("#following-count").text()) || 0;
     if (currentCount === 0) 
         $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
     
 });
-
-//adding friends 
-const followingCount = async () => {
-    try {
-        const response = await fetch('https://localhost:7223/api/Network', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-    }
-    catch (erro) {
-        console.log(error); 
-    }
-}
-
-const GetUsernames = async () => {
-    const username = getCookie("username");
-    try {
-        const response = await fetch('https://localhost:7223/api/Network', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-        let profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
-
-        if (response.ok) {
-            data.forEach(user => {
-                if (username === user.username)
-                    return;
-                buildUserCard(user)
-            });
-        }        
-    }
-    catch (error) {
-        console.log(error); 
-    }
-};
 
 const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -69,7 +41,7 @@ const getPhotot = async (username) => {
             method: 'GET'
         });
 
-        console.log("Response Status:", response.status); 
+        console.log("Response Status:", response.status);
 
         if (response.ok) {
             const data = await response.json();
@@ -82,9 +54,33 @@ const getPhotot = async (username) => {
     }
 }
 
-const buildUserCard = async (data) => {
+const GetUsernames = async (username) => {
+    try {
+        const response = await fetch('https://localhost:7223/api/Network', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        let profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
+
+        if (response.ok) {
+            data.forEach(user => {
+                if (username === user.username)
+                    return;
+                buildUserCard(user, username)
+            });
+        }        
+    }
+    catch (error) {
+        console.log(error); 
+    }
+};
+
+const buildUserCard = async (data, username) => {
     const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
-    const username = getCookie("username");
 
     const div = $(`
         <div class="card network-card" id="user-card-${data.id}">
@@ -115,17 +111,11 @@ const buildUserCard = async (data) => {
                 </div>
             `);
 
-            //here
-            console.log("followerID is: ", userData.id);
-            console.log("FolloingId id: ", data.id); 
-
             const followData = {
                 followerId: userData.id,
                 followingId: data.id,
                 status: "Pending"
             };
-
-            console.log(followData);
 
             try {
                 const followResponse = await fetch('https://localhost:7223/api/Network', {
@@ -177,6 +167,26 @@ $(document).on("click", ".btn-unfollow", function () {
     }
 });
 
+const GetRequestStatus = async (username) => {
+    console.log("the userID: ", username);
+    try {
+        const response = await fetch(`https://localhost:7223/api/Network/Status/${userId}`, {
+            method: 'GET',
+             headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log("The user status from the data response is: ", data.id);
+        }
+    }
+    catch (error) {
+        console.log("An error occurred: ", error); 
+    }
+}
+
 //TO DO
 //1. adding the following to the database
 //2. followers logic
@@ -186,9 +196,9 @@ $(document).on("click", ".btn-unfollow", function () {
 
 Sumarry of the steps of sending a request: 
 
-1️ Update Database → Add a Status column to track follow requests.
-2️ Modify Follow Action → Store requests as "Pending".
-3️ Create a Requests Page → Show pending follow requests.
+1️ Update Database → Add a Status column to track follow requests. DONE
+2️ Modify Follow Action → Store requests as "Pending". DONE
+3️ Create a Requests Modal → Show pending follow requests.
 4️ Implement Accept/Reject → Users can approve or deny requests.
 5️ Notify the User → Optional notification when accepted.
 

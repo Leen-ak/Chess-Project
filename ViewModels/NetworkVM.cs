@@ -52,6 +52,20 @@ namespace ViewModels
             return allUsername; 
         }
         
+        public async Task GetIdByUsername()
+        {
+            try
+            {
+                Id = await _dao.GetIdByUsername(Username!);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
         public async Task Add()
         {
             try
@@ -81,7 +95,12 @@ namespace ViewModels
                     Debug.WriteLine("Error: Id is null in " + GetType().Name + " " + MethodBase.GetCurrentMethod()?.Name);
                     return; 
                 }
-                Status = await _dao.GetStatusByUserId(Id!);
+                List<Follower> followers = await _dao.GetStatusByUserId(Id!);
+
+                if (followers.Any())
+                    Status = followers.First().Status;
+                else
+                    Status = "No Status Found";
             }
             catch (Exception ex)
             {

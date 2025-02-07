@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL
@@ -36,6 +37,21 @@ namespace DAL
             return allUsername;
         }
 
+        public async Task<int?> GetIdByUsername(string username)
+        {
+            try
+            {
+                UserInfo? user = await _repo.GetOne(user => user.UserName == username);
+                return user?.Id;
+            }
+              catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
         //add followers 
         public async Task<int> Add(Follower user)
         {
@@ -61,12 +77,14 @@ namespace DAL
         }
 
         //get status by userId 
-        public async Task<string?> GetStatusByUserId(int? userId)
+        public async Task<List<Follower>> GetStatusByUserId(int? userId)
         {
             try
             {
-                Follower userStatus = await _followRepo.GetOne(user => user.Id == userId);
-                return userStatus != null ? userStatus?.Status : null;
+                List<Follower> userStatus = await _followRepo.GetAll();
+                List<Follower> pendingRequest = userStatus
+                    .Where(request => request.FollowingId == userId && request.Status == "Pending").ToList();
+                return pendingRequest;
             }
             catch (Exception ex)
             {

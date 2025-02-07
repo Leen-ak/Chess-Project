@@ -31,6 +31,26 @@ namespace ExcWebsite.Controllers
             }
         }
 
+        [HttpGet("userID/${username}")]
+        public async Task<IActionResult> GetUserId(string username)
+        {
+            try
+            {
+                NetworkVM vm = new() { Username = username };
+                await vm.GetIdByUsername();
+
+                if (vm.Username == null)
+                    return NotFound(new { msg = $"The {vm.Username} not found" });
+                return Ok(new { msg = $"{vm.Username} has been found" }); 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post(NetworkVM userVM) 
         {
