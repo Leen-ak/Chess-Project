@@ -75,7 +75,7 @@ namespace ExcWebsite.Controllers
             {
                 NetworkVM userVM = new() { Id = userId };
                 await userVM.GetStatusByUserId();
-                return Ok(new { msg = $"The user status is {userVM.Status}" }); 
+                return Ok(new { userVM.Status }); 
             }
             catch (Exception ex)
             {

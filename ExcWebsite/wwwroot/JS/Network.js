@@ -168,24 +168,42 @@ $(document).on("click", ".btn-unfollow", function () {
 });
 
 const GetRequestStatus = async (username) => {
-    console.log("the userID: ", username);
+    console.log("Fetching user ID for username:", username);
+
     try {
-        const response = await fetch(`https://localhost:7223/api/Network/Status/${userId}`, {
+        const userResponse = await fetch(`https://localhost:7223/api/LoginPage/username/${username}`, {
             method: 'GET',
-             headers: {
+            headers: {
                 'Content-Type': 'application/json'
             }
         });
 
+        if (!userResponse.ok) {
+            console.log("Failed to fetch user ID");
+            return;
+        }
+
+        const userData = await userResponse.json();
+        const userId = userData.id;
+        const profilePicture = userData.picture ? `data:image/png;base64,${userData.picture}` : "../images/user.png";
+
+        const response = await fetch(`https://localhost:7223/api/Network/Status/${userId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
         if (response.ok) {
             const data = await response.json();
-            console.log("The user status from the data response is: ", data.id);
+            console.log("User status:", data);
         }
+
     }
     catch (error) {
-        console.log("An error occurred: ", error); 
+        console.log("An error occurred:", error);
     }
-}
+};
+
+
 
 //TO DO
 //1. adding the following to the database

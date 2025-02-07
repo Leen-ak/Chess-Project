@@ -98,7 +98,9 @@ namespace ViewModels
                 List<Follower> followers = await _dao.GetStatusByUserId(Id!);
 
                 if (followers.Any())
+                {
                     Status = followers.First().Status;
+                }
                 else
                     Status = "No Status Found";
             }
