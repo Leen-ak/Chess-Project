@@ -10,7 +10,6 @@
         $("#theModal").modal('show'); 
     });
     $("#request-btn").on("click", function () {
-        GetRequestStatus(username);
         $("#theModal").modal('show'); 
     });
 
@@ -66,7 +65,7 @@ const GetUsernames = async (username) => {
                 //if the user login in it will not show the name of the user in the friend suggestions
                 if (username === user.username)
                     return;
-                buildUserCard(user, username)
+                buildUserCard(user, username);
                 //id, followerId, followingId, status, username, picture
             });
         }        
@@ -76,55 +75,9 @@ const GetUsernames = async (username) => {
     }
 };
 
-const buildUserCard = async (data, username) => {
+const buildUserCard = async (data) => {
     const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
-    const userId_all = data.id;
-    const username_all = data.username;
-
-    //for building the card 
-    buildTheCard(userId_all, username_all, profilePicture);
-
-    try {
-
-        //everything including the password which is not secure 
-        const response = await fetch(`https://localhost:7223/api/LoginPage/username/${username}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const userData = await response.json();
-        const userId_usernameData = userData.id
-
-        // for the following list
-        //i need to do checking here to make sure one of the user will have pending status not both 
-        
-        const followData = {
-            followerId: userData.id,
-            followingId: data.id,
-            status: "Pending"
-        };
-
-        try {
-            //taking the followerId AND the followingId with the status 
-            const followResponse = await fetch('https://localhost:7223/api/Network', {
-                method: 'POST',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(followData)
-            });
-
-            if (followResponse.ok) {
-                console.log("Follow request sent successfully");
-            }
-        }
-        catch (error) {
-            console.log("Error following user: ", error);
-        }
-
-    } catch (error) {
-        console.log(error);
-    }
+    buildTheCard(data.id, data.username, profilePicture);
 };
 
 $(document).on("click", ".btn-unfollow", function () {
@@ -147,48 +100,15 @@ $(document).on("click", ".btn-unfollow", function () {
 const GetRequestStatus = async (username) => {
     console.log("Fetching user ID for username:", username);
 
-    try {
-        const userResponse = await fetch(`https://localhost:7223/api/LoginPage/username/${username}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!userResponse.ok) {
-            console.log("Failed to fetch user ID");
-            return;
-        }
-
-        const userData = await userResponse.json();
-        const userId = userData.id;
-        const profilePicture = userData.picture ? `data:image/png;base64,${userData.picture}` : "../images/user.png";
-
-        const response = await fetch(`https://localhost:7223/api/Network/Status/${userId}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        });
-
-        
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log("User status:", data);
-        }
-
-    }
-    catch (error) {
-        console.log("An error occurred:", error);
-    }
 };
 
 
 //cards 
-function buildTheCard(userId, username_, profilePicture) {
+function buildTheCard(userId, username, profilePicture) {
     const div = $(`
         <div class="card network-card" id="user-card-${userId}">
             <img src="${profilePicture}" alt="Chess Game Image" class="card-img-top user-image" id="user-image-${userId}" />
-            <h2 class="card-title username">${username_}</h2>
+            <h2 class="card-title username">${username}</h2>
             <div class="button-section">
                 <button class="btn" id="follow-btn-${userId}">Follow</button>
             </div>
@@ -196,12 +116,85 @@ function buildTheCard(userId, username_, profilePicture) {
     `);
 
     div.appendTo($(".grid-container"));
-    buildTheList(div, userId, username_, profilePicture);
+    buildFollowList(div, userId, username, profilePicture);
+
 }
 
-function buildTheList(div, userId, username_, profilePicture) {
+const buildFollowList = async (div, userId, username, profilePicture) => {
     div.find(`#follow-btn-${userId}`).on("click", async function () {
+        const response = await fetch(`https://localhost:7223/api/LoginPage/username/${getCookie("username")}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const userData = await response.json();
+        const followData = {
+            followerId: userData.id,  //me
+            followingId: userId,         
+            status: "Pending"
+        };
+        console.log("Sending follow request:", followData);
+
+        try {
+
+            const StatusResponse = await fetch(`https://localhost:7223/api/Network/Status/${userData.id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (StatusResponse.ok) {
+                const statusData = await StatusResponse.json();
+                console.log("User status:", statusData);
+
+                if (statusData.status === "Pending") {
+                    console.log(statusData.id, " is pending so reutrn");
+                    return; 
+                }
+            }
+        }
+        catch (error) {
+            console.log("An error occurred:", error);
+        }
+
+
+        try {
+            const followResponse = await fetch('https://localhost:7223/api/Network', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(followData)
+            });
+
+            if (followResponse.ok) {
+                console.log("Follow request sent successfully");
+            }
+        } catch (error) {
+            console.log("Error following user: ", error);
+        }
+
+        // Move the card to the modal list
         const followingItem = $(`
+            <div class="following-item" id="following-${userId}">
+                <img src="${profilePicture}" class="following-pic" alt="${username}" />
+                <span class="following-username">${username}</span>
+                <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
+            </div>
+        `);
+        $("#friend-list").append(followingItem);
+        $(`#user-card-${userId}`).hide();
+
+        let currentCount = parseInt($("#following-count").text()) || 0;
+        if (currentCount >= 0) $("#friend-list").find('.no-followers-text').remove();
+        currentCount++;
+        $("#following-count").text(currentCount);
+    });
+};
+
+
+function buildRequestList(div, userId, username_, profilePicture) {
+    div.find(`#follow-btn-${userId}`).on("click", async function () {
+        const RequestItem = $(`
             <div class="following-item" id="following-${userId}">
                 <img src="${profilePicture}" class="following-pic" alt="${username_}" />
                 <span class="following-username">${username_}</span>
@@ -222,9 +215,10 @@ function buildTheList(div, userId, username_, profilePicture) {
         currentCount++;
         $("#following-count").text(currentCount);
 
+
+
     });
 }
-
 
 
 //TO DO
