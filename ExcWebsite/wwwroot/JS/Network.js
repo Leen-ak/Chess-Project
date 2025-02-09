@@ -3,11 +3,6 @@
     getPhotot(username); 
     GetUsernames(username);
 
-    //try {
-    //    const response = fetch(`https://localhost/7223/api/Network/userID/${username}`);
-    //}
-
-
     $("#following-btn").on("click", function () { 
         $("#theModal").modal('show'); 
     }); 
@@ -68,9 +63,11 @@ const GetUsernames = async (username) => {
 
         if (response.ok) {
             data.forEach(user => {
+                //if the user login in it will not show the name of the user in the friend suggestions
                 if (username === user.username)
                     return;
                 buildUserCard(user, username)
+                //id, followerId, followingId, status, username, picture
             });
         }        
     }
@@ -81,18 +78,15 @@ const GetUsernames = async (username) => {
 
 const buildUserCard = async (data, username) => {
     const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
+    const userId_all = data.id;
+    const username_all = data.username;
 
-    const div = $(`
-        <div class="card network-card" id="user-card-${data.id}">
-            <img src="${profilePicture}" alt="Chess Game Image" class="card-img-top user-image" id="user-image-${data.id}" />
-            <h2 class="card-title username">${data.username}</h2>
-            <div class="button-section">
-                <button class="btn" id="follow-btn-${data.id}">Follow</button>
-            </div>
-        </div>
-    `);
+    //for building the card 
+    buildTheCard(userId_all, username_all, profilePicture);
 
     try {
+
+        //everything including the password which is not secure 
         const response = await fetch(`https://localhost:7223/api/LoginPage/username/${username}`, {
             method: 'GET',
             headers: {
@@ -100,51 +94,34 @@ const buildUserCard = async (data, username) => {
             }
         });
 
-        const userData = await response.json(); 
+        const userData = await response.json();
+        const userId_usernameData = userData.id
 
-        div.find(`#follow-btn-${data.id}`).on("click", async function () {
-            const followingItem = $(`
-                <div class="following-item" id="following-${data.id}">
-                    <img src="${profilePicture}" class="following-pic" alt="${data.username}" />
-                    <span class="following-username">${data.username}</span>
-                    <button class="btn-unfollow" data-id="${data.id}">Unfollow</button>
-                </div>
-            `);
+        // for the following list
+        //i need to do checking here to make sure one of the user will have pending status not both 
+        
+        const followData = {
+            followerId: userData.id,
+            followingId: data.id,
+            status: "Pending"
+        };
 
-            const followData = {
-                followerId: userData.id,
-                followingId: data.id,
-                status: "Pending"
-            };
+        try {
+            //taking the followerId AND the followingId with the status 
+            const followResponse = await fetch('https://localhost:7223/api/Network', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(followData)
+            });
 
-            try {
-                const followResponse = await fetch('https://localhost:7223/api/Network', {
-                    method: 'POST',
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(followData)
-                });
-
-                if (followResponse.ok) {
-                    console.log("Follow request sent successfully");
-                }
+            if (followResponse.ok) {
+                console.log("Follow request sent successfully");
             }
-            catch (error) {
-                console.log("Error following user: ", error); 
-            }
+        }
+        catch (error) {
+            console.log("Error following user: ", error);
+        }
 
-
-            $(`#user-card-${data.id}`).hide();
-            $("#friend-list").append(followingItem);
-
-            let currentCount = parseInt($("#following-count").text()) || 0;
-            if (currentCount >= 0)
-                $("#friend-list").find('.no-followers-text').remove();
-
-            currentCount++;
-            $("#following-count").text(currentCount);
-        });
-
-        div.appendTo($(".grid-container"));
     } catch (error) {
         console.log(error);
     }
@@ -192,6 +169,8 @@ const GetRequestStatus = async (username) => {
             headers: { 'Content-Type': 'application/json' }
         });
 
+        
+
         if (response.ok) {
             const data = await response.json();
             console.log("User status:", data);
@@ -204,12 +183,55 @@ const GetRequestStatus = async (username) => {
 };
 
 
+//cards 
+function buildTheCard(userId, username_, profilePicture) {
+    const div = $(`
+        <div class="card network-card" id="user-card-${userId}">
+            <img src="${profilePicture}" alt="Chess Game Image" class="card-img-top user-image" id="user-image-${userId}" />
+            <h2 class="card-title username">${username_}</h2>
+            <div class="button-section">
+                <button class="btn" id="follow-btn-${userId}">Follow</button>
+            </div>
+        </div>
+    `);
+
+    div.appendTo($(".grid-container"));
+    buildTheList(div, userId, username_, profilePicture);
+}
+
+function buildTheList(div, userId, username_, profilePicture) {
+    div.find(`#follow-btn-${userId}`).on("click", async function () {
+        const followingItem = $(`
+            <div class="following-item" id="following-${userId}">
+                <img src="${profilePicture}" class="following-pic" alt="${username_}" />
+                <span class="following-username">${username_}</span>
+                <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
+            </div>
+        `);
+
+        // Move the card to the modal list
+        $("#friend-list").append(followingItem);
+
+        // Hide the original card from the grid
+        $(`#user-card-${userId}`).hide();
+
+        let currentCount = parseInt($("#following-count").text()) || 0;
+        if (currentCount >= 0)
+            $("#friend-list").find('.no-followers-text').remove();
+
+        currentCount++;
+        $("#following-count").text(currentCount);
+
+    });
+}
+
+
 
 //TO DO
 //1. adding the following to the database
 //2. followers logic
 //3. adding the followers to the database
-
+//4. Handle the status when there is not picture 
 /*
 
 Sumarry of the steps of sending a request: 

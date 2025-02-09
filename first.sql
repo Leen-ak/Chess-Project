@@ -70,12 +70,16 @@ BEGIN
 End;
 GO
 
+SELECT * FROM dbo.Followers;
+GO
+
+SELECT COUNT (*) FROM Followers WHERE Status = 'Pending'; 
+
 EXEC dbo.GetAllUserName;
 GO
 
 SELECT * FROM UserInfo;
 GO
 
-SELECT * FROM dbo.Followers;
-GO
+
 
