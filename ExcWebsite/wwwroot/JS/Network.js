@@ -1,23 +1,86 @@
 ﻿$(() => {
     const username = getCookie("username");
-    getPhotot(username); 
+    getPhotot(username);
     GetUsernames(username);
 
-    $("#following-btn").on("click", function () { 
-        $("#theModal").modal('show'); 
-    }); 
+    $("#following-btn").on("click", function () {
+        $("#theModal .modal-title").text("Following");
+        let currentCount = parseInt($("#following-count").text()) || 0;
+        if (currentCount === 0)
+            $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
+        $("#theModal").modal('show');
+    });
     $("#follower-btn").on("click", function () {
-        $("#theModal").modal('show'); 
+        $("#theModal .modal-title").text("Followers");
+        let currentCount = parseInt($("#following-count").text()) || 0;
+        if (currentCount === 0)
+            $("#friend-list").html('<p class="no-followers-text">You do not have any followers yet</p>');
+        $("#theModal").modal('show');
     });
-    $("#request-btn").on("click", function () {
-        $("#theModal").modal('show'); 
-    });
+    $("#request-btn").on("click", async function () {
+        $("#theModal .modal-title").text("Requests");
+        $("#friend-list").empty(); // Clear old data
 
-    let currentCount = parseInt($("#following-count").text()) || 0;
-    if (currentCount === 0) 
-        $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
-    
-});
+        try {
+            const response = await fetch(`https://localhost:7223/api/LoginPage/username/${getCookie("username")}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const userData = await response.json();
+            console.log("print", userData);
+            console.log("user ID is: ", userData.id);
+
+            const statusResponse = await fetch(`https://localhost:7223/api/Network/Status/${userData.id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (statusResponse.ok) {
+                const statusData = await statusResponse.json();
+                console.log("The response is from the status fetch:", statusData);
+
+                // Extract the array from the result object
+                const resultArray = statusData.result;
+
+                // Check if the array has data
+                if (Array.isArray(resultArray) && resultArray.length > 0) {
+                    resultArray.forEach(request => {
+                        console.log("Status:", request.status);
+
+                        if (request.status === "Pending") {
+                            console.log("is pending", request.followerId);
+
+                            const requestItem = $(`
+                            <div class="request-item" id="request-${request.id}">
+                                <img src="${request.profilePicture}" class="following-pic" alt="${request.username}" />
+                                <span class="following-username">${request.username}</span>
+                                <button class="btn-accept" data-id="${request.id}">Accept</button>
+                                <button class="btn-reject" data-id="${request.id}">Reject</button>
+                            </div>
+                            `);
+                            $("#friend-list").append(requestItem);
+                        }
+                    });
+
+                    let currentCount = parseInt($("#request-count").text()) || 0;
+                    $("#request-count").text(resultArray.length);
+                } else {
+                    console.log("No status data available.");
+                    $("#friend-list").html('<p class="no-followers-text">You do not have any friend requests.</p>');
+                }
+            }
+        } catch (error) {
+            console.log("An error occurred:", error);
+        }
+
+        // Show the modal after data is loaded
+        $("#theModal").modal('show');
+    });
+})
+
 
 const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -99,9 +162,7 @@ $(document).on("click", ".btn-unfollow", function () {
 
 const GetRequestStatus = async (username) => {
     console.log("Fetching user ID for username:", username);
-
 };
-
 
 //cards 
 function buildTheCard(userId, username, profilePicture) {
@@ -136,28 +197,6 @@ const buildFollowList = async (div, userId, username, profilePicture) => {
             status: "Pending"
         };
         console.log("Sending follow request:", followData);
-
-        try {
-
-            const StatusResponse = await fetch(`https://localhost:7223/api/Network/Status/${userData.id}`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            if (StatusResponse.ok) {
-                const statusData = await StatusResponse.json();
-                console.log("User status:", statusData);
-
-                if (statusData.status === "Pending") {
-                    console.log(statusData.id, " is pending so reutrn");
-                    return; 
-                }
-            }
-        }
-        catch (error) {
-            console.log("An error occurred:", error);
-        }
-
 
         try {
             const followResponse = await fetch('https://localhost:7223/api/Network', {
@@ -198,7 +237,7 @@ function buildRequestList(div, userId, username_, profilePicture) {
             <div class="following-item" id="following-${userId}">
                 <img src="${profilePicture}" class="following-pic" alt="${username_}" />
                 <span class="following-username">${username_}</span>
-                <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
+                <button class="btn-unfollow" data-id="${userId}">Accept</button>
             </div>
         `);
 
@@ -214,11 +253,8 @@ function buildRequestList(div, userId, username_, profilePicture) {
 
         currentCount++;
         $("#following-count").text(currentCount);
-
-
-
     });
-}
+ }
 
 
 //TO DO

@@ -75,7 +75,8 @@ namespace ExcWebsite.Controllers
             {
                 NetworkVM userVM = new() { Id = userId };
                 await userVM.GetStatusByUserId();
-                return Ok(new { userVM.Status }); 
+                List<NetworkVM> result = new(); 
+                return Ok(new { result = userVM.pendingRequests }); 
             }
             catch (Exception ex)
             {

@@ -19,6 +19,8 @@ namespace ViewModels
         public string? Status { get; set; }
         public string? Username {  get; set; }
         public  byte[]? Picture { get; set; }
+        public List<NetworkVM> pendingRequests { get; set; } = new();
+
         public NetworkVM() 
         {
             _dao = new NetworkDAO();
@@ -95,11 +97,17 @@ namespace ViewModels
                     Debug.WriteLine("Error: Id is null in " + GetType().Name + " " + MethodBase.GetCurrentMethod()?.Name);
                     return; 
                 }
+
                 List<Follower> followers = await _dao.GetStatusByUserId(Id!);
 
                 if (followers.Any())
                 {
-                    Status = followers.First().Status;
+                    pendingRequests = followers.Select(f => new NetworkVM
+                    {
+                        FollowerId = f.FollowerId,
+                        FollowingId = f.FollowingId,
+                        Status = f.Status
+                    }).ToList();
                 }
                 else
                     Status = "No Status Found";
