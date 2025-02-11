@@ -151,6 +151,8 @@ namespace ViewModels
                 Follower user = new()
                 {
                     Id = (int)Id!,
+                    FollowerId = FollowerId,
+                    FollowingId = FollowingId,
                     Status = Status,
                     Timer = Timer != null ? Convert.FromBase64String(Timer) : null
                 };
