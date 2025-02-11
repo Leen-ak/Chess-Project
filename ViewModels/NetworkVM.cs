@@ -120,5 +120,27 @@ namespace ViewModels
             }
         }
 
+        public async Task GetUsernameById()
+        {
+            try
+            {
+                UserInfo? user = await _dao.GetUsernameById(Id!);
+                Id = user?.Id;
+                Username = user?.UserName;
+                Picture = user?.Picture;
+            }
+            catch (NullReferenceException nex)
+            {
+                Debug.WriteLine(nex.Message);
+                Username = "Username Not Found!";
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
     }
 }

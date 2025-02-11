@@ -85,5 +85,22 @@ namespace ExcWebsite.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpGet("GetUserName/{userId}")]
+        public async Task<IActionResult> GetUsernameById(int userId)
+        {
+            try
+            {
+                NetworkVM vm = new() { Id = userId };
+                await vm.GetUsernameById();
+                return Ok(new { vm });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

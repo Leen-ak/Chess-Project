@@ -94,6 +94,20 @@ namespace DAL
             }
         }
 
+        public async Task<UserInfo?> GetUsernameById(int? id)
+        {
+            try
+            {
+                return await _repo.GetOne(user => user.Id == id);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
         //get followers
 
         //delete followers 

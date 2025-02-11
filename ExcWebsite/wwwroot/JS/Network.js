@@ -30,6 +30,7 @@
             });
 
             const userData = await response.json();
+
             console.log("print", userData);
             console.log("user ID is: ", userData.id);
 
@@ -37,6 +38,8 @@
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
+
+
 
             if (statusResponse.ok) {
                 const statusData = await statusResponse.json();
@@ -47,16 +50,31 @@
 
                 // Check if the array has data
                 if (Array.isArray(resultArray) && resultArray.length > 0) {
-                    resultArray.forEach(request => {
+                    resultArray.forEach(async request => {
                         console.log("Status:", request.status);
+
+                            const getInfo= await fetch(`https://localhost:7223/api/Network/GetUserName/${request.followerId}`, {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+
+                            const getUsername = await getInfo.json();
+                            console.log("The info that came from the getUsernaem api is: ", getUsername);
+                        console.log("The username that came from the getUsernaem api is: ", getUsername.vm.username);
+                        let profilePicture = getUsername.vm.picture ? `data:image/png;base64,${getUsername.vm.picture}` : "../images/user.png";
+
 
                         if (request.status === "Pending") {
                             console.log("is pending", request.followerId);
+                            console.log("The username after the try and catch ", getUsername.vm.username);
 
+                            //i will need to create gettheusernamebyid
                             const requestItem = $(`
-                            <div class="request-item" id="request-${request.id}">
-                                <img src="${request.profilePicture}" class="following-pic" alt="${request.username}" />
-                                <span class="following-username">${request.username}</span>
+                            <div class="request-item" id="request-${request.followerId}">
+                                <img src="${profilePicture}" class="following-pic" alt="${getUsername.vm.username}" />
+                                <span class="following-username">${getUsername.vm.username}</span>
                                 <button class="btn-accept" data-id="${request.id}">Accept</button>
                                 <button class="btn-reject" data-id="${request.id}">Reject</button>
                             </div>
@@ -193,7 +211,7 @@ const buildFollowList = async (div, userId, username, profilePicture) => {
         const userData = await response.json();
         const followData = {
             followerId: userData.id,  //me
-            followingId: userId,         
+            followingId: userId,
             status: "Pending"
         };
         console.log("Sending follow request:", followData);
