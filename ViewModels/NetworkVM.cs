@@ -19,6 +19,7 @@ namespace ViewModels
         public string? Status { get; set; }
         public string? Username {  get; set; }
         public  byte[]? Picture { get; set; }
+        public string? Timer { get; set; }
         public List<NetworkVM> pendingRequests { get; set; } = new();
 
         public NetworkVM() 
@@ -141,6 +142,31 @@ namespace ViewModels
                 throw;
             }
         }
+
+        public async Task<int> Update()
+        {
+            int updateStatus;
+            try
+            {
+                Follower user = new()
+                {
+                    Id = (int)Id!,
+                    Status = Status,
+                    Timer = Timer != null ? Convert.FromBase64String(Timer) : null
+                };
+                Debug.WriteLine($"Updating user {user.Id}");
+                updateStatus = Convert.ToInt16(await _dao.Update(user));
+                Debug.WriteLine($"Update return value:  { updateStatus}"); 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+            return updateStatus; 
+        }
+
 
     }
 }

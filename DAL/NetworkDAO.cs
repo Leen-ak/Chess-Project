@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace DAL
 {
     public class NetworkDAO
@@ -15,8 +16,8 @@ namespace DAL
         readonly IRepository<UserInfo> _repo;
         readonly IRepository<Follower> _followRepo;
 
-        public NetworkDAO() 
-        { 
+        public NetworkDAO()
+        {
             _repo = new RepositoryImplementation<UserInfo>();
             _followRepo = new RepositoryImplementation<Follower>();
         }
@@ -44,7 +45,7 @@ namespace DAL
                 UserInfo? user = await _repo.GetOne(user => user.UserName == username);
                 return user?.Id;
             }
-              catch (Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
@@ -59,21 +60,21 @@ namespace DAL
             {
                 var existingFollowers = await _followRepo.GetAll();
                 bool exists = existingFollowers.Any(f => f.FollowerId == user.FollowerId && f.FollowingId == user.FollowingId);
-                
-                if(exists)
+
+                if (exists)
                 {
                     throw new InvalidOperationException("The user is already following the selected user");
                 }
 
                 await _followRepo.Add(user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
                     MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 throw;
             }
-            return user.Id; 
+            return user.Id;
         }
 
         //get status by userId 
@@ -108,10 +109,35 @@ namespace DAL
             }
         }
 
-        //get followers
+        public async Task<UpdateStatus> Update(Follower user)
+        {
+            UpdateStatus status;
+            try
+            {
 
-        //delete followers 
+                var existingUser = await _repo.GetOne(u => u.Id == user.Id);
+                if (existingUser == null)
+                {
+                    Debug.WriteLine($"User {user.Id} not found in database!");
+                    return UpdateStatus.Failed;
+                }
 
+                status = await _followRepo.Update(user);
+                return status;
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                status = UpdateStatus.Stale;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+            return status;
+        }
 
     }
 }

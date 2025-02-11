@@ -102,5 +102,27 @@ namespace ExcWebsite.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpPut("UpdateStatus")]
+        public async Task<IActionResult> Update(NetworkVM vm)
+        {
+            try
+            {
+                int updateValue = await vm.Update();
+                return updateValue switch
+                {
+                    1 => Ok(new { msg = "User " + vm.Id + " updated!" }),
+                    -1 => Ok(new { msg = "User " + vm.Id + " not updated!" }),
+                    -2 => Ok(new { msg = "Data is stale for " + vm.Id + ", User not updated!" }),
+                    _ => Ok(new { msg = "User " + vm.Id + " not updated!" }),
+                };
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }
