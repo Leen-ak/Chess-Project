@@ -155,7 +155,7 @@ h2 {
 }
 
 /*after moving the div to the modal*/
-.following-item {
+.following-item, .request-item{
     width: 90%;
     display: flex;
     align-items: center;
@@ -167,14 +167,14 @@ h2 {
     border: 1px solid #444;
 }
 
-.following-pic {
+.following-pic, .request-pic {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.following-username {
+.following-username, .request-username{
     font-size: 18px;
     flex-grow: 1;
 }
@@ -206,4 +206,31 @@ h2 {
     color: #bbb4aa;
     font-size: 18px;
     margin-top: 20px;
+}
+
+/*accept button*/
+ .btn-accept, .btn-reject{
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 50%; 
+    padding: 5px;
+    cursor: pointer;
+}
+.btn-accept {
+    border-color: green;
+    margin: 2%;
+    transform: scale(1);
+    transition: transform 0.3s;
+}
+.btn-reject {
+    border-color: red;
+    transform: scale(1);
+    transition: transform 0.3s;
+}
+
+.btn-accept:hover {
+    transform: scale(1.2);
+}
+.btn-reject:hover {
+    transform: scale(1.2);
 }

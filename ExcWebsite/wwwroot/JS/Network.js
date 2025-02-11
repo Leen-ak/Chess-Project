@@ -73,10 +73,19 @@
                             //i will need to create gettheusernamebyid
                             const requestItem = $(`
                             <div class="request-item" id="request-${request.followerId}">
-                                <img src="${profilePicture}" class="following-pic" alt="${getUsername.vm.username}" />
-                                <span class="following-username">${getUsername.vm.username}</span>
-                                <button class="btn-accept" data-id="${request.id}">Accept</button>
-                                <button class="btn-reject" data-id="${request.id}">Reject</button>
+                                <img src="${profilePicture}" class="request-pic" alt="${getUsername.vm.username}" />
+                                <span class="request-username">${getUsername.vm.username}</span>
+                              <button class="btn-accept" data-id="${request.id}">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+                                    </svg>
+                                </button>
+
+                                <button class="btn-reject" data-id="${request.id}">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 6L18 18M6 18L18 6" stroke="red" stroke-width="2"/>
+                                    </svg>
+                                </button>
                             </div>
                             `);
                             $("#friend-list").append(requestItem);
