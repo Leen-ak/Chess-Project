@@ -249,7 +249,7 @@ const buildRequestList = async (acceptButton, rejectButton) => {
 
 
 //If the user accept then update the status to Accept
-$("#friend-list").on("click", ".btn-accept", async function () {
+const updateFollowStatus = async (status) => { 
     try {
 
         const response = await fetch(`https://localhost:7223/api/LoginPage/username/${getCookie("username")}`, {
@@ -286,7 +286,7 @@ $("#friend-list").on("click", ".btn-accept", async function () {
                     id: userData.id,
                     followerId: request.followerId,
                     followingId: request.followingId,
-                    status: "Accepted"
+                    status: status
                 };
                 console.log("the object of the follower: ", follower);
 
@@ -306,66 +306,14 @@ $("#friend-list").on("click", ".btn-accept", async function () {
     catch (error) {
         console.log(error); 
     }
+};
+
+$("#friend-list").on("click", ".btn-accept", function () {
+    updateFollowStatus("Accepted");
 });
 
-//If the user Reject then update the status to Accept
-$("#friend-list").on("click", ".btn-reject", async function () {
-    try {
-
-        const response = await fetch(`https://localhost:7223/api/LoginPage/username/${getCookie("username")}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        //we got all the info here: username, id, picture, 
-        const userData = await response.json();
-        console.log("UserData is: ", userData);
-
-        const userIdResponse = await fetch(`https://localhost:7223/api/Network/Status/${userData.id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        //we got the followerId, followingId, and the status 
-        const userIdResponseJSON = await userIdResponse.json();
-        const result = userIdResponseJSON.result;
-        if (result.length > 0) {
-            result.forEach(async request => {
-                console.log("The result of the array is", request);
-
-                console.log("Just a test: The followerId is: ", request.followerId,
-                    "follwoingId is: ", request.followingId,
-                    "the status is: ", request.status);
-
-                //now we need to change the status to Accepted 
-                const follower = {
-                    id: userData.id,
-                    followerId: request.followerId,
-                    followingId: request.followingId,
-                    status: "Rejected"
-                };
-                console.log("the object of the follower: ", follower);
-
-                //Id, followerId, follwoingId, status, timer that's what i need
-                const updateStatus = await fetch('https://localhost:7223/api/Network/UpdateStatus', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(follower)
-                });
-                const updateStatusJSON = await updateStatus.json();
-                console.log("The status of the follower after the post is: ", updateStatusJSON);
-            });
-        }
-    }
-    catch (error) {
-        console.log(error);
-    }
+$("#friend-list").on("click", ".btn-reject", function () {
+    updateFollowStatus("Rejected");
 });
 
 

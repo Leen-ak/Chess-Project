@@ -122,7 +122,8 @@ namespace DAL
                     return UpdateStatus.Failed;
                 }
 
-                status = await _followRepo.Update(user);
+                status = await _followRepo.Update(user); //fail here
+                
                 return status;
 
             }
