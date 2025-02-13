@@ -41,6 +41,7 @@ namespace DAL
         public async Task<int> Delete(int entity)
         {
             T? currentEntity = await GetOne(ent => ent.Id == entity);
+            Debug.WriteLine($"Searching for entity with ID: {entity}");
             _db.Set<T>().Remove(currentEntity);
             return _db.SaveChanges();
         }
@@ -50,7 +51,11 @@ namespace DAL
             UpdateStatus operationStatus = UpdateStatus.Failed;
             try
             {
-                T? currentEntity = await GetOne(ent => ent.Id == entity.Id);
+                Debug.WriteLine($"Incoming entity ID: {entity.Id}");
+
+                T? currentEntity = await _db.Set<T>().FirstOrDefaultAsync(e => e.Id == entity.Id);
+                Debug.WriteLine($"Incoming currentEntity ID: {currentEntity!.Id}");
+
                 if (currentEntity == null)
                 {
                     Debug.WriteLine($"Entity with ID {entity.Id} not found.");

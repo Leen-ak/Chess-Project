@@ -111,10 +111,10 @@ namespace ExcWebsite.Controllers
                 int updateValue = await vm.Update();
                 return updateValue switch
                 {
-                    1 => Ok(new { msg = "User " + vm.Id + " with the status " + vm.Status + " updated!" }),
-                    -1 => Ok(new { msg = "User " + vm.Id + " with the status " + vm.Status + " not updated!" }),
-                    -2 => Ok(new { msg = "Data is stale for " + vm.Id + ", User not updated!" }),
-                    _ => Ok(new { msg = "User " + vm.Id + " not updated!" }),
+                    1 => Ok(new { msg = "User " + vm.FollowerId + " with the status " + vm.Status + " updated!" }),
+                    -1 => Ok(new { msg = "User " + vm.FollowerId + " with the status " + vm.Status + " not updated!" }),
+                    -2 => Ok(new { msg = "Data is stale for " + vm.FollowerId + ", User not updated!" }),
+                    _ => Ok(new { msg = "User " + vm.FollowerId + " not updated!" }),
                 };
             }
             catch (Exception ex)

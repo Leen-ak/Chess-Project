@@ -150,13 +150,12 @@ namespace ViewModels
             {
                 Follower user = new()
                 {
-                    Id = (int)Id!,
                     FollowerId = FollowerId,
                     FollowingId = FollowingId,
                     Status = Status,
                     Timer = Timer != null ? Convert.FromBase64String(Timer) : null
                 };
-                Debug.WriteLine($"Updating user {user.Id}");
+                Debug.WriteLine($"Updating user {user.FollowerId}");
                 updateStatus = Convert.ToInt16(await _dao.Update(user));
                 Debug.WriteLine($"Update return value:  { updateStatus}"); 
             }

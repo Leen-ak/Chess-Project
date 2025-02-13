@@ -283,7 +283,6 @@ const updateFollowStatus = async (status) => {
 
                 //now we need to change the status to Accepted 
                 const follower = {
-                    id: userData.id,
                     followerId: request.followerId,
                     followingId: request.followingId,
                     status: status
@@ -291,7 +290,7 @@ const updateFollowStatus = async (status) => {
                 console.log("the object of the follower: ", follower);
 
                 //Id, followerId, follwoingId, status, timer that's what i need
-                const updateStatus = await fetch('https://localhost:7223/api/Network/UpdateStatus', {
+                const updateStatus = await fetch(`https://localhost:7223/api/Network/UpdateStatus`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'

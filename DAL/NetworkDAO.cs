@@ -115,15 +115,15 @@ namespace DAL
             try
             {
 
-                var existingUser = await _repo.GetOne(u => u.Id == user.Id);
+                var existingUser = await _followRepo.GetOne(u => u.FollowerId == user.FollowerId);
                 if (existingUser == null)
                 {
-                    Debug.WriteLine($"User {user.Id} not found in database!");
+                    Debug.WriteLine($"User {user.FollowerId} not found in database!");
                     return UpdateStatus.Failed;
                 }
 
-                status = await _followRepo.Update(user); //fail here
-                
+                existingUser.Status = user.Status;
+                status = await _followRepo.Update(existingUser); //fail here
                 return status;
 
             }
