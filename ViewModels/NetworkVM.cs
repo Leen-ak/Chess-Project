@@ -103,7 +103,7 @@ namespace ViewModels
                     return; 
                 }
 
-                List<Follower> followers = await _dao.GetStatusByUserId(Id!);
+                List<Follower> followers = await _networkService.GetStatusByUserId(Id!);
 
                 if (followers.Any())
                 {

@@ -22,17 +22,18 @@ namespace BusinessLogic
         {
             return await _networkDao.GetAll();  
         }
-
         public async Task<int?> GetIdByUsername(string username)
         {
             return await _networkDao.GetIdByUsername(username);
         }
-
         public async Task<int> Add(Follower user)
         {
             return await _networkDao.Add(user); 
         }
-
+        public async Task<List<Follower>> GetStatusByUserId(int? userId)
+        {
+            return await _networkDao.GetStatusByUserId(userId); 
+        }
         public async Task<int> GetPendingRequestCount(int? userId)
         {
             return await _networkDao.GetPendingStatus(userId!); 
