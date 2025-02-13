@@ -140,5 +140,23 @@ namespace DAL
             return status;
         }
 
+        public async Task<int> GetPendingStatus()
+        {
+            List<Follower> allStatus;
+            int pendingCount = 0; 
+
+            try
+            {
+                allStatus = await _followRepo.GetAll();
+                pendingCount = allStatus.Count(user => user.Status == "Pending"); 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+            return pendingCount;
+        }
     }
 }

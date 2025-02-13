@@ -124,5 +124,22 @@ namespace ExcWebsite.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpGet("GetAllStatus")]
+        public async Task<IActionResult> GetPendingStatus()
+        {
+            try
+            {
+                NetworkVM vm = new(); 
+                var pendingCount = await vm.GetPendingStatus();
+                return Ok(new { msg = $"PendingCount = {pendingCount}" });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

@@ -327,7 +327,10 @@ Sumarry of the steps of sending a request:
 2️ Modify Follow Action → Store requests as "Pending". DONE
 3️ Create a Requests Modal → Show pending follow requests. DONE
 4️ Implement Accept/Reject → Users can approve or deny requests. DONE
-5 Update the status: Accepted or Rejected 
+5 Update the status: Accepted or Rejected in database. DONE 
+6 Update the status in the front end, if the status accepted it will go to the follower and the following list
+7 Update the status in the front end, if the status rejected it will go back to the friend list
+8 if the user is in the request list make sure to delete the user from the friend list
 
 * Notify the User → notification when accepted.
 

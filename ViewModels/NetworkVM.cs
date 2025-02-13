@@ -168,6 +168,19 @@ namespace ViewModels
             return updateStatus; 
         }
 
+        public async Task<int> GetPendingStatus()
+        {
+            try
+            {
+               return await _dao.GetPendingStatus();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
 
     }
 }
