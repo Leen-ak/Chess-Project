@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
+using BusinessLogic;
 using Microsoft.Identity.Client;
 
 namespace ViewModels
 {
     public class NetworkVM
     {
-        readonly private NetworkDAO _dao; 
+        readonly private NetworkDAO _dao;
+        readonly private NetworkService _networkService; 
         public int? Id { get; set; }
         public int? FollowerId { get; set; }    
         public int? FollowingId { get; set; }
@@ -25,6 +28,7 @@ namespace ViewModels
         public NetworkVM() 
         {
             _dao = new NetworkDAO();
+            _networkService = new NetworkService();
         }
 
         public async Task<List<NetworkVM>> GetAll() 
@@ -168,11 +172,12 @@ namespace ViewModels
             return updateStatus; 
         }
 
-        public async Task<int> GetPendingStatus(int followingId)
+        public async Task<int> GetPendingStatus(int id)
         {
             try
             {
-               return await _dao.GetPendingStatus(followingId);
+                Id = id;
+               return await _dao.GetPendingStatus(Id!);
             }
             catch (Exception ex)
             {

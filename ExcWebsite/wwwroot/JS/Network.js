@@ -6,7 +6,7 @@ $(() => {
     const username = getCookie("username");
     getPhotot(username);
     GetUsernames(username);
-    getStatus();
+   // getStatus();
 
     $("#following-btn").on("click", function () {
         $("#theModal .modal-title").text("Following");
@@ -87,7 +87,9 @@ const GetUsernames = async (username) => {
 
 const getStatus = async () => {
     try {
-        const response = await fetch('https://localhost:7223/api/Network/GetAllStatus', {
+
+        //need the followingID here 
+        const response = await fetch(`https://localhost:7223/api/Network/GetAllStatus`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
