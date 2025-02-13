@@ -23,13 +23,15 @@ namespace BusinessLogic
             return await _networkDao.GetAll();  
         }
 
-        //second get the userId, picture, followingId, followerId, status 
         public async Task<int?> GetIdByUsername(string username)
         {
             return await _networkDao.GetIdByUsername(username);
         }
 
-
+        public async Task<int> Add(Follower user)
+        {
+            return await _networkDao.Add(user); 
+        }
 
         public async Task<int> GetPendingRequestCount(int? userId)
         {

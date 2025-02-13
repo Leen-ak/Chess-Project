@@ -83,7 +83,7 @@ namespace ViewModels
                     FollowingId = FollowingId,
                     Status = Status
                 };
-                Id = await _dao.Add(user);
+                Id = await _networkService.Add(user); 
             }
             catch(Exception ex) 
             {

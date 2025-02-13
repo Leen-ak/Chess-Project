@@ -51,13 +51,13 @@ namespace ExcWebsite.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("AddFollowing")]
         public async Task<IActionResult> Post(NetworkVM userVM) 
         {
             try
             {
                 await userVM.Add();
-                return userVM.Id > 0 ? Ok(new { msg = $"User {userVM.Id} added {userVM.FollowingId} as a friend!" }) 
+                return userVM.Id > 0 ? Ok(new { msg = $"User {userVM.FollowingId} added {userVM.FollowingId} as a friend!" }) 
                     : Ok(new { msg = "Invalid following or follower ID" });
             }
             catch (Exception ex)
