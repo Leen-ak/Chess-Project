@@ -13,7 +13,7 @@ namespace ExcWebsite.Controllers
     [ApiController]
     public class NetworkController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("GetAllUsernames")]
         public async Task<IActionResult> GetAll() 
         {
             try

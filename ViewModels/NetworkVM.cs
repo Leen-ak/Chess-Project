@@ -37,7 +37,7 @@ namespace ViewModels
 
             try
             {
-                List <UserInfo> allUsers = await _dao.GetAll();
+                List<UserInfo> allUsers = await _networkService.GetAll(); 
 
                 foreach (UserInfo user in allUsers) 
                 {

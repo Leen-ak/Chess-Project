@@ -25,6 +25,7 @@ namespace DAL
         public async Task<List<UserInfo>> GetAll()
         {
             List<UserInfo> allUsername;
+
             try
             {
                 allUsername = await _repo.GetAll();
