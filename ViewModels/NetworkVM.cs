@@ -63,7 +63,7 @@ namespace ViewModels
         {
             try
             {
-                Id = await _dao.GetIdByUsername(Username!);
+                Id = await _networkService.GetIdByUsername(Username!);
             }
             catch (Exception ex)
             {

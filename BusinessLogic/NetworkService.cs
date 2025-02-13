@@ -17,14 +17,17 @@ namespace BusinessLogic
             _networkDao = new NetworkDAO();
         }
 
-        //first get the username in the database to add it to the friend list you migh want to follow
+        //first get the username in the database to add it to the friend list you might want to follow
         public async Task<List<UserInfo>> GetAll()
         {
             return await _networkDao.GetAll();  
         }
 
         //second get the userId, picture, followingId, followerId, status 
-        
+        public async Task<int?> GetIdByUsername(string username)
+        {
+            return await _networkDao.GetIdByUsername(username);
+        }
 
 
 

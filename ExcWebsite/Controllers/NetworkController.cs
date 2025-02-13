@@ -31,7 +31,7 @@ namespace ExcWebsite.Controllers
             }
         }
 
-        [HttpGet("userID/${username}")]
+        [HttpGet("getUserId/${username}")]
         public async Task<IActionResult> GetUserId(string username)
         {
             try
@@ -41,7 +41,7 @@ namespace ExcWebsite.Controllers
 
                 if (vm.Username == null)
                     return NotFound(new { msg = $"The {vm.Username} not found" });
-                return Ok(new { msg = $"{vm.Username} has been found" }); 
+                return Ok(new { msg = $"The user ID of {vm.Username} is {vm.Id}" }); 
             }
             catch (Exception ex)
             {
