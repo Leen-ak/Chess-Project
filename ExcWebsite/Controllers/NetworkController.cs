@@ -125,14 +125,14 @@ namespace ExcWebsite.Controllers
             }
         }
 
-        [HttpGet("GetAllStatus")]
-        public async Task<IActionResult> GetPendingStatus()
+        [HttpGet("GetAllStatus/{followingId}")]
+        public async Task<IActionResult> GetPendingStatus(int followingId)
         {
             try
             {
                 NetworkVM vm = new(); 
-                var pendingCount = await vm.GetPendingStatus();
-                return Ok(new { msg = $"PendingCount = {pendingCount}" });
+                var pendingCount = await vm.GetPendingStatus(followingId);
+                return Ok(pendingCount);
             }
             catch (Exception ex)
             {

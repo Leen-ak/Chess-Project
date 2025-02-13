@@ -168,11 +168,11 @@ namespace ViewModels
             return updateStatus; 
         }
 
-        public async Task<int> GetPendingStatus()
+        public async Task<int> GetPendingStatus(int followingId)
         {
             try
             {
-               return await _dao.GetPendingStatus();
+               return await _dao.GetPendingStatus(followingId);
             }
             catch (Exception ex)
             {

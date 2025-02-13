@@ -6,6 +6,7 @@ $(() => {
     const username = getCookie("username");
     getPhotot(username);
     GetUsernames(username);
+    getStatus();
 
     $("#following-btn").on("click", function () {
         $("#theModal .modal-title").text("Following");
@@ -83,6 +84,24 @@ const GetUsernames = async (username) => {
         console.log(error);
     }
 };
+
+const getStatus = async () => {
+    try {
+        const response = await fetch('https://localhost:7223/api/Network/GetAllStatus', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const pendingStatus = await response.json();
+        console.log("The return from fetch all pending status is: ", pendingStatus);
+        $("#request-count").text(pendingStatus);
+
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 
 const buildUserCard = async (data) => {
     const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
@@ -176,11 +195,6 @@ const buildFollowList = async (div, userId, username, profilePicture) => {
     });
 };
 
-const buildFollowersList = async () => {
- 
-}
-
-
 const buildRequestList = async (acceptButton, rejectButton) => {
     try {
         const response = await fetch(`https://localhost:7223/api/LoginPage/username/${getCookie("username")}`, {
@@ -233,9 +247,6 @@ const buildRequestList = async (acceptButton, rejectButton) => {
                         $("#friend-list").append(requestItem);
                     }
                 });
-
-                let currentCount = parseInt($("#request-count").text()) || 0;
-                $("#request-count").text(resultArray.length);
             } else {
                 console.log("No status data available.");
                 $("#friend-list").html('<p class="no-followers-text">You do not have any friend requests.</p>');
@@ -330,7 +341,8 @@ Sumarry of the steps of sending a request:
 5 Update the status: Accepted or Rejected in database. DONE 
 6 Update the status in the front end, if the status accepted it will go to the follower and the following list
 7 Update the status in the front end, if the status rejected it will go back to the friend list
-8 if the user is in the request list make sure to delete the user from the friend list
+8 If the user is in the request list make sure to delete the user from the friend list
+9 Get the number of request for each user and desply it
 
 * Notify the User → notification when accepted.
 

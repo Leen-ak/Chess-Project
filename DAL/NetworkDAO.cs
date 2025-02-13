@@ -140,7 +140,7 @@ namespace DAL
             return status;
         }
 
-        public async Task<int> GetPendingStatus()
+        public async Task<int> GetPendingStatus(int userId)
         {
             List<Follower> allStatus;
             int pendingCount = 0; 
@@ -148,7 +148,7 @@ namespace DAL
             try
             {
                 allStatus = await _followRepo.GetAll();
-                pendingCount = allStatus.Count(user => user.Status == "Pending"); 
+                pendingCount = allStatus.Count(user => user.FollowingId == userId && user.Status == "Pending");
             }
             catch (Exception ex)
             {
