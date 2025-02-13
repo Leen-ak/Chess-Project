@@ -53,6 +53,19 @@ namespace DAL
                 throw;
             }
         }
+        public async Task<UserInfo?> GetUsernameById(int? id)
+        {
+            try
+            {
+                return await _repo.GetOne(user => user.Id == id);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
 
         //add followers 
         public async Task<int> Add(Follower user)
@@ -96,20 +109,6 @@ namespace DAL
             }
         }
 
-        public async Task<UserInfo?> GetUsernameById(int? id)
-        {
-            try
-            {
-                return await _repo.GetOne(user => user.Id == id);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
-
         public async Task<UpdateStatus> Update(Follower user)
         {
             UpdateStatus status;
@@ -124,7 +123,7 @@ namespace DAL
                 }
 
                 existingUser.Status = user.Status;
-                status = await _followRepo.Update(existingUser); //fail here
+                status = await _followRepo.Update(existingUser); 
                 return status;
 
             }
@@ -141,15 +140,15 @@ namespace DAL
             return status;
         }
 
-        public async Task<int> GetPendingStatus(int? userId)
+        public async Task<(List<Follower> Request, int count)> GetPendingRequestWithCount(int? userId)
         {
-            List<Follower> allStatus;
-            int pendingCount = 0; 
-
             try
             {
-                allStatus = await _followRepo.GetAll();
-                pendingCount = allStatus.Count(user => (user.FollowingId == userId) && user.Status == "Pending");
+                List<Follower> userStatus = await _followRepo.GetAll() ;
+                List<Follower> pendingStatus = userStatus.Where(
+                    request => request.FollowingId == userId && request.Status == "Pending").ToList();
+                int pendingCount = pendingStatus.Count;
+                return (pendingStatus, pendingCount); 
             }
             catch (Exception ex)
             {
@@ -157,7 +156,6 @@ namespace DAL
                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 throw;
             }
-            return pendingCount;
         }
     }
 }

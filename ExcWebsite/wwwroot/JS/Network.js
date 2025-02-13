@@ -60,7 +60,7 @@ const getPhotot = async (username) => {
 
 const GetUsernames = async (username) => {
     try {
-        const response = await fetch('https://localhost:7223/api/Network', {
+        const response = await fetch('https://localhost:7223/api/Network/GetAllUsernames', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -166,7 +166,7 @@ const buildFollowList = async (div, userId, username, profilePicture) => {
         console.log("Sending follow request:", followData);
 
         try {
-            const followResponse = await fetch('https://localhost:7223/api/Network', {
+            const followResponse = await fetch('https://localhost:7223/api/Network/AddFollowing', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(followData)

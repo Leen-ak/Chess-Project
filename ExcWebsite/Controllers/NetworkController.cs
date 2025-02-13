@@ -51,6 +51,23 @@ namespace ExcWebsite.Controllers
             }
         }
 
+        [HttpGet("GetUserName/{userId}")]
+        public async Task<IActionResult> GetUsernameById(int userId)
+        {
+            try
+            {
+                NetworkVM vm = new() { Id = userId };
+                await vm.GetUsernameById();
+                return Ok(new { vm });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpPost("AddFollowing")]
         public async Task<IActionResult> Post(NetworkVM userVM) 
         {
@@ -77,23 +94,6 @@ namespace ExcWebsite.Controllers
                 await userVM.GetStatusByUserId();
                 List<NetworkVM> result = new(); 
                 return Ok(new { result = userVM.pendingRequests }); 
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpGet("GetUserName/{userId}")]
-        public async Task<IActionResult> GetUsernameById(int userId)
-        {
-            try
-            {
-                NetworkVM vm = new() { Id = userId };
-                await vm.GetUsernameById();
-                return Ok(new { vm });
             }
             catch (Exception ex)
             {
@@ -131,8 +131,8 @@ namespace ExcWebsite.Controllers
             try
             {
                 NetworkVM vm = new(); 
-                var pendingCount = await vm.GetPendingStatus(followingId);
-                return Ok(pendingCount);
+                var (request, count) = await vm.GetPendingRequestWithCount(followingId);
+                return Ok( new { request, count });
             }
             catch (Exception ex)
             {

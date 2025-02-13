@@ -73,6 +73,28 @@ namespace ViewModels
             }
         }
 
+        public async Task GetUsernameById()
+        {
+            try
+            {
+                UserInfo? user = await _networkService.GetUsernameById(Id!);
+                Id = user?.Id;
+                Username = user?.UserName;
+                Picture = user?.Picture;
+            }
+            catch (NullReferenceException nex)
+            {
+                Debug.WriteLine(nex.Message);
+                Username = "Username Not Found!";
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
         public async Task Add()
         {
             try
@@ -125,28 +147,6 @@ namespace ViewModels
             }
         }
 
-        public async Task GetUsernameById()
-        {
-            try
-            {
-                UserInfo? user = await _dao.GetUsernameById(Id!);
-                Id = user?.Id;
-                Username = user?.UserName;
-                Picture = user?.Picture;
-            }
-            catch (NullReferenceException nex)
-            {
-                Debug.WriteLine(nex.Message);
-                Username = "Username Not Found!";
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
-
         public async Task<int> Update()
         {
             int updateStatus;
@@ -160,7 +160,7 @@ namespace ViewModels
                     Timer = Timer != null ? Convert.FromBase64String(Timer) : null
                 };
                 Debug.WriteLine($"Updating user {user.FollowerId}");
-                updateStatus = Convert.ToInt16(await _dao.Update(user));
+                updateStatus = Convert.ToInt16(await _networkService.Update(user));
                 Debug.WriteLine($"Update return value:  { updateStatus}"); 
             }
             catch (Exception ex)
@@ -172,12 +172,17 @@ namespace ViewModels
             return updateStatus; 
         }
 
-        public async Task<int> GetPendingStatus(int id)
+        public async Task<(List<NetworkVM>, int )> GetPendingRequestWithCount(int id)
         {
             try
             {
-                Id = id;
-               return await _networkService.GetPendingRequestCount(Id!);
+                var (requests, count) = await _networkService.GetPendingRequestWithCount(id);
+                List<NetworkVM> pendingRequest = requests.Select(f => new NetworkVM { 
+                    FollowerId = f.FollowerId,
+                    FollowingId = f.FollowingId,
+                    Status = Status
+                }).ToList();
+                return (pendingRequest, count); 
             }
             catch (Exception ex)
             {
