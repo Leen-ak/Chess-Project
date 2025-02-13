@@ -177,7 +177,7 @@ namespace ViewModels
             try
             {
                 Id = id;
-               return await _dao.GetPendingStatus(Id!);
+               return await _networkService.GetPendingRequestCount(Id!);
             }
             catch (Exception ex)
             {
