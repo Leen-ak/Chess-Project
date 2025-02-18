@@ -6,12 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Reflection;
+using BusinessLogic;
 
 namespace ViewModels
 {
     public class UserVM
     {
         readonly private SignUpDAO _dao;
+        readonly private Login_signup_business _service; 
         public int? Id { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -25,6 +27,7 @@ namespace ViewModels
         public UserVM() 
         { 
             _dao = new SignUpDAO();
+            _service = new Login_signup_business();
         }
 
         public async Task Add() 
@@ -41,7 +44,7 @@ namespace ViewModels
                     Picture = Picture,
                     Timer = Timer != null ? Convert.FromBase64String(Timer) : null
                 }; 
-                Id = await _dao.Add(user);
+                Id = await _service.Add(user);
             }
             catch (Exception ex)
             {

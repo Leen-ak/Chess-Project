@@ -27,7 +27,6 @@ public partial class ChessContext : DbContext
         optionsBuilder.UseLazyLoadingProxies();
     }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
