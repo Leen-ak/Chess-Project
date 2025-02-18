@@ -13,6 +13,10 @@ namespace BusinessLogic
     {
         private readonly SignUpDAO _signUpDao;
 
+        public Login_signup_business()
+        {
+            _signUpDao = new SignUpDAO();
+        }
 
         private string HashPassword(string password)
         {
@@ -20,15 +24,26 @@ namespace BusinessLogic
             return hasher.HashPassword(null, password);
         }
 
-        public Login_signup_business()
-        {
-            _signUpDao = new SignUpDAO();
-        }
-
         public async Task<int> Add(UserInfo newUser)
         {
             newUser.Password = HashPassword(newUser.Password);
             return await _signUpDao.Add(newUser);
         }
+
+        public async Task<UpdateStatus> Update(UserInfo updateUser)
+        {
+            return await _signUpDao.Update(updateUser); 
+        }
+
+        public async Task<UserInfo?> GetByUsername(string username)
+        {
+            return await _signUpDao.GetByUsername(username);
+        }
+
+        public async Task<UserInfo?> GetByEmail(string email)
+        {
+            return await _signUpDao.GetByEmail(email);
+        }
+
     }
 }

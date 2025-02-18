@@ -72,7 +72,7 @@ namespace ViewModels
                 };
 
                 Debug.WriteLine($"Updating User {user.Id} - New Picture Length: {user.Picture?.Length}");
-                updateStatus = Convert.ToInt16(await _dao.Update(user));
+                updateStatus = Convert.ToInt16(await _service.Update(user));
                 Debug.WriteLine($"Update return value: {updateStatus}");
             }
             catch (Exception ex)
