@@ -13,7 +13,7 @@ namespace ExcWebsite.Controllers
     public class LoginPageController : ControllerBase
     {
         //we need adding info when we are doing signup 
-        [HttpPost]
+        [HttpPost("signup")]
         public async Task<IActionResult> Post(UserVM viewModel)
         {
             try
@@ -30,6 +30,24 @@ namespace ExcWebsite.Controllers
             }
         }
 
+        //we do not use GET for security reasons like the username and password will be in the request body if it was GET
+        // or maybe in the URL, server logs, so instead we do post it keeps the credentials hidden from the URL 
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(UserVM vm)
+        {
+            try
+            {
+                bool isValid = await vm.ValidateLogin(vm.Password!);
+                return isValid ? Ok(new { msg = "Login successful!" })
+                : Unauthorized(new { msg = "Invalid credentials" });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " "
+                    + MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
         //we need updating info if the user forget the password 
 
         //we need delete if the user wants to delete the account 

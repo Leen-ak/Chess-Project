@@ -1,7 +1,8 @@
 ﻿$(() => {
     $("#signup-btn").on("click", (event) => {
         event.preventDefault();
-        setUpUserInfo(); 
+        //setUpUserInfo(); 
+        signUpUser(); 
         clearSignupInput();
     });
 
@@ -11,6 +12,51 @@
         clearLoginInput(); 
     });
 })
+
+
+const signUpUser = async () => {
+    const userData = {
+        FirstName: $("#firstname").val(),
+        LastName: $("#lastname").val(),
+        UserName: $("#usernameSignup").val(),
+        Email: $("#email").val(),
+        Password: $("#signupPassword").val(),
+        ConfirmPassword: $("#passwordConfirm").val(),
+    };
+
+    try {
+        const response = await fetch('https://localhost:7223/api/LoginPage/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+
+        const data = await response.json();
+        alert(data.msg);
+    } catch (error) {
+        console.log("Error signing up:", error);
+    }
+};
+
+const loginUser = async () => {
+    const userData = {
+        UserName: $("#usernameSignup").val(),
+        Password: $("#signupPassword").val(),
+    };
+
+    try {
+        const response = await fetch('https://localhost:7223/api/LoginPage/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+
+        const data = await response.json();
+        alert(data.msg);
+    } catch (error) {
+        console.log("Error logging in:", error);
+    }
+};
 
 //if they did not have an account
 //sign up
