@@ -3,9 +3,13 @@ using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ViewModels;
+using BusinessLogic;
 using DAL;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.Extensions.Configuration.UserSecrets;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace ExcWebsite.Controllers
 {
@@ -13,6 +17,22 @@ namespace ExcWebsite.Controllers
     [ApiController]
     public class NetworkController : ControllerBase
     {
+        private readonly TokenService _tokenService;
+        private readonly NetworkVM _networkVm;
+
+        public NetworkController(IConfiguration configuration)
+        {
+            _tokenService = new TokenService(
+                configuration["JwtSettings:Secret"],
+                configuration["JwtSettings:Issuer"],
+                configuration["JwtSettings:Audience"],
+                int.Parse(configuration["JwtSettings:ExpirationMinutes"])
+            );
+
+            _networkVm = new NetworkVM(); 
+        }
+
+
         [HttpGet("GetAllUsernames")]
         public async Task<IActionResult> GetAll() 
         {
@@ -103,19 +123,28 @@ namespace ExcWebsite.Controllers
             }
         }
 
-        [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> Update(NetworkVM vm)
+
+        [Authorize]
+        [HttpPut("UpdateStatus/{requestId}")]
+        public async Task<IActionResult> Update(int requestId ,NetworkVM requestUpdate)
         {
             try
             {
-                int updateValue = await vm.Update();
-                return updateValue switch
-                {
-                    1 => Ok(new { msg = "User " + vm.FollowerId + " with the status " + vm.Status + " updated!" }),
-                    -1 => Ok(new { msg = "User " + vm.FollowerId + " with the status " + vm.Status + " not updated!" }),
-                    -2 => Ok(new { msg = "Data is stale for " + vm.FollowerId + ", User not updated!" }),
-                    _ => Ok(new { msg = "User " + vm.FollowerId + " not updated!" }),
-                };
+                foreach (var claim in User.Claims)
+                    Console.WriteLine($"Claim Type:{claim.Type}, value: {claim.Value}");
+                var userId = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
+                NetworkVM vm = new();
+                await vm.GetStatusByUserId();
+                var friendshipRequest = vm.pendingRequests.FirstOrDefault(r => r.FollowerId == requestId);
+                if (friendshipRequest == null)
+                    return NotFound(new { msg = "Friend request not found" });
+                if (friendshipRequest.FollowingId != userId) //The following Id the only one can accept the request not the followerId
+                    return Unauthorized(new { msg = "Unauthorized to change this status!" });
+                if (requestUpdate.Status != "Accepted" && requestUpdate.Status != "Rejected")
+                    return BadRequest(new { msg = "Invalid status update!" });
+                friendshipRequest.Status = requestUpdate.Status;
+                await vm.Update();
+                return Ok(new { msg = $"Friend request {requestId} updated to {requestUpdate.Status}" }); 
             }
             catch (Exception ex)
             {

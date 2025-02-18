@@ -40,6 +40,11 @@ namespace BusinessLogic
         }
         public async Task<UpdateStatus> Update(Follower user)
         {
+            var existingRequest = await _networkDao.GetStatusByUserId(user.FollowerId);
+            if (existingRequest == null)
+                throw new InvalidOperationException("Friend request not found");
+            if (user.Status != "Accepted" && user.Status != "Rejected")
+                throw new InvalidOperationException("Invalid status update"); 
             return await _networkDao.Update(user);
         }
         public async Task<(List<Follower>, int)> GetPendingRequestWithCount(int? userId)
