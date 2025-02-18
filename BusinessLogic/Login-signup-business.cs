@@ -45,5 +45,10 @@ namespace BusinessLogic
             return await _signUpDao.GetByEmail(email);
         }
 
+        public bool VerifyPassword(string enteredPassword, string storeHash)
+        {
+            return HashPassword(enteredPassword) == storeHash;
+        }
+
     }
 }

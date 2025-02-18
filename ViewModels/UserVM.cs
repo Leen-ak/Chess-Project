@@ -88,7 +88,7 @@ namespace ViewModels
         {
             try
             {
-                UserInfo? user = await _dao.GetByUsername(UserName!);
+                UserInfo? user = await _service.GetByUsername(UserName!);
                 Id = user!.Id;
                 FirstName = user.Firstname;
                 LastName = user.Lastname;
@@ -115,7 +115,7 @@ namespace ViewModels
         {
             try
             {
-                UserInfo? user = await _dao.GetByEmail(Email!);
+                UserInfo? user = await _service.GetByEmail(Email!);
                 Id = user!.Id;
                 FirstName = user.Firstname;
                 LastName = user.Lastname;
@@ -135,6 +135,22 @@ namespace ViewModels
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<bool> ValidateLogin(string enteredPassword)
+        {
+            try
+            {
+                UserInfo? user = await _service.GetByUsername(UserName!);
+                if (user == null)
+                    return false;
+                return _service.VerifyPassword(enteredPassword, user.Password);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Problem in ValidateLogin: " + ex.Message);
                 throw;
             }
         }
