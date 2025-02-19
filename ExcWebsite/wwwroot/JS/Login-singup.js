@@ -8,7 +8,8 @@
 
     $("#login-btn").on("click", (event) => {
         event.preventDefault(); 
-        usernameLogin();
+        loginUser(); 
+        //usernameLogin();
         clearLoginInput(); 
     });
 })
@@ -44,6 +45,7 @@ const loginUser = async () => {
         Password: $("#signupPassword").val(),
     };
 
+    console.log($("#signupPassword").val());
     try {
         const response = await fetch('https://localhost:7223/api/LoginPage/login', {
             method: 'POST',
@@ -52,6 +54,7 @@ const loginUser = async () => {
         });
 
         const data = await response.json();
+        console.log("Data is ", data);
         alert(data.msg);
     } catch (error) {
         console.log("Error logging in:", error);

@@ -72,6 +72,21 @@ namespace DAL
             }
         }
 
+        public async Task<UserInfo?> GetPassword(string username)
+        {
+            try
+            {
+                return await _repo.GetOne(user => user.UserName == username);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
+      
         public async Task<UserInfo?> GetByEmail(string email)
         {
             try

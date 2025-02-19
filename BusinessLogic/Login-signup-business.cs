@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DAL;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
+using System.Diagnostics;
 
 namespace BusinessLogic
 {
@@ -40,6 +41,11 @@ namespace BusinessLogic
             return await _signUpDao.GetByUsername(username);
         }
 
+        public async Task<UserInfo?> GetPassword(string username)
+        {
+            return await _signUpDao.GetPassword(username);
+        }
+
         public async Task<UserInfo?> GetByEmail(string email)
         {
             return await _signUpDao.GetByEmail(email);
@@ -47,7 +53,14 @@ namespace BusinessLogic
 
         public bool VerifyPassword(string enteredPassword, string storeHash)
         {
-            return HashPassword(enteredPassword) == storeHash;
+            Debug.WriteLine("Password before hashing ", enteredPassword);
+
+            string hashed = HashPassword(enteredPassword);
+            Debug.WriteLine("Password after hashed ", hashed);
+            Debug.WriteLine("Store password ",storeHash);
+            if(hashed == storeHash)
+                return true;
+            return false; 
         }
 
     }
