@@ -41,8 +41,8 @@ const signUpUser = async () => {
 
 const loginUser = async () => {
     const userData = {
-        UserName: $("#usernameSignup").val(),
-        Password: $("#signupPassword").val(),
+        UserName: $("#username").val(),
+        Password: $("#login-password").val(),
     };
 
     console.log($("#signupPassword").val());
@@ -287,3 +287,6 @@ const setCookie = (name, value, days) => {
 //2. The eamil authonication
 //3. forget password
 //4. hashing for the password in database
+
+//What is working after the changes
+//1. Sign-up working for both front and back end (after i changed the code to be more secure)

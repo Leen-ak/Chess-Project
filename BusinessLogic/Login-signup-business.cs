@@ -21,6 +21,7 @@ namespace BusinessLogic
 
         private string HashPassword(string password)
         {
+            Debug.WriteLine("The password is", password);
             var hasher = new PasswordHasher<UserInfo>();
             return hasher.HashPassword(null, password);
         }
@@ -53,14 +54,9 @@ namespace BusinessLogic
 
         public bool VerifyPassword(string enteredPassword, string storeHash)
         {
-            Debug.WriteLine("Password before hashing ", enteredPassword);
-
-            string hashed = HashPassword(enteredPassword);
-            Debug.WriteLine("Password after hashed ", hashed);
-            Debug.WriteLine("Store password ",storeHash);
-            if(hashed == storeHash)
-                return true;
-            return false; 
+            var hasher = new PasswordHasher<UserInfo>();
+            var result = hasher.VerifyHashedPassword(null, storeHash, enteredPassword);
+            return result == PasswordVerificationResult.Success; 
         }
 
     }
