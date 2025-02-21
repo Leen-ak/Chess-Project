@@ -1,18 +1,56 @@
-﻿using DAL;
+﻿using BusinessLogic;
+using DAL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Reflection;
 using ViewModels;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace ExcWebsite.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LoginPageController : ControllerBase
     {
-        //we need adding info when we are doing signup 
+
+        private readonly IConfiguration _config;
+        private readonly Login_signup_business _loginBusiness;
+
+        private string GenerateJwtToken(string username)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, "User") 
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public LoginPageController(IConfiguration config)
+        {
+            _config = config;
+            _loginBusiness = new Login_signup_business();
+        }
+
         [HttpPost("signup")]
         public async Task<IActionResult> Post(UserVM viewModel)
         {
@@ -38,8 +76,10 @@ namespace ExcWebsite.Controllers
             try
             {
                 bool isValid = await vm.ValidateLogin(vm.Password!);
-                return isValid ? Ok(new { msg = "Login successful!" })
-                : Unauthorized(new { msg = "Invalid credentials" });
+                if (!isValid)
+                    return Unauthorized(new { msg = "Invalid credentials"});
+                var token = GenerateJwtToken(vm.UserName!);
+                return Ok(new { msg = "Login successful!", token = token });
             }
             catch (Exception ex)
             {
@@ -48,6 +88,7 @@ namespace ExcWebsite.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
         //we need updating info if the user forget the password 
 
         //we need delete if the user wants to delete the account 

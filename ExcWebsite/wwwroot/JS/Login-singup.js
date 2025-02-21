@@ -54,8 +54,12 @@ const loginUser = async () => {
         });
 
         const data = await response.json();
-        console.log("Data is ", data);
-        alert(data.msg);
+        if (response.ok) {
+            localStorage.setItem("token", data.token); // Store JWT in local storage
+            alert("Login successful");
+        } else {
+            alert(data.msg);
+        }
     } catch (error) {
         console.log("Error logging in:", error);
     }
