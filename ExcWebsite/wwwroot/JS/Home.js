@@ -1,5 +1,5 @@
 ﻿$(() => {
-    const username = getCookie("username");
+    const username = getUsernameFromToken(); 
     if (username) {
         $("#header-name").html(`<h1>${username}</h1>`);
         GetPhoto(username);
@@ -10,13 +10,37 @@
 
 });
 
-const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-        return parts.pop().split(";").shift();
+const getUsernameFromToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        console.warn("No token found in localStorage.");
+        return null;
     }
-    return null;
+
+    try {
+        const base64Url = token.split('.')[1];
+        if (!base64Url) {
+            console.error("Invalid JWT format.");
+            return null;
+        }
+
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = atob(base64);
+        const decodedData = JSON.parse(jsonPayload);
+
+        // ✅ Find the correct key for username
+        const usernameKey = Object.keys(decodedData).find(key => key.includes("name"));
+        if (!usernameKey) {
+            console.warn("The 'name' field is missing in JWT.");
+            return null;
+        }
+
+        console.log("Extracted username:", decodedData[usernameKey]);
+        return decodedData[usernameKey];
+    } catch (error) {
+        console.error("Error decoding JWT:", error);
+        return null;
+    }
 };
 
 const UploadPhoto = (event) => {
@@ -81,4 +105,7 @@ const GetPhoto = async (username) => {
 };
 
 //TO DO
-//1. User adding the picture in js is not working but it warks with swagger 
+//1. User adding the picture in js is not working but it warks with swagger
+
+//what has been done after making the code more secure
+//1. Getting the usernmae from JWT locaStorage instead of setting and getting the username from cookies

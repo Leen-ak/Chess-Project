@@ -1,7 +1,6 @@
 ﻿$(() => {
     $("#signup-btn").on("click", (event) => {
         event.preventDefault();
-        //setUpUserInfo(); 
         signUpUser(); 
         clearSignupInput();
     });
@@ -9,11 +8,9 @@
     $("#login-btn").on("click", (event) => {
         event.preventDefault(); 
         loginUser(); 
-        //usernameLogin();
         clearLoginInput(); 
     });
 })
-
 
 const signUpUser = async () => {
     const userData = {
@@ -295,3 +292,4 @@ const setCookie = (name, value, days) => {
 
 //What is working after the changes
 //1. Sign-up working for both front and back end (after i changed the code to be more secure)
+//2. Login is working + the JWT for sending the toking to a localStoarge 
