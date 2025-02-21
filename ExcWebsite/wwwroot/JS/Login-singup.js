@@ -47,7 +47,7 @@ const loginUser = async () => {
 
     console.log($("#signupPassword").val());
     try {
-        const response = await fetch('https://localhost:7223/api/LoginPage/login', {
+        const response = await fetch('https://localhost:7223/api/LoginPage/Login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
@@ -57,6 +57,7 @@ const loginUser = async () => {
         if (response.ok) {
             localStorage.setItem("token", data.token); // Store JWT in local storage
             alert("Login successful");
+            window.location.href = "..//HTML/Home.html"; 
         } else {
             alert(data.msg);
         }

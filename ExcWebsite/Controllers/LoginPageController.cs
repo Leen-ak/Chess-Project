@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ExcWebsite.Controllers
 {
-    [Authorize]
+   
     [Route("api/[controller]")]
     [ApiController]
     public class LoginPageController : ControllerBase
