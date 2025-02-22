@@ -12,16 +12,14 @@ namespace ViewModels
 {
     public class HomeVM
     {
-        public int? Id { get; set; }
-        public string? Email { get; set; }
         public string? UserName { get; set; }
-        public string? Picture { get; set; }
+        public string? PictureBase64 { get; set; }
         public string? Timer { get; set; }
 
         public HomeVM(string username, string pictureBase64)
         {
             UserName = username;
-            Picture = pictureBase64;            
+            PictureBase64 = pictureBase64;
         }
     }
 }

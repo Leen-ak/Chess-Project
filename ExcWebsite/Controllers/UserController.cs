@@ -49,7 +49,7 @@ namespace ExcWebsite.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error updating profile picture: {ex.Message}");
+                Console.WriteLine($"Error updating profile picture: {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, new { msg = "Internal Server Error" });
             }
         }
