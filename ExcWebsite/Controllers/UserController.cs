@@ -30,28 +30,29 @@ namespace ExcWebsite.Controllers
             string base64Image = Convert.ToBase64String(imageBytes);
             return Ok(new HomeVM(username, base64Image));
         }
-
         [HttpPut("update-picture")]
-        public async Task<IActionResult> UpdateProfilePicture(IFormFile file, string username)
+        [Consumes("application/json")] 
+        public async Task<IActionResult> UpdateProfilePicture([FromBody] HomeVM model)
         {
-            if (file == null || string.IsNullOrEmpty(username))
-                return BadRequest(new { msg = "Username and file are required." });
+            if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.PictureBase64))
+                return BadRequest(new { msg = "Username and picture are required" });
 
             try
             {
-                using var memoryStream = new MemoryStream();
-                await file.CopyToAsync(memoryStream);
-                byte[] imageBytes = memoryStream.ToArray();
-
-                bool success = await _userBusiness.UpdateProfilePicture(username, imageBytes);
-                return success ? Ok(new { msg = "Profile picture updated successfully!" })
-                               : NotFound(new { msg = "User not found." });
+                Console.WriteLine($"Received Username: {model.UserName}");
+                Console.WriteLine($"Received Image (Base64 Length): {model.PictureBase64.Length} characters");
+                byte[] imageBytes = Convert.FromBase64String(model.PictureBase64);
+                bool success = await _userBusiness.UpdateProfilePicture(model.UserName, imageBytes);
+                return success ? Ok(new { msg = "Profile picture updated successfully" })
+                               : NotFound(new { msg = "User not found" });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error updating profile picture: {ex.Message}");
+                Console.WriteLine($"Error in {MethodBase.GetCurrentMethod()?.Name}: {ex}");
                 return StatusCode(StatusCodes.Status500InternalServerError, new { msg = "Internal Server Error" });
             }
         }
+
+
     }
 }
