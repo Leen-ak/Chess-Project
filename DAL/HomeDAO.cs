@@ -31,35 +31,15 @@ namespace DAL
                 throw; 
             }
         }
-
-        public async Task<UpdateStatus> Update(UserInfo updateUser)
+        
+        public async Task<bool> UpdateProfilePicture(string username, byte[] imageBytes)
         {
-            UpdateStatus status;
-            try
-            {
-                var existingUser = await _repo.GetOne(u => u.Id == updateUser.Id);
-                if (existingUser == null)
-                {
-                    Debug.WriteLine("User not found in database!");
-                    return UpdateStatus.Failed;
-                }
+            var user = await _repo.GetOne(u => u.UserName == username);
+            if (user == null) return false;
 
-                existingUser.Picture = updateUser.Picture;
-                status = await _repo.Update(updateUser);
-                return status;
-
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                status = UpdateStatus.Stale;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-            return status;
+            user.Picture = imageBytes;
+            await _repo.Update(user);
+            return true; 
         }
     }
 }

@@ -54,6 +54,7 @@ namespace ViewModels
             }
         }
 
+        //picture 
         public async Task<int> Update()
         {
             int updateStatus;
@@ -62,11 +63,6 @@ namespace ViewModels
                 UserInfo user = new()
                 {
                     Id = (int)Id!,
-                    Firstname = FirstName!,
-                    Lastname = LastName!,
-                    UserName = UserName!,
-                    Email = Email!,
-                    Password = Password!,
                     Picture = Picture,
                     Timer = Timer != null ? Convert.FromBase64String(Timer) : null
                 };

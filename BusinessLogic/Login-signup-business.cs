@@ -31,7 +31,6 @@ namespace BusinessLogic
             newUser.Password = HashPassword(newUser.Password);
             return await _signUpDao.Add(newUser);
         }
-
         public async Task<UpdateStatus> Update(UserInfo updateUser)
         {
             return await _signUpDao.Update(updateUser); 
