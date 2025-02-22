@@ -32,18 +32,26 @@ namespace ExcWebsite.Controllers
         }
 
         [HttpPut("update-picture")]
-        public async Task<IActionResult> UpdateProfilePicture(HomeVM model)
+        public async Task<IActionResult> UpdateProfilePicture(IFormFile file, string username)
         {
-            if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.Picture))
-                return BadRequest(new { msg = "Username and picture are required." });
+            if (file == null || string.IsNullOrEmpty(username))
+                return BadRequest(new { msg = "Username and file are required." });
 
-            // ✅ Convert Base64 to byte[] before passing to Business Layer
-            byte[] imageBytes = Convert.FromBase64String(model.Picture);
-            bool success = await _userBusiness.UpdateProfilePicture(model.UserName, imageBytes);
+            try
+            {
+                using var memoryStream = new MemoryStream();
+                await file.CopyToAsync(memoryStream);
+                byte[] imageBytes = memoryStream.ToArray();
 
-            return success ? Ok(new { msg = "Profile picture updated successfully!" })
-                           : NotFound(new { msg = "User not found." });
+                bool success = await _userBusiness.UpdateProfilePicture(username, imageBytes);
+                return success ? Ok(new { msg = "Profile picture updated successfully!" })
+                               : NotFound(new { msg = "User not found." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error updating profile picture: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { msg = "Internal Server Error" });
+            }
         }
-
     }
 }
