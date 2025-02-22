@@ -9,42 +9,46 @@
     }
 });
 
+//Get JWT FROM HttpOnly Cookies 
+const getTokenFromCookies = () => {
+    return document.cookie //return the cookies as a single string
+        .split('; ') //converts the string into an array
+        .find(row => row.startsWith('AuthToken=')) //find the key that i created in the controller 
+        ?.split('=')[1]; //extracts only the token value 
+};
+
+//Extract username from JWT (from cookie)
 const getUsernameFromToken = () => {
-    const token = localStorage.getItem("token");
+    const token = getTokenFromCookies(); 
     if (!token) {
-        console.warn("No token found in localStorage.");
-        return null;
+        console.log("No token found in cookies");
+        return; 
     }
 
     try {
-        const base64Url = token.split('.')[1];
-        if (!base64Url) {
-            console.error("Invalid JWT format.");
-            return null;
-        }
-
+        const base64Url = token.split('.')[1]; //get payload
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = atob(base64);
         const decodedData = JSON.parse(jsonPayload);
-
         const usernameKey = Object.keys(decodedData).find(key => key.includes("name"));
         if (!usernameKey) {
-            console.warn("The 'name' field is missing in JWT.");
-            return null;
+            console.log("The name field is missing in JWT.");
+            return;
         }
-
-        console.log("Extracted username:", decodedData[usernameKey]);
+        console.log("The username is: ", decodedData[usernameKey]);
         return decodedData[usernameKey];
-    } catch (error) {
-        console.error("Error decoding JWT:", error);
-        return null;
     }
-};
+    catch (error) {
+        console.error("Error decoding JWT: ", error);
+        return; 
+    }
+}
 
 const GetPhoto = async (username) => {
     try {
         const response = await fetch(`https://localhost:7223/update-picture/profile-picture/${username}`, {
-            method: 'GET'
+            method: 'GET',
+            credentials: "include" //to make sure the cookies are sent with the request
         });
 
         console.log("Response Status:", response.status);
@@ -97,6 +101,7 @@ const UploadPhoto = async (event) => {
             const response = await fetch("https://localhost:7223/update-picture/update-picture", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(payload),
             });
 
@@ -116,8 +121,6 @@ const UploadPhoto = async (event) => {
         }
     };
 };
-
-
 document.getElementById("fileInput").addEventListener("change", UploadPhoto);
 
 //TO DO

@@ -30,8 +30,9 @@ namespace ExcWebsite.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, "User") 
+               new Claim(JwtRegisteredClaimNames.Sub, username),
+               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+               new Claim(ClaimTypes.Name, username)
             };
 
             var token = new JwtSecurityToken(
@@ -79,6 +80,12 @@ namespace ExcWebsite.Controllers
                 if (!isValid)
                     return Unauthorized(new { msg = "Invalid credentials"});
                 var token = GenerateJwtToken(vm.UserName!);
+                Response.Cookies.Append("AuthToken", token, new CookieOptions { 
+                    HttpOnly = true, //JS can't access it 
+                    Secure = true, //Sent only over HTTPS 
+                    SameSite = SameSiteMode.Strict, //To prevents CSRF attacks, also that it just accept the cookies that generate from my site not another site
+                    Expires = DateTime.UtcNow.AddHours(1)
+                });
                 return Ok(new { msg = "Login successful!", token = token });
             }
             catch (Exception ex)

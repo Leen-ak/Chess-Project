@@ -30,6 +30,7 @@ namespace ExcWebsite.Controllers
             string base64Image = Convert.ToBase64String(imageBytes);
             return Ok(new HomeVM(username, base64Image));
         }
+
         [HttpPut("update-picture")]
         [Consumes("application/json")] 
         public async Task<IActionResult> UpdateProfilePicture([FromBody] HomeVM model)
