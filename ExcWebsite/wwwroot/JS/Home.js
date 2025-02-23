@@ -110,3 +110,13 @@ const UploadPhoto = async (event) => {
     };
 };
 document.getElementById("fileInput").addEventListener("change", UploadPhoto);
+
+//TO DO
+//1. User adding the picture in js is not working but it warks with swagger
+
+//NOTE: for tomorrow i should start doing the logout 404 error
+
+//what has been done after making the code more secure
+//1. Getting the usernmae from JWT locaStorage instead of setting and getting the username from cookies
+//2. Getting the photo is working fine
+//3. The fucking phowo is uploading IN THE STUPID JS AFTER 10000000000 TRY 

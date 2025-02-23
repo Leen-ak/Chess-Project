@@ -32,6 +32,33 @@ namespace ExcWebsite.Controllers
             _networkVm = new NetworkVM(); 
         }
 
+        [Authorize]
+        [HttpGet("GetUserNetworkData")]
+        public async Task<IActionResult> GetUserNetworkData()
+        {
+            try
+            {
+                var userId = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
+                var user = await _networkVm.GetUsernameById(userId);
+                if (user == null)
+                    return NotFound(new { msg = "Username not found!" }); 
+
+                var (pendingRequests, requestCount) = await _networkVm.GetPendingRequestWithCount(userId);
+                return Ok(new
+                {
+                    user?.UserName,
+                    user?.Picture,
+                    pendingRequests,
+                    requestCount
+                });
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
 
         [HttpGet("GetAllUsernames")]
         public async Task<IActionResult> GetAll() 
@@ -77,7 +104,7 @@ namespace ExcWebsite.Controllers
             try
             {
                 NetworkVM vm = new() { Id = userId };
-                await vm.GetUsernameById();
+                await vm.GetUsernameById(userId);
                 return Ok(new { vm });
             }
             catch (Exception ex)
@@ -172,3 +199,10 @@ namespace ExcWebsite.Controllers
         }
     }
 }
+
+
+//Make the code better 
+//I need just 3 API 
+//1. GET: GetUserNetworkData -> returns all the user data, following everything
+//2. POST: AddingFriends -> sends follow request 
+//3. PUT: UpdateRequest -> Accepts/Rejects follow request 
