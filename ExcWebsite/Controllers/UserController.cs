@@ -33,6 +33,7 @@ namespace ExcWebsite.Controllers
         }
 
         [HttpPut("update-picture")]
+        [Consumes("application/json")] // ✅ Accepts JSON instead of FormData
         public async Task<IActionResult> UpdateProfilePicture([FromBody] HomeVM model)
         {
             if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.PictureBase64))
@@ -40,16 +41,19 @@ namespace ExcWebsite.Controllers
 
             try
             {
-                Console.WriteLine($"Received Username: {model.UserName}");
-                Console.WriteLine($"Received Image (Base64 Length): {model.PictureBase64.Length} characters");
+                Console.WriteLine($"✅ Received Username: {model.UserName}");
+                Console.WriteLine($"✅ Received Image (Base64 Length): {model.PictureBase64.Length}");
+
+                // Convert Base64 to byte array
                 byte[] imageBytes = Convert.FromBase64String(model.PictureBase64);
                 bool success = await _userBusiness.UpdateProfilePicture(model.UserName, imageBytes);
+
                 return success ? Ok(new { msg = "Profile picture updated successfully" })
                                : NotFound(new { msg = "User not found" });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in {MethodBase.GetCurrentMethod()?.Name}: {ex}");
+                Console.WriteLine($"❌ Error in {MethodBase.GetCurrentMethod()?.Name}: {ex}");
                 return StatusCode(StatusCodes.Status500InternalServerError, new { msg = "Internal Server Error" });
             }
         }
