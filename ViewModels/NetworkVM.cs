@@ -73,17 +73,19 @@ namespace ViewModels
             }
         }
 
-        public async Task<UserInfo?> GetUsernameById(int? userId)
+        public async Task GetUsernameById()
         {
             try
             {
-                UserInfo? user = await _networkService.GetUsernameById(userId!);
-                return user; 
+                UserInfo? user = await _networkService.GetUsernameById(Id!);
+                Id = user?.Id;
+                Username = user?.UserName;
+                Picture = user?.Picture;
             }
             catch (NullReferenceException nex)
             {
                 Debug.WriteLine(nex.Message);
-                return null; 
+                Username = "Username Not Found!";
             }
             catch (Exception ex)
             {

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ExcWebsite.Controllers
 {
-   
+
     [Route("api/[controller]")]
     [ApiController]
     public class LoginPageController : ControllerBase
@@ -59,13 +59,13 @@ namespace ExcWebsite.Controllers
             {
                 await viewModel.Add();
                 return viewModel.Id > 0 ? Ok(new { msg = "User " + viewModel.FirstName + " added!" })
-                    : Ok(new { msg = "User " + viewModel.FirstName + " not added!" }); 
+                    : Ok(new { msg = "User " + viewModel.FirstName + " not added!" });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " "
                     + MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError); 
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -141,6 +141,6 @@ namespace ExcWebsite.Controllers
                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }     
+        }
     }
 }
