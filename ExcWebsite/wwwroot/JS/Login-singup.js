@@ -52,9 +52,8 @@ const loginUser = async () => {
 
         const data = await response.json();
         if (response.ok) {
-            localStorage.setItem("token", data.token); // Store JWT in local storage
             alert("Login successful");
-            window.location.href = "..//HTML/Home.html"; 
+            window.location.href = "../HTML/Home.html"; 
         } else {
             alert(data.msg);
         }

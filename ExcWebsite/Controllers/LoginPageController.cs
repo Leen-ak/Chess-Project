@@ -23,6 +23,12 @@ namespace ExcWebsite.Controllers
         private readonly IConfiguration _config;
         private readonly Login_signup_business _loginBusiness;
 
+        public LoginPageController(IConfiguration config)
+        {
+            _config = config;
+            _loginBusiness = new Login_signup_business();
+        }
+
         private string GenerateJwtToken(string username)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -44,12 +50,6 @@ namespace ExcWebsite.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        public LoginPageController(IConfiguration config)
-        {
-            _config = config;
-            _loginBusiness = new Login_signup_business();
         }
 
         [HttpPost("signup")]
@@ -78,27 +78,34 @@ namespace ExcWebsite.Controllers
             {
                 bool isValid = await vm.ValidateLogin(vm.Password!);
                 if (!isValid)
-                    return Unauthorized(new { msg = "Invalid credentials"});
+                    return Unauthorized(new { msg = "Invalid credentials" });
+
                 var token = GenerateJwtToken(vm.UserName!);
-                Response.Cookies.Append("AuthToken", token, new CookieOptions { 
-                    HttpOnly = true, //JS can't access it 
-                    Secure = true, //Sent only over HTTPS 
-                    SameSite = SameSiteMode.Strict, //To prevents CSRF attacks, also that it just accept the cookies that generate from my site not another site
+
+                // ✅ FIX: Ensure cookie is set correctly
+                Response.Cookies.Append("AuthToken", token, new CookieOptions
+                {
+                    HttpOnly = true,   // Prevent JavaScript access
+                    Secure = true,     // Requires HTTPS (set to false for localhost)
+                    SameSite = SameSiteMode.Strict, // Prevent CSRF
                     Expires = DateTime.UtcNow.AddHours(1)
                 });
-                return Ok(new { msg = "Login successful!", token = token });
+
+                return Ok(new { msg = "Login successful!" });
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Problem in " + GetType().Name + " "
-                    + MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                Debug.WriteLine($"Error: {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
-        //we need updating info if the user forget the password 
-
-        //we need delete if the user wants to delete the account 
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("AuthToken");
+            return Ok(new { msg = "Logged out successfully" });
+        }
 
         //Get by UserName 
         [HttpGet("username/{username}")]

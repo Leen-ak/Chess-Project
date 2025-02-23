@@ -1,16 +1,17 @@
 ﻿using BusinessLogic;
 using DAL;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using ViewModels;
 
 namespace ExcWebsite.Controllers
 {
     [ApiController]
     [Route("update-picture")]
-    [Consumes("multipart/form-data")]
     public class UserController : ControllerBase
     {
         private readonly Home_Business _userBusiness;
@@ -32,7 +33,6 @@ namespace ExcWebsite.Controllers
         }
 
         [HttpPut("update-picture")]
-        [Consumes("application/json")] 
         public async Task<IActionResult> UpdateProfilePicture([FromBody] HomeVM model)
         {
             if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.PictureBase64))
@@ -54,6 +54,25 @@ namespace ExcWebsite.Controllers
             }
         }
 
+        [HttpGet("profile")]
+        [Authorize]
+        public IActionResult GetUserProfile()
+        {
+            try
+            {
+                var usernameClaim = User.FindFirst(ClaimTypes.Name)?.Value;
+
+                if (string.IsNullOrEmpty(usernameClaim))
+                    return Unauthorized(new { msg = "User not found" });
+
+                return Ok(new { username = usernameClaim });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in {MethodBase.GetCurrentMethod()?.Name}: {ex}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { msg = "Internal Server Error" });
+            }
+        }
 
     }
 }
