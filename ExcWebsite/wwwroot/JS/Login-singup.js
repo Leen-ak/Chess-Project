@@ -48,25 +48,29 @@ const loginUser = async () => {
         Password: $("#login-password").val(),
     };
 
-    console.log($("#signupPassword").val());
+    console.log("Sending login request with: ", userData);
     try {
         const response = await fetch('https://localhost:7223/api/LoginPage/Login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: "include", 
             body: JSON.stringify(userData)
         });
 
         const data = await response.json();
+        console.log("Login response:", data);
+
         if (response.ok) {
             alert("Login successful");
-            window.location.href = "../HTML/Home.html"; 
+            window.location.href = "../HTML/Home.html";
         } else {
-            alert(data.msg);
+            alert(data.msg || "Invalid Credential");
         }
     } catch (error) {
         console.log("Error logging in:", error);
     }
 };
+
 
 const clearSignupInput = () => {
     $("#firstname").val("");

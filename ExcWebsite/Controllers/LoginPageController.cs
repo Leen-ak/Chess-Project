@@ -77,7 +77,7 @@ namespace ExcWebsite.Controllers
         //we do not use GET for security reasons like the username and password will be in the request body if it was GET
         // or maybe in the URL, server logs, so instead we do post it keeps the credentials hidden from the URL 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(UserVM vm)
+        public async Task<IActionResult> Login(LoginVM vm)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace ExcWebsite.Controllers
 
                 var token = GenerateJwtToken(vm.UserName!);
 
-                // ✅ FIX: Ensure cookie is set correctly
+                // ✅Set JWT as HttpOnly cookie
                 Response.Cookies.Append("AuthToken", token, new CookieOptions
                 {
                     HttpOnly = true,   // Prevent JavaScript access
@@ -96,7 +96,8 @@ namespace ExcWebsite.Controllers
                     Expires = DateTime.UtcNow.AddHours(1)
                 });
 
-                return Ok(new { msg = "Login successful!" });
+                //Return token for debugging (REMOVE in production)
+                return Ok(new { msg = "Login successful!", token = token });
             }
             catch (Exception ex)
             {
@@ -104,6 +105,7 @@ namespace ExcWebsite.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
 
         [HttpPost("logout")]
         public IActionResult Logout()

@@ -114,28 +114,6 @@ namespace ViewModels
             }
         }
 
-        public async Task<(string, string)> GetPassword()
-        {
-            try
-            {
-                UserInfo? user = await _service.GetPassword(UserName!); 
-                UserName = user!.UserName;
-                Password = user.Password;
-            }
-            catch (NullReferenceException nex)
-            {
-                Debug.WriteLine(nex.Message);
-                UserName = "Username Not Found!";
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-            return (UserName, Password)!;
-        }
-
         public async Task GetByEmail()
         {
             try
@@ -160,22 +138,6 @@ namespace ViewModels
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
-
-        public async Task<bool> ValidateLogin(string enteredPassword)
-        {
-            try
-            {
-                UserInfo? user = await _service.GetPassword(UserName!);
-                if (user == null)
-                    return false;
-                return _service.VerifyPassword(enteredPassword, user.Password);
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine("Problem in ValidateLogin: " + ex.Message);
                 throw;
             }
         }
