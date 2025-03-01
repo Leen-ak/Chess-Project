@@ -54,6 +54,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var jwtkey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtkey))
+{
+    throw new Exception("JWT Key is missing! Set Jwt__Key environment variable."); 
+}
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -78,7 +83,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtkey))
         };
     });
 

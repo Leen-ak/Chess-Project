@@ -19,7 +19,7 @@ namespace ExcWebsite.Controllers
     [ApiController]
     public class LoginPageController : ControllerBase
     {
-
+        //Interface in ASP.NET used to access configuration setting from appsettings.json
         private readonly IConfiguration _config;
         private readonly Login_signup_business _loginBusiness;
 
@@ -106,6 +106,14 @@ namespace ExcWebsite.Controllers
             Response.Cookies.Delete("AuthToken");
             return Ok(new { msg = "Logged out successfully" });
         }
+
+        //Just for texting 
+        //[HttpGet("Check-jwt-key")]
+        //public IActionResult CheckJwtKey(IConfiguration config)
+        //{
+        //    string? jwtkey = config["Jwt:Key"];
+        //    return Ok(new { jwtkey = jwtkey ?? "JWT Key is missing!" }); 
+        //}
 
         //Get by UserName 
         [HttpGet("username/{username}")]
