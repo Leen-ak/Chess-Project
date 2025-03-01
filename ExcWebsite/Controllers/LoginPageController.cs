@@ -57,6 +57,11 @@ namespace ExcWebsite.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new { msg = "Invalid User Information" });
+                }
+
                 await viewModel.Add();
                 return viewModel.Id > 0 ? Ok(new { msg = "User " + viewModel.FirstName + " added!" })
                     : Ok(new { msg = "User " + viewModel.FirstName + " not added!" });

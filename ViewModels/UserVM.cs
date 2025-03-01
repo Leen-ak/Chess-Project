@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Reflection;
 using BusinessLogic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ViewModels
 {
@@ -19,7 +20,13 @@ namespace ViewModels
         public string? LastName { get; set; }
         public string? Email { get; set; }
         public string? UserName { get; set; }
+
+        [Required(ErrorMessage = "Password is required")]
+        [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
         public string? Password { get; set; }
+
+        [Required(ErrorMessage ="Confirm Password is required.")]
+        [Compare("Password", ErrorMessage ="Password do not match.")]
         public string? PasswordConfiguration { get; set; }
         public byte[]? Picture { get; set; }
         public string? Timer { get; set; }

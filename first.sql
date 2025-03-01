@@ -83,4 +83,5 @@ SELECT * FROM UserInfo;
 GO
 
 
+DELETE from UserInfo where Id = 1;
 
