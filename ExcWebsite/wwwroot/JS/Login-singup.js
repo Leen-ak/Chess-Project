@@ -19,7 +19,7 @@ const signUpUser = async () => {
         UserName: $("#usernameSignup").val(),
         Email: $("#email").val(),
         Password: $("#signupPassword").val(),
-        ConfirmPassword: $("#passwordConfirm").val(),
+        PasswordConfiguration: $("#passwordConfirm").val()
     };
 
     try {
@@ -30,7 +30,13 @@ const signUpUser = async () => {
         });
 
         const data = await response.json();
-        alert(data.msg);
+
+        if (!response.ok) {
+            alert(data.msg || "Invalid user Information.");
+            return;
+        }
+
+        alert("User added"); 
     } catch (error) {
         console.log("Error signing up:", error);
     }
@@ -61,6 +67,20 @@ const loginUser = async () => {
         console.log("Error logging in:", error);
     }
 };
+
+const clearSignupInput = () => {
+    $("#firstname").val("");
+    $("#lastname").val("");
+    $("#usernameSignup").val("");
+    $("#email").val("");
+    $("#signupPassword").val("");
+    $("#passwordConfirm").val("");
+}
+
+const clearLoginInput = () => {
+    $("#username").val("");
+    $("#login-password").val("");
+}
 
 //if they did not have an account
 //sign up
@@ -102,19 +122,6 @@ const setUpUserInfo = () => {
         console.log("Validation failed. Please fix the errors and try again.");
 }
 
-const clearSignupInput = () => {
-    $("#firstname").val("");
-    $("#lastname").val("");
-    $("#usernameSignup").val ("");
-    $("#email").val("");
-    $("#signupPassword").val("");
-    $("#passwordConfirm").val("");
-}
-
-const clearLoginInput = () => {
-    $("#username").val("");
-    $("#login-password").val("");
-}
 
 const validateUsernameUniqueness = async () => {
     try {
