@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.VisualBasic;
 
 
 namespace ExcWebsite.Controllers
@@ -59,7 +60,11 @@ namespace ExcWebsite.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new { msg = "Invalid User Information" });
+                    return BadRequest(new
+                    {
+                        msg = "Invalid User Information",
+                        errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
+                    });
                 }
 
                 await viewModel.Add();

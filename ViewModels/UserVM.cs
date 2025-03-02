@@ -16,9 +16,22 @@ namespace ViewModels
         readonly private SignUpDAO _dao;
         readonly private Login_signup_business _service; 
         public int? Id { get; set; }
+
+        [Required(ErrorMessage = "First name is required")]
+        [MaxLength(30, ErrorMessage = "First name cannot be more than 30 characters")]
         public string? FirstName { get; set; }
+
+        [Required(ErrorMessage = "Last name is required")]
+        [MaxLength(30, ErrorMessage = "Last name cannot be more than 30 characters")]
         public string? LastName { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+        [MaxLength(64, ErrorMessage = "Email cannot be more than 64 characters")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
         public string? Email { get; set; }
+
+        [Required(ErrorMessage = "Username is required")]
+        [MaxLength(30, ErrorMessage = "Username cannot be more than 30 characters")]
         public string? UserName { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
