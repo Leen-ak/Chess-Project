@@ -1,5 +1,6 @@
 ﻿using BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace ExcWebsite.Controllers
 {
@@ -7,25 +8,24 @@ namespace ExcWebsite.Controllers
     [Route("api/[controller]")]
     public class EmailController : ControllerBase
     {
+        private readonly EmailService _emailService;
 
-        private readonly IConfiguration _config;
-        public EmailController(IConfiguration config)
+        public EmailController(EmailService emailService)
         {
-            _config = config;
+            _emailService = emailService;
         }
 
         [HttpPost("send-test-email")]
         public async Task<IActionResult> SendTestEmail()
         {
-            var emailService = new EmailService(_config);
-
-            bool isSent = await emailService.SendEmailAsync(
-                "Leen_8_2001@outlook.com",
+            bool isSent = await _emailService.SendEmailAsync(
+                "leen_8_2001@outlook.com", 
                 "Test Email",
                 "Hello, this is a test email from Leen's app!"
             );
 
-            return isSent ? Ok(new { msg = "Email sent successfully!" }) 
+            return isSent
+                ? Ok(new { msg = "Email sent successfully!" })
                 : StatusCode(500, "Failed to send email.");
         }
     }

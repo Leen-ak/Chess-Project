@@ -1,5 +1,6 @@
 using System.Text;
 using DAL;
+using BusinessLogic; 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,12 +14,14 @@ builder.Services.AddSwaggerGen();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Configuration.AddEnvironmentVariables();
 
+builder.Services.AddScoped<EmailService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         builder => builder
-            .WithOrigins("https://localhost:3000", "http://localhost:7223") 
-            .AllowCredentials() 
+            .WithOrigins("https://localhost:3000", "http://localhost:7223")
+            .AllowCredentials()
             .AllowAnyHeader()
             .AllowAnyMethod()
     );
@@ -57,7 +60,7 @@ builder.Services.AddSwaggerGen(c =>
 var jwtkey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrEmpty(jwtkey))
 {
-    throw new Exception("JWT Key is missing! Set Jwt__Key environment variable."); 
+    throw new Exception("JWT Key is missing! Set Jwt__Key environment variable.");
 }
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -108,7 +111,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
