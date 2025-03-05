@@ -27,7 +27,7 @@ namespace BusinessLogic
                 var useSSL = bool.Parse(_config["EmailSettings:UseSSL"]);
 
                 var email = new MimeMessage();
-                email.From.Add(new MailboxAddress("Your App Name", smtpUsername));
+                email.From.Add(new MailboxAddress("The Chess Gambit", smtpUsername));
                 email.To.Add(new MailboxAddress("", toEmail));
                 email.Subject = subject;
                 email.Body = new TextPart("plain") { Text = message };
