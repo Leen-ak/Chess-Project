@@ -33,7 +33,7 @@ namespace ExcWebsite.Controllers
         }
 
         [HttpPut("update-picture")]
-        [Consumes("application/json")] // ✅ Accepts JSON instead of FormData
+        [Consumes("application/json")] 
         public async Task<IActionResult> UpdateProfilePicture([FromBody] HomeVM model)
         {
             if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.PictureBase64))
