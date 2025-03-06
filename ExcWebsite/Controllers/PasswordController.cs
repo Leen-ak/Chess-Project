@@ -15,19 +15,19 @@ namespace ExcWebsite.Controllers
             _vm = new PasswordVM(); 
         }
 
-        [HttpGet("GetIdByEmail/{email}")]
-        public async Task<IActionResult> GetEmail(string email)
+        [HttpPost("VerifyEmail")]
+        public async Task<IActionResult> VerifyEmail([FromBody] PasswordVM vm)
         {
             try
             {
-                PasswordVM vm = new PasswordVM { Email = email };
                 await vm.GetByEmail();
-                return Ok(new { msg = $"The user ID of {vm.Email} is {vm.Id} " }); 
+                return Ok(new { msg = "Email found! Proceeding to reset.", userId = vm.Id });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { msg = "Internal server error", details = ex.Message });
+                return BadRequest(new { msg = ex.Message });
             }
         }
+
     }
 }

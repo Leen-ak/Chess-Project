@@ -21,9 +21,6 @@ namespace ViewModels
 
         public int? Id { get; set; }
         public string? Email { get; set; }
-        public string? Password { get; set; }
-        public string? PasswordConfiguration { get; set; }
-        public string Timer { get; set; }
 
         public async Task GetByEmail()
         {
