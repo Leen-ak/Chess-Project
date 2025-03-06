@@ -9,14 +9,24 @@
 });
 
 const getEmail = async (email) => {
-    const response = await fetch(`https://localhost:7223/api/Password/VerifyEmail`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({Email: email})
-    });
+    try {
+        const response = await fetch(`https://localhost:7223/api/Password/VerifyEmail`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ Email: email })  
+        });
 
-    if (response.ok) {
-        const data = await response.json();
-        console.log("Server Response:", data);
+        const data = await response.json(); 
+
+        if (!response.ok) {
+            alert(data.msg || "Error verifying email.");
+        } else if (!data.userId) {
+            alert("Email not found in the database.");
+        } else {
+            alert("Reset password link has been sent to your email!");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("An unexpected error occurred. Please try again.");
     }
-}
+};
