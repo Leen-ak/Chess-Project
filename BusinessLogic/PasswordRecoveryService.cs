@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
@@ -19,8 +21,9 @@ namespace BusinessLogic
 
         public async Task<int?> GetIdByEmail(string email)
         {
-            int? userId = await _passwordDAO.GetIdByEmail(email);
-            return userId ?? throw new Exception("Email not found!"); 
+            var user = await _passwordDAO.GetIdByEmail(email);
+            Debug.WriteLine($"User id is {user}"); 
+            return user == null ? throw new InvalidOperationException("Id not found") : user.Value;
         }
     }
 }

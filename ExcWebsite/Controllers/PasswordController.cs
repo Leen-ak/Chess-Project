@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using ViewModels;
 
 namespace ExcWebsite.Controllers
@@ -18,15 +19,10 @@ namespace ExcWebsite.Controllers
         public async Task<IActionResult> GetEmail(string email)
         {
             try
-            { 
-            if (string.IsNullOrEmpty(_vm.Email))
-                return BadRequest(new { msg = "Email is required" });
-
-            await _vm.GetByEmail();
-
-            if (_vm.Id == null)
-                return NotFound(new { msg = "User not found" });
-            return Ok(new { _vm.Id });
+            {
+                PasswordVM vm = new PasswordVM { Email = email };
+                await vm.GetByEmail();
+                return Ok(new { msg = $"The user ID of {vm.Email} is {vm.Id} " }); 
             }
             catch (Exception ex)
             {

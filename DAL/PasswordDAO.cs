@@ -20,7 +20,7 @@ namespace DAL
         {
             try
             {
-                var user = _repo.GetOne(user => user.Email == email);
+                var user = await _repo.GetOne(user => user.Email == email);
                 return user!.Id; 
             }
             catch(Exception ex)

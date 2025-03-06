@@ -53,6 +53,7 @@ namespace DAL
                 throw;
             }
         }
+
         public async Task<UserInfo?> GetUsernameById(int? id)
         {
             try
