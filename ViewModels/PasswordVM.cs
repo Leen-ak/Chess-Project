@@ -22,7 +22,7 @@ namespace ViewModels
         public int? Id { get; set; }
         public string? Email { get; set; }
 
-        public async Task GetByEmail()
+        public async Task GetIdtByEmail()
         {
             try
             {
@@ -34,6 +34,20 @@ namespace ViewModels
                 Email = "Email Not Found!";
             }
             catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task GetEmail()
+        {
+            try
+            {
+                Email = await _password.GetEmail(Id);
+            }
+            catch(Exception ex)
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);

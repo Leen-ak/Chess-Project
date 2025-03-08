@@ -30,5 +30,20 @@ namespace DAL
                 throw;
             }
         }
+
+        public async Task<string?> GetEmail(int? id)
+        {
+            try 
+            { 
+                var user = await _repo.GetOne(user => user.Id == id);
+                return user!.Email;
+            }
+            catch(Exception ex) 
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
     }
 }
