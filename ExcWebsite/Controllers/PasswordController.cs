@@ -37,7 +37,9 @@ namespace ExcWebsite.Controllers
         [HttpPost("Send-Email")]
         public async Task<IActionResult> GetEmail([FromBody] PasswordVM vm)
         {
-            string emailBody = $@"
+            try
+            {
+                string emailBody = $@"
                 <html>
                     <body>
                         <p>Hello,</p>
@@ -48,17 +50,23 @@ namespace ExcWebsite.Controllers
                         <p>The Chess Gambit Team</p>
                     </body>
                 </html>";
-            await vm.GetEmail();
-            bool isSent = await _passwordService.SendEmailAsync(
-                vm.Email!,
-                "Password Reset",
-                emailBody
-            );
+                await vm.GetEmail();
+                bool isSent = await _passwordService.SendEmailAsync(
+                    vm.Email!,
+                    "Password Reset",
+                    emailBody
+                );
 
-            Debug.WriteLine($"Send the email to the user: {vm.Email}");
-            return isSent
-                ? Ok(new { msg = "Email sent successfully!" })
-                : StatusCode(500, "Failed to send email.");
+                Debug.WriteLine($"Send the email to the user: {vm.Email}");
+                return isSent
+                    ? Ok(new { msg = "Email sent successfully!" })
+                    : StatusCode(500, new { msg = "Failed to send email." });
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine($"Error in Send-Email API: {ex.Message}");
+                return StatusCode(500, new { msg = $"Server error: {ex.Message}" });
+            }
         }
     }
 }
