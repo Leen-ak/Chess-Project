@@ -42,7 +42,7 @@ namespace ExcWebsite.Controllers
                     <body>
                         <p>Hello,</p>
                         <p>We received a request to reset your password. Click the link below:</p>
-                        <p><a href='https://localhost:7223/html/Password.html'>Reset Password</a></p>
+                        <p><a href='https://localhost:7223/HTML/ResetPassword.html'>Reset Password</a></p>
                         <p>If you did not request this, please ignore this email.</p>
                         <p>Best,</p>
                         <p>The Chess Gambit Team</p>
