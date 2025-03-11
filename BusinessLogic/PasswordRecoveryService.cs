@@ -28,17 +28,15 @@ namespace BusinessLogic
         public async Task<int?> GetIdByEmail(string email)
         {
             var user = await _passwordDAO.GetIdByEmail(email);
-            Debug.WriteLine($"User id is {user}"); 
+            Debug.WriteLine($"User id is {user}");
             return user == null ? throw new InvalidOperationException("Id not found") : user.Value;
         }
 
-        public async Task<string?> GetEmail(int? id, string email)
+        public async Task<string?> GetEmail(int? id)
         {
-            var userEmail = await _passwordDAO.GetEmail(id, email);
+            var userEmail = await _passwordDAO.GetEmail(id!);
             if (userEmail == null) 
                 throw new Exception("Email not found for the given User ID.");
-            if (userEmail != email)
-                Debug.WriteLine("The user email does not match"); 
             return userEmail;
         }
 

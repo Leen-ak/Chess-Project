@@ -33,7 +33,7 @@ const SendEmail = async (email) => {
             body: JSON.stringify({ Id: data.userId, Email: email })
         });
 
-        const data2 = await response.json();
+        const data2 = await response2.json();
         console.log("The user email is: ", data2.email, "and data is: ", data2);
         if (!response2.ok) {
             alert(data2.msg || "Error sending email.");

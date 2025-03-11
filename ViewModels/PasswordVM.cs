@@ -45,7 +45,7 @@ namespace ViewModels
         {
             try
             {
-                Email = await _password.GetEmail(Id, Email!);
+               Email = await _password.GetEmail(Id);
             }
             catch(Exception ex)
             {
