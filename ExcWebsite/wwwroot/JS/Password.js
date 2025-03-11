@@ -7,24 +7,36 @@
 
         const email = $("#email").val();
         console.log("The user email is", email);
+        //await getUserId(email); 
         await SendEmail(email); 
     });
 });
 
 
-
 const SendEmail = async (email) => {
+
     try {
-        const response = await fetch(`https://localhost:7223/api/Password/Send-Email`, {
+        console.log("From getUserId: ", email);
+        const response = await fetch('https://localhost:7223/api/Password/VerifyEmail', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ Id: null, Email: email })
+            body: JSON.stringify({ Email: email })
         });
 
         const data = await response.json();
-        console.log("The user email is: ", data.email, "and data is: ", data);
-        if (!response.ok) {
-            alert(data.msg || "Error sending email.");
+        console.log("data from getUserId is: ", data);
+        console.log("The user ID from JS IS: ", data.userId);
+
+        const response2 = await fetch(`https://localhost:7223/api/Password/Send-Email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ Id: data.userId, Email: email })
+        });
+
+        const data2 = await response.json();
+        console.log("The user email is: ", data2.email, "and data is: ", data2);
+        if (!response2.ok) {
+            alert(data2.msg || "Error sending email.");
         } else {
             alert("Reset password email has been sent successfully!");
         }
