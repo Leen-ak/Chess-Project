@@ -19,13 +19,13 @@ public partial class ChessContext : DbContext
 
     public virtual DbSet<Follower> Followers { get; set; }
 
+    public virtual DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
     public virtual DbSet<UserInfo> UserInfos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB; Database=ChessDatabase; Trusted_Connection=True");
-        optionsBuilder.UseLazyLoadingProxies();
-    }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=ChessDatabase;Trusted_Connection=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -76,6 +76,20 @@ public partial class ChessContext : DbContext
                 .HasConstraintName("FK_Following");
         });
 
+        modelBuilder.Entity<PasswordResetToken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PI_Id");
+
+            entity.ToTable("PasswordResetToken");
+
+            entity.Property(e => e.ResetToken).HasMaxLength(255);
+            entity.Property(e => e.RestTokenExpiry).HasColumnType("datetime");
+
+            entity.HasOne(d => d.User).WithMany(p => p.PasswordResetTokens)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_PasswordResetTokens_User");
+        });
+
         modelBuilder.Entity<UserInfo>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_UserID");
@@ -89,7 +103,6 @@ public partial class ChessContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.Firstname).HasMaxLength(60);
             entity.Property(e => e.Lastname).HasMaxLength(60);
-            entity.Property(e => e.Password).HasMaxLength(30);
             entity.Property(e => e.Timer)
                 .IsRowVersion()
                 .IsConcurrencyToken();

@@ -52,6 +52,9 @@ namespace DAL
             }
         }
 
+        //so generating this random code is to ensure the reset link is one time use and secure
+        //store the token in database with the user id to validate later when the user tries to reset their password
+        //Guid -> Generates a globally unique identifier 
         //public async Task<string?> ResetPassword(string newPassword)
         //{
         //    try

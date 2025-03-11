@@ -61,6 +61,16 @@ GO
 CREATE INDEX IX_Status on Followers (Status);
 GO
 
+CREATE TABLE PasswordResetToken(
+Id INT IDENTITY,
+UserId INT NOT NULL,
+ResetToken NVARCHAR(255) NOT NULL,
+RestTokenExpiry DATETIME NOT NULL,
+CONSTRAINT PI_Id PRIMARY KEY (Id),
+CONSTRAINT FK_PasswordResetTokens_User FOREIGN KEY (UserId) REFERENCES UserInfo(Id) ON DELETE CASCADE  
+);
+GO
+
 /* Create a stored procedure to retrieve all the username that is in the databse */
 CREATE PROCEDURE dbo.GetAllUserName
 AS
@@ -83,5 +93,5 @@ SELECT * FROM UserInfo;
 GO
 
 
-DELETE from UserInfo where Id = 1;
+/*DELETE from UserInfo where Id = 1;*/
 
