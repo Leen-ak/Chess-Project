@@ -32,11 +32,14 @@ namespace BusinessLogic
             return user == null ? throw new InvalidOperationException("Id not found") : user.Value;
         }
 
-        public async Task<string?> GetEmail(int? id)
+        public async Task<string?> GetEmail(int? id, string email)
         {
-            var email = await _passwordDAO.GetEmail(id);
-            if (email == null) throw new Exception("Email not found for the given User ID.");
-            return email;
+            var userEmail = await _passwordDAO.GetEmail(id, email);
+            if (userEmail == null) 
+                throw new Exception("Email not found for the given User ID.");
+            if (userEmail != email)
+                Debug.WriteLine("The user email does not match"); 
+            return userEmail;
         }
 
         public async Task<bool> SendEmailAsync(string toEmail, string subject, string message)
@@ -54,7 +57,7 @@ namespace BusinessLogic
                 email.Subject = subject;
                 var bodyBuilder = new BodyBuilder
                 {
-                    HtmlBody = message // <-- Ensure the email content is HTML
+                    HtmlBody = message 
                 };
                 email.Body = bodyBuilder.ToMessageBody();
 

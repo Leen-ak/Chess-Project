@@ -26,6 +26,8 @@ namespace ExcWebsite.Controllers
             try
             {
                 await vm.GetIdtByEmail();
+                if (vm.Id == null)
+                    return BadRequest(new { msg = "User Id not found" }); 
                 return Ok(new { msg = "Email found!", userId = vm.Id });
             }
             catch (Exception ex)

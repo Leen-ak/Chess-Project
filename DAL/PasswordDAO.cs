@@ -21,6 +21,8 @@ namespace DAL
             try
             {
                 var user = await _repo.GetOne(user => user.Email == email);
+                if (user?.Id == null)
+                    throw new NullReferenceException("Id not found!");
                 return user!.Id; 
             }
             catch(Exception ex)
@@ -31,11 +33,15 @@ namespace DAL
             }
         }
 
-        public async Task<string?> GetEmail(int? id)
+        public async Task<string?> GetEmail(int? id, string email)
         {
             try 
             { 
                 var user = await _repo.GetOne(user => user.Id == id);
+                if (user == null)
+                    throw new NullReferenceException("The user is not found");
+                if (user.Email != email)
+                   Debug.Write("The email does not match the entered email"); 
                 return user!.Email;
             }
             catch(Exception ex) 
