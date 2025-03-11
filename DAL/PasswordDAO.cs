@@ -51,5 +51,23 @@ namespace DAL
                 throw;
             }
         }
+
+        //public async Task<string?> ResetPassword(string newPassword)
+        //{
+        //    try
+        //    {
+                
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //           MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
+
+        //resetting the password 
+        //how to reset and extract from JWT or if we need JWT TO DO THAT
+
     }
 }
