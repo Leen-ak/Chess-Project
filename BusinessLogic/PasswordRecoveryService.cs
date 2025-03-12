@@ -12,16 +12,43 @@ using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MailKit.Net.Smtp;
 using Org.BouncyCastle.Crypto.Macs;
+using System.Security.Cryptography;
 
 namespace BusinessLogic
 {
     public class PasswordRecoveryService
     {
         private readonly PasswordDAO _passwordDAO;
-
+        
         public PasswordRecoveryService()
         {
             _passwordDAO = new PasswordDAO();
+        }
+
+        public async Task<bool> RequestPasswordReset(string? email)
+        {
+            try
+            {
+                var userId = await _passwordDAO.GetIdByEmail(email!);
+                if (userId == null)
+                    throw new Exception("User not found");
+
+                string resetToken = Guid.NewGuid().ToString() + Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+                DateTime expiry = DateTime.UtcNow.AddMinutes(5);
+
+                await _passwordDAO.SavePasswordResetToken(userId.Value, resetToken, expiry);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Error in RequestPasswordReset: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<string?> GetLatestResetToken(string email)
+        {
+            return await _passwordDAO.GetLatestResetToken(email);
         }
 
 

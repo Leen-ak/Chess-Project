@@ -14,6 +14,7 @@ namespace DAL
         Task<UpdateStatus> Update(T entity);
         Task<int> Delete(int entity);
         Task<T>? GetOne(Expression<Func<T, bool>> match);
-        Task<List<T>> GetAll(); 
+        Task<List<T>> GetAll();
+      //  Task<T> Insert(T entity); 
     }
 }

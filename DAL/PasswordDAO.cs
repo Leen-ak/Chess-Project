@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -10,10 +11,12 @@ namespace DAL
 {
     public class PasswordDAO
     {
-        readonly IRepository<UserInfo> _repo; 
+        readonly IRepository<UserInfo> _repo;
+        readonly IRepository<PasswordResetToken> _passRepo; 
         public PasswordDAO()
         {
-            _repo = new RepositoryImplementation<UserInfo>(); 
+            _repo = new RepositoryImplementation<UserInfo>();
+            _passRepo = new RepositoryImplementation<PasswordResetToken>();
         }
 
         public async Task<int?> GetIdByEmail(string email)
@@ -52,6 +55,55 @@ namespace DAL
             }
         }
 
+        public async Task SavePasswordResetToken(int userId, string token, DateTime expiry)
+        {
+            try
+            {
+                var existingToken = await _passRepo.GetOne(u => u.UserId == userId);
+                if (existingToken != null)
+                {
+                    existingToken.ResetToken = token;
+                    existingToken.RestTokenExpiry = expiry;
+                    await _passRepo.Update(existingToken);
+                }
+                else
+                {
+                    var passwordToken = new PasswordResetToken
+                    {
+                        UserId = userId,
+                        ResetToken = token,
+                        RestTokenExpiry = expiry
+                    };
+                    _passRepo.Add(passwordToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+
+        }
+        public async Task<string?> GetLatestResetToken(string email)
+        {
+            try
+            {
+                var userId = await GetIdByEmail(email);
+                if (userId == null)
+                    return null;
+
+                var tokenRecord = await _passRepo.GetOne(t => t.UserId == userId.Value);
+                return tokenRecord?.ResetToken;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error in GetLatestResetToken: " + ex.Message);
+                throw;
+            }
+        }
+
+
         //so generating this random code is to ensure the reset link is one time use and secure
         //store the token in database with the user id to validate later when the user tries to reset their password
         //Guid -> Generates a globally unique identifier 
@@ -59,7 +111,7 @@ namespace DAL
         //{
         //    try
         //    {
-                
+
         //    }
         //    catch(Exception ex)
         //    {

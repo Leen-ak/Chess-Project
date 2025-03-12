@@ -7,7 +7,7 @@ public partial class PasswordResetToken : ChessEntity
 {
     public int UserId { get; set; }
 
-    public string ResetToken { get; set; } = null!;
+    public string? ResetToken { get; set; }
 
     public DateTime RestTokenExpiry { get; set; }
 
