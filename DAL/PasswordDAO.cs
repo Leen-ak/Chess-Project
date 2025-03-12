@@ -102,27 +102,5 @@ namespace DAL
                 throw;
             }
         }
-
-
-        //so generating this random code is to ensure the reset link is one time use and secure
-        //store the token in database with the user id to validate later when the user tries to reset their password
-        //Guid -> Generates a globally unique identifier 
-        //public async Task<string?> ResetPassword(string newPassword)
-        //{
-        //    try
-        //    {
-
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
-        //           MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-        //        throw;
-        //    }
-        //}
-
-        //resetting the password 
-        //how to reset and extract from JWT or if we need JWT TO DO THAT
-
     }
 }

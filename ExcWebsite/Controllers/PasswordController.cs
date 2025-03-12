@@ -53,8 +53,17 @@ namespace ExcWebsite.Controllers
                     return BadRequest(new { msg = "Failed to retrieve reset token!" });
 
                 string resetLink = $"https://localhost:7223/HTML/ResetPassword.html?token={token}";
-
-                string emailBody = $"<html><body><p>Click <a href='{resetLink}'>here</a> to reset your password.</p></body></html>";
+                string emailBody = $@"
+                 <html>
+                     <body>
+                         <p>Hello,</p>
+                         <p>We received a request to reset your password. Click the link below:</p>
+                         <p><a href='https://localhost:7223/html/Password.html'>Reset Password</a></p>
+                         <p>If you did not request this, please ignore this email.</p>
+                         <p>Best,</p>
+                         <p>The Chess Gambit Team</p>
+                     </body>
+                 </html>";
 
                 bool isSent = await _passwordService.SendEmailAsync(vm.Email!, "Password Reset", emailBody);
                 return isSent ? Ok(new { msg = "Password reset email sent!" }) : StatusCode(500, new { msg = "Failed to send email." });
@@ -65,22 +74,5 @@ namespace ExcWebsite.Controllers
                 return StatusCode(500, new { msg = $"Server error: {ex.Message}" });
             }
         }
-
-        //[HttpPost("RequestReset")]
-        //public async Task<IActionResult> RequestReset([FromBody] PasswordVM vm)
-        //{
-        //    try
-        //    {
-        //        bool isSuccessful = await vm.RequestPasswordReset();
-        //        if (!isSuccessful)
-        //            return BadRequest(new { msg = "Failed to send reset email!" });
-        //        return Ok(new {msg = "Password reset email sent successfully!"});
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine("Error in RequestReset API: " + ex.Message);
-        //        return StatusCode(500, new { msg = "Server error: " + ex.Message });
-        //    }
-        //}
     }
 }
