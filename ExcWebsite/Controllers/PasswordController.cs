@@ -97,9 +97,9 @@ namespace ExcWebsite.Controllers
         {
             try
             {
-                //bool isValid = await _passwordService.isRestTokenValid(VM.Token!);
-                //if (!isValid)
-                //    return BadRequest(new { msg = "Invalid or expired token" }); 
+                bool isValid = await _passwordService.isRestTokenValid(VM.Token!);
+                if (!isValid)
+                    return BadRequest(new { msg = "Invalid or expired token" });
 
                 if (string.IsNullOrEmpty(VM.NewPassword) || string.IsNullOrEmpty(VM.Token))
                     return BadRequest(new { msg = "New password and reset token are required" });
