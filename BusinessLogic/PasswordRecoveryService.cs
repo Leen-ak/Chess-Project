@@ -101,6 +101,11 @@ namespace BusinessLogic
                 return false;
             }
         }
+
+        public async Task<bool> isRestTokenVlid(string token)
+        {
+            return await _passwordDAO.isResetTokenValid(token); 
+        }
     }
 }
  

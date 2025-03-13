@@ -93,6 +93,9 @@ GO
 SELECT * FROM UserInfo;
 GO
 
+SELECT * FROM PasswordResetToken;
+GO
+
 
 /*DELETE from UserInfo where Id = 1;*/
 

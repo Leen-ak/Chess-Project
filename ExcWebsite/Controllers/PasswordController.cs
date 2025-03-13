@@ -74,5 +74,21 @@ namespace ExcWebsite.Controllers
                 return StatusCode(500, new { msg = $"Server error: {ex.Message}" });
             }
         }
+
+        [HttpPost("ValidateToken")]
+        public async Task<IActionResult> ValidateResetToken([FromBody] string token)
+        {
+            try
+            {
+                bool isValid = await _passwordService.isRestTokenVlid(token);
+                return isValid ? Ok(new { msg = "Token is valid!" })
+                               : BadRequest(new { msg = "Token is invalid or expired" }); 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in ValidateToken API: {ex.Message}");
+                return StatusCode(500, new { msg = "Server error: " + ex.Message });
+            }
+        }
     }
 }

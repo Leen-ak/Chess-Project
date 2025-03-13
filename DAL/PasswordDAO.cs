@@ -102,5 +102,23 @@ namespace DAL
                 throw;
             }
         }
+
+        public async Task<bool> isResetTokenValid(string token)
+        {
+            try
+            {
+                var tokenRecord = await _passRepo.GetOne(t => t.ResetToken == token);
+                if (tokenRecord == null)
+                    return false;
+                if (tokenRecord.RestTokenExpiry < DateTime.UtcNow)
+                    return false; //token is expired
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Error in IsResetTokenValid: " + ex.Message);
+                throw; 
+            }
+        }
     }
 }
