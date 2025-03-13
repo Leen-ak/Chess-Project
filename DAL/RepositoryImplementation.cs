@@ -28,6 +28,14 @@ namespace DAL
             return entity;
         }
 
+        public async Task<int> Delete(int id)
+        {
+            T? currentEntity = await GetOne(ent => ent.Id == id);
+            Debug.WriteLine($"Searching for entity with ID: {currentEntity}");
+            _db.Set<T>().Remove(currentEntity!);
+            return _db.SaveChanges();
+        }
+
         public async Task<T>? GetOne(Expression<Func<T, bool>> match)
         {
             return await _db.Set<T>().FirstOrDefaultAsync(match);
@@ -36,14 +44,6 @@ namespace DAL
         public async Task<List<T>> GetAll()
         {
             return await _db.Set<T>().ToListAsync();
-        }
-
-        public async Task<int> Delete(int entity)
-        {
-            T? currentEntity = await GetOne(ent => ent.Id == entity);
-            Debug.WriteLine($"Searching for entity with ID: {entity}");
-            _db.Set<T>().Remove(currentEntity);
-            return _db.SaveChanges();
         }
 
         public async Task<UpdateStatus> Update(T entity)

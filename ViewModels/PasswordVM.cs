@@ -26,7 +26,7 @@ namespace ViewModels
             try
             {
                 if (string.IsNullOrEmpty(Email))
-                    throw new Exception("Email connot be empty!");
+                    throw new Exception("Email can't be empty!");
                 return await _password.RequestPasswordReset(Email!);
             }
             catch (Exception ex)

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace DAL
 {
@@ -118,6 +120,41 @@ namespace DAL
             {
                 Debug.WriteLine("Error in IsResetTokenValid: " + ex.Message);
                 throw; 
+            }
+        }
+
+        private string HashPassword(string password)
+        {
+            Debug.WriteLine("The password is", password);
+            var hasher = new PasswordHasher<UserInfo>();
+            return hasher.HashPassword(null, password);
+        }
+
+        public async Task ResetPassword(string? newPassword, string token)
+        {
+            try
+            {
+                 var record = await _passRepo.GetOne(t => t.ResetToken == token);
+                if (record == null)
+                    Debug.WriteLine("Token is not found");
+                if (record!.RestTokenExpiry < DateTime.UtcNow)
+                    Debug.WriteLine("Toke is invalid or expired");
+
+                if (record.ResetToken != null && record.RestTokenExpiry > DateTime.UtcNow)
+                    Debug.WriteLine("Token is not valid");
+
+                UserInfo? user = await _repo.GetOne(u => u.Id == record.UserId);
+                if (user == null)
+                    Debug.WriteLine("UserId is not found");
+                user!.Password = HashPassword(newPassword!);
+                await _repo.Update(user);
+                await _passRepo.Delete(record.Id!);
+                Debug.WriteLine("Password has been reset successfully"); 
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Error in IsResetTokenValid: " + ex.Message);
+                throw;
             }
         }
     }

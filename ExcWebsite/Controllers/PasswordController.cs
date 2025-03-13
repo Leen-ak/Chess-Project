@@ -15,6 +15,7 @@ namespace ExcWebsite.Controllers
         private readonly EmailVM _vm;
         private readonly PasswordRecoveryService _passwordService;
         private readonly PasswordVM _passwordvm;
+        private readonly ResetPasswordVM _resetPassword; 
 
         public PasswordController()
         {
@@ -80,9 +81,31 @@ namespace ExcWebsite.Controllers
         {
             try
             {
-                bool isValid = await _passwordService.isRestTokenVlid(token);
+                bool isValid = await _passwordService.isRestTokenValid(token);
                 return isValid ? Ok(new { msg = "Token is valid!" })
                                : BadRequest(new { msg = "Token is invalid or expired" }); 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in ValidateToken API: {ex.Message}");
+                return StatusCode(500, new { msg = "Server error: " + ex.Message });
+            }
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordVM VM)
+        {
+            try
+            {
+                //bool isValid = await _passwordService.isRestTokenValid(VM.Token!);
+                //if (!isValid)
+                //    return BadRequest(new { msg = "Invalid or expired token" }); 
+
+                if (string.IsNullOrEmpty(VM.NewPassword) || string.IsNullOrEmpty(VM.Token))
+                    return BadRequest(new { msg = "New password and reset token are required" });
+                bool isSuccessful = await VM.ResetPassword();
+                return isSuccessful ? Ok(new { msg = "Password has been sent successfully" })
+                                    : BadRequest(new { msg = "Failed to reset password. Toke may be invalid or expired" });
             }
             catch (Exception ex)
             {
