@@ -10,6 +10,14 @@
         //await getUserId(email); 
         await SendEmail(email); 
     });
+
+    $("#password-btn").on("click", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const password = $("#newPassword").val();
+        console.log("The new passwrod is: ", password);
+    });
 });
 
 const SendEmail = async (email) => {
@@ -39,17 +47,29 @@ const SendEmail = async (email) => {
         } else {
             alert("Reset password email has been sent successfully!");
         }
-
-        const tokenAPI = await fetch('https://localhost:7223/api/Password/ValidateToken', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ Id: data.userId, Email: email })
-        });
-        const token = await tokenAPI.json();
-        console.log("The token is: ", token); 
-
     } catch (error) {
         console.error("Error:", error);
         alert("An unexpected error occurred while sending the email. Please try again.");
     }
 };
+
+const extractTokenFromURL = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    console.log("Extracted Token:", token); // Debugging
+
+    if (!token) {
+        console.log("Invalid token");
+        //alert("Invalid reset link. Please request a new one.");
+        window.location.href = "forgot-password.html"; // Redirect to request a new reset email
+    } else {
+        resetToken = token;
+        console.log("Token successfully extracted:", resetToken);
+    }
+};
+
+// ✅ Run this function ONLY on the reset password page
+if (window.location.pathname.includes("ResetPassword.html")) {
+    window.onload = extractTokenFromURL;
+}

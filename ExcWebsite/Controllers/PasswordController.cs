@@ -54,12 +54,13 @@ namespace ExcWebsite.Controllers
                     return BadRequest(new { msg = "Failed to retrieve reset token!" });
 
                 string resetLink = $"https://localhost:7223/HTML/ResetPassword.html?token={token}";
+                Debug.WriteLine($"Generated Reset Link: {resetLink}");
                 string emailBody = $@"
                  <html>
                      <body>
                          <p>Hello,</p>
                          <p>We received a request to reset your password. Click the link below:</p>
-                         <p><a href='https://localhost:7223/html/Password.html'>Reset Password</a></p>
+                         <p><a href='https://localhost:7223/html/ResetPassword.html'>Reset Password</a></p>
                          <p>If you did not request this, please ignore this email.</p>
                          <p>Best,</p>
                          <p>The Chess Gambit Team</p>
