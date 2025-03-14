@@ -87,11 +87,11 @@ namespace DAL
             }
 
         }
-        public async Task<string?> GetLatestResetToken(string email)
+        public async Task<string?> GetLatestResetToken(string? email)
         {
             try
             {
-                var userId = await GetIdByEmail(email);
+                var userId = await GetIdByEmail(email!);
                 if (userId == null)
                     return null;
 

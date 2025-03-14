@@ -39,6 +39,15 @@ const SendEmail = async (email) => {
         } else {
             alert("Reset password email has been sent successfully!");
         }
+
+        const tokenAPI = await fetch('https://localhost:7223/api/Password/ValidateToken', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ Id: data.userId, Email: email })
+        });
+        const token = await tokenAPI.json();
+        console.log("The token is: ", token); 
+
     } catch (error) {
         console.error("Error:", error);
         alert("An unexpected error occurred while sending the email. Please try again.");

@@ -77,13 +77,13 @@ namespace ExcWebsite.Controllers
         }
 
         [HttpPost("ValidateToken")]
-        public async Task<IActionResult> ValidateResetToken([FromBody] string token)
+        public async Task<IActionResult> ValidateResetToken([FromBody] EmailVM vm)
         {
             try
             {
-                bool isValid = await _passwordService.isRestTokenValid(token);
-                return isValid ? Ok(new { msg = "Token is valid!" })
-                               : BadRequest(new { msg = "Token is invalid or expired" }); 
+                string? token = await _passwordService.GetLatestResetToken(vm.Email!);
+                return token != null ? Ok(new { token = token })
+                    : BadRequest(new { msg = "No valid reset token found." }); 
             }
             catch (Exception ex)
             {
