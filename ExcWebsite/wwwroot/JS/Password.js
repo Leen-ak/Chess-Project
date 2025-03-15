@@ -64,6 +64,7 @@ const extractTokenFromURL = async () => {
         window.location.href = "mainPage.html";
         return null;
     }
+    console.log("The token is: ", token); 
     return token; 
 };
 
@@ -93,7 +94,7 @@ const resetPasswordHandler = async () => {
         const resetPasswordAPI = await fetch('https://localhost:7223/api/Password/ResetPassword', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ NewPassword: password, Token: token })
+            body: JSON.stringify({ NewPassword: password, ConfirmPassword: confirmPassword, Token: token })
         });
 
         const resetPassword = await resetPasswordAPI.json();
