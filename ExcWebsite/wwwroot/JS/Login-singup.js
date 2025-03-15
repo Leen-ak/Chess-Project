@@ -125,9 +125,9 @@ $("#signup-form").validate({
             maxlength: "Username cannot be more than 30 characters"
         },
         email: {
-            required: "Email is required",
-            maxlength: "Email cannot be more than 64 characters",
-            email: "Please enter a valid email"
+            required: "   Email is required",
+            maxlength: "   Email cannot be more than 64 characters",
+            email: "    Please enter a valid email"
         },
         signupPassword: {
             required: "Password should be more than 8 chars",
@@ -150,7 +150,6 @@ const togglePasswordVisibility = (inputSelector, toggleButton) => {
         password.attr("type", "text");
         $(toggleButton).text("visibility_off");
     } else {
-        console.log("it is here"); 
         password.attr("type", "password");
         $(toggleButton).text("visibility");
     }
@@ -163,9 +162,13 @@ $("#password-icon").on("click", function () { togglePasswordVisibility("#login-p
 //TO DO
 //1. the password visibility does not go off after the signup or login
 //2. The eamil authonication
-//3. forget password
-//4. hashing for the password in database
+//3. forget password - DONE 
+//4. hashing for the password in database - DONE
+//TO FIX
+//4. the messages is not showing good on the input filed here and for reset password
 
 //What is working after the changes
 //1. Sign-up working for both front and back end (after i changed the code to be more secure)
-//2. Login is working + the JWT for sending the toking to a localStoarge 
+//2. Login is working + the JWT for sending the toking to a localStoarge
+
+

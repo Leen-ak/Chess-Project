@@ -1,13 +1,17 @@
 ﻿$(() => {
-    console.log("hello");
+
 
     $("#submit-btn").on("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
 
-        const email = $("#email").val();
-        console.log("The user email is", email);
-        //await getUserId(email); 
+        const email = $("#email").val().trim();
+        if (!validateEmail(email)) {
+            alert("Invalid email format. Please enter a vaild email.");
+            return; 
+
+        }
+
         await SendEmail(email);
     });
 
@@ -28,10 +32,10 @@ const SendEmail = async (email) => {
             body: JSON.stringify({ Email: email })
         });
 
-        const data = await response.json();
-        console.log("data from getUserId is: ", data);
-        console.log("The user ID from JS IS: ", data.userId);
+        if (!response.ok)
+            throw new Error("Email verification failed."); 
 
+        const data = await response.json();
         const responseEmail = await fetch(`https://localhost:7223/api/Password/Send-Email`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -39,7 +43,6 @@ const SendEmail = async (email) => {
         });
 
         const dataEmail = await responseEmail.json();
-        console.log("The user email is: ", dataEmail.email, "and data is: ", dataEmail);
         if (!responseEmail.ok) {
             alert(dataEmail.msg || "Error sending email.");
         } else {
@@ -52,35 +55,26 @@ const SendEmail = async (email) => {
 };
 
 const extractTokenFromURL = async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
-
-    console.log("Extracted Token:", token); // Debugging
-
+    const urlParams = new URLSearchParams(window.location.search);     //window.location.search -> extract everything after ? marks 
+    const token = urlParams.get("token");                              //URLSearchParams convert it into an object 
+                                                                       //it will retrieves the value of token from the query string
     if (!token) {
         console.log("Invalid token");
         alert("Invalid reset link. Please request a new one.");
-        window.location.href = "mainPage.html"; // Redirect to request a new reset email
-        return null; 
-    } else {
-        resetToken = token;
-        console.log("Token successfully extracted:", resetToken);
-        return resetToken; 
-        if (!resetToken) {
-            console.log("No valid token found.");
-            alert("Invalid reset link. Please request a new one.");
-            return; 
-        }
+        window.location.href = "mainPage.html";
+        return null;
     }
+    return token; 
 };
 
 const resetPasswordHandler = async () => {
-    const password = $("#newPassword").val();
-    const confirmPassword = $("#confirmPassword").val();
+    const password = $("#newPassword").val().trim();
+    const confirmPassword = $("#confirmPassword").val().trim();
     const token = await extractTokenFromURL();
 
     if (!token) {
-        alert("Invalid reset link. Please request a new one.");
+        alert("Invalid reset link. Please Try agian");
+        window.location.href = "mainPage.html"; 
         return;
     }
 
@@ -105,7 +99,7 @@ const resetPasswordHandler = async () => {
         const resetPassword = await resetPasswordAPI.json();
         if (resetPasswordAPI.ok) {
             alert("Password has been changed successfully!");
-            window.location.href = "mainPage.html"; // Redirect to login after success
+            window.location.href = "mainPage.html"; 
         } else {
             alert(resetPassword.msg || "Password reset failed.");
         }
@@ -115,7 +109,73 @@ const resetPasswordHandler = async () => {
     }
 }
 
+const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+
+
 if (window.location.pathname.includes("ResetPassword.html")) {
     extractTokenFromURL();
 }
 
+$.validator.addMethod("passwordCheck", function (password, element) {
+    const passwordLength = password.length;
+    const isNumber = /\d/.test(password);
+    const isLetter = /[a-z]/.test(password);
+    const isUpperCase = /[A-Z]/.test(password);
+    const specialChars = /[!@#$%^&*_\.\-]/.test(password);
+
+    if (passwordLength < 8)
+        return false;
+    else if (passwordLength >= 8 && passwordLength <= 12)
+        return (isNumber || isLetter) && (isUpperCase || specialChars);
+    else if (passwordLength > 12)
+        return (isNumber && isLetter && isUpperCase && specialChars);
+    return false;
+});
+
+$("#login-form").validate({
+    rules: {
+        email: { maxlength: 64, required: true, email: true },
+        newPassword: { maxlength: 64, required: true, passwordCheck: true },
+        confirmPassword: { maxlength: 64, required: true, equalTo: "#newPassword" }
+    },
+
+    messages: {
+        email: {
+            required: "Email is required",
+            maxlength: "Email cannot be more than 64 characters",
+            email: "Please enter a valid email"
+        },
+        newPassword: {
+            required: "Password should be more than 8 chars",
+            maxlength: "Password cannot be more than 64 characters",
+            passwordCheck: "Password should be more than 8 length and contains spical characters"
+        },
+        confirmPassword: {
+            required: "Passwords do not match",
+            maxlength: "Passwords must match",
+            equalTo: "Passwords do not match"
+        }
+    }
+});
+
+const togglePasswordVisibility = (inputSelector, toggleButton) => {
+    const password = $(inputSelector);
+    const passwordType = password.attr("type");
+
+    if (passwordType === "password") {
+        password.attr("type", "text");
+        $(toggleButton).text("visibility_off");
+    } else {
+        password.attr("type", "password");
+        $(toggleButton).text("visibility");
+    }
+};
+
+$("#toggle-password").on("click", function () { togglePasswordVisibility("#newPassword", this) });
+$("#toggle-confirmPassword").on("click", function () { togglePasswordVisibility("#confirmPassword", this) });
+
+//TO FIX
+//1. the messages is not showing good on the input filed here and fot the signup page
