@@ -14,10 +14,7 @@
     $("#password-btn").on("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
-
-        const password = $("#newPassword").val();
-        console.log("The new passwrod is: ", password);
-        extractTokenFromURL(password);
+        resetPasswordHandler();
     });
 });
 
@@ -54,7 +51,7 @@ const SendEmail = async (email) => {
     }
 };
 
-const extractTokenFromURL = async (password) => {
+const extractTokenFromURL = async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
 
@@ -64,37 +61,61 @@ const extractTokenFromURL = async (password) => {
         console.log("Invalid token");
         alert("Invalid reset link. Please request a new one.");
         window.location.href = "mainPage.html"; // Redirect to request a new reset email
+        return null; 
     } else {
         resetToken = token;
         console.log("Token successfully extracted:", resetToken);
-
+        return resetToken; 
         if (!resetToken) {
             console.log("No valid token found.");
             alert("Invalid reset link. Please request a new one.");
             return; 
         }
-
-        try {
-            console.log("The password fro extractToken is: ", password);
-            const resetPasswordAPI = await fetch('https://localhost:7223/api/Password/ResetPassword', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ NewPassword: password, Token: resetToken })
-            });
-
-            const resetPassword = await resetPasswordAPI.json();
-            if (resetPasswordAPI.ok)
-                alert("Password has been changed");
-            else
-                alert("Password did not change");
-        }
-        catch (error) {
-            console.log(error); 
-        }
     }
 };
 
+const resetPasswordHandler = async () => {
+    const password = $("#newPassword").val();
+    const confirmPassword = $("#confirmPassword").val();
+    const token = await extractTokenFromURL();
+
+    if (!token) {
+        alert("Invalid reset link. Please request a new one.");
+        return;
+    }
+
+    if (!password || !confirmPassword) {
+        alert("Both password fields are required.");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+    }
+
+    try {
+        console.log("Resetting password with token:", token);
+        const resetPasswordAPI = await fetch('https://localhost:7223/api/Password/ResetPassword', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ NewPassword: password, Token: token })
+        });
+
+        const resetPassword = await resetPasswordAPI.json();
+        if (resetPasswordAPI.ok) {
+            alert("Password has been changed successfully!");
+            window.location.href = "mainPage.html"; // Redirect to login after success
+        } else {
+            alert(resetPassword.msg || "Password reset failed.");
+        }
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        alert("An error occurred while resetting the password.");
+    }
+}
+
 if (window.location.pathname.includes("ResetPassword.html")) {
-    window.onload = extractTokenFromURL;
+    extractTokenFromURL();
 }
 

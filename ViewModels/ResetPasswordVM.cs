@@ -22,6 +22,7 @@ namespace ViewModels
 
         public int? Id { get; set; }
         public string? NewPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
         public string? Token { get; set; }
         public string? Timer { get; set; }
 
@@ -38,6 +39,12 @@ namespace ViewModels
                 if (string.IsNullOrEmpty(Token))
                 {
                     Debug.WriteLine("Reset token is required");
+                    return false;
+                }
+
+                if(NewPassword != ConfirmPassword)
+                {
+                    Debug.WriteLine("New password does not equal confirm password");
                     return false;
                 }
 
