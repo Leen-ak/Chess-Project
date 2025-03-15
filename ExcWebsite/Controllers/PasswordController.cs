@@ -68,7 +68,10 @@ namespace ExcWebsite.Controllers
                  </html>";
 
                 bool isSent = await _passwordService.SendEmailAsync(vm.Email!, "Password Reset", emailBody);
-                return isSent ? Ok(new { msg = "Password reset email sent!" }) : StatusCode(500, new { msg = "Failed to send email." });
+                return isSent ? Ok(new { msg = "Password reset email sent!" }) : StatusCode(
+                    
+                    
+                    00, new { msg = "Failed to send email." });
             }
             catch (Exception ex)
             {

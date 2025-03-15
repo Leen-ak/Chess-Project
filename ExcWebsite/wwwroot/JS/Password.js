@@ -8,7 +8,7 @@
         const email = $("#email").val();
         console.log("The user email is", email);
         //await getUserId(email); 
-        await SendEmail(email); 
+        await SendEmail(email);
     });
 
     $("#password-btn").on("click", async (event) => {
@@ -54,7 +54,7 @@ const SendEmail = async (email) => {
     }
 };
 
-const extractTokenFromURL = (password) => {
+const extractTokenFromURL = async (password) => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
 
@@ -62,21 +62,39 @@ const extractTokenFromURL = (password) => {
 
     if (!token) {
         console.log("Invalid token");
-        //alert("Invalid reset link. Please request a new one.");
-       // window.location.href = "mainPage.html"; // Redirect to request a new reset email
+        alert("Invalid reset link. Please request a new one.");
+        window.location.href = "mainPage.html"; // Redirect to request a new reset email
     } else {
         resetToken = token;
         console.log("Token successfully extracted:", resetToken);
 
-        console.log("The password fro extractToken is: ", password); 
-        const resetPassword = fetch('https://localhost:7223/api/Password/ResetPassword', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ newPassword: password, Token: resetToken })
-        });
+        if (!resetToken) {
+            console.log("No valid token found.");
+            alert("Invalid reset link. Please request a new one.");
+            return; 
+        }
+
+        try {
+            console.log("The password fro extractToken is: ", password);
+            const resetPasswordAPI = await fetch('https://localhost:7223/api/Password/ResetPassword', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ NewPassword: password, Token: resetToken })
+            });
+
+            const resetPassword = await resetPasswordAPI.json();
+            if (resetPasswordAPI.ok)
+                alert("Password has been changed");
+            else
+                alert("Password did not change");
+        }
+        catch (error) {
+            console.log(error); 
+        }
     }
 };
 
-if (window.location.pathname.includes("Email.html")) {
+if (window.location.pathname.includes("ResetPassword.html")) {
     window.onload = extractTokenFromURL;
 }
+

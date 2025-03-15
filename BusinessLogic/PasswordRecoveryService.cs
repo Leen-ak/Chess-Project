@@ -34,7 +34,7 @@ namespace BusinessLogic
                     throw new Exception("User not found");
 
                 string resetToken = Guid.NewGuid().ToString() + Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
-                DateTime expiry = DateTime.UtcNow.AddMinutes(5);
+                DateTime expiry = DateTime.UtcNow.AddMinutes(30);
 
                 await _passwordDAO.SavePasswordResetToken(userId.Value, resetToken, expiry);
                 return true;
