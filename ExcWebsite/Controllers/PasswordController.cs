@@ -60,7 +60,7 @@ namespace ExcWebsite.Controllers
                      <body>
                          <p>Hello,</p>
                          <p>We received a request to reset your password. Click the link below:</p>
-                         <p><a href='https://localhost:7223/html/ResetPassword.html'>Reset Password</a></p>
+                         <p><a href='{resetLink}'>Reset Password</a></p>                          
                          <p>If you did not request this, please ignore this email.</p>
                          <p>Best,</p>
                          <p>The Chess Gambit Team</p>

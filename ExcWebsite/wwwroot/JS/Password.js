@@ -17,6 +17,7 @@
 
         const password = $("#newPassword").val();
         console.log("The new passwrod is: ", password);
+        extractTokenFromURL();
     });
 });
 
@@ -62,14 +63,13 @@ const extractTokenFromURL = () => {
     if (!token) {
         console.log("Invalid token");
         //alert("Invalid reset link. Please request a new one.");
-        window.location.href = "forgot-password.html"; // Redirect to request a new reset email
+        //window.location.href = "mainPage.html"; // Redirect to request a new reset email
     } else {
         resetToken = token;
         console.log("Token successfully extracted:", resetToken);
     }
 };
 
-// ✅ Run this function ONLY on the reset password page
-if (window.location.pathname.includes("ResetPassword.html")) {
+if (window.location.pathname.includes("Email.html")) {
     window.onload = extractTokenFromURL;
 }
