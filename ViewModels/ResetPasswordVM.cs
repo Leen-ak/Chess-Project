@@ -59,29 +59,5 @@ namespace ViewModels
                 throw;
             }
         }
-        //public async Task<int> UpdatePassword()
-        //{
-        //    int updateStatus;
-        //    try
-        //    {
-        //        UserInfo user = new()
-        //        {
-        //            Id = (int)Id!,
-        //            Password = newPassword!,
-        //            Timer = Timer != null ? Convert.FromBase64String(Timer) : null
-        //        };
-
-        //        if (newPassword != confirmPassword)
-        //            return updateStatus = -1; 
-        //        Debug.WriteLine($"Updating user password {user.Id} - New Password Updated");
-        //        updateStatus = Convert.ToInt16(await _password.ResetPassword(newPassword))
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
-        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-        //        throw;
-        //    }
-        //}
     }
 }
