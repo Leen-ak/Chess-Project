@@ -110,6 +110,7 @@ h2 {
 .input-group {
     position: relative;
     width: 100%;
+    background: transparent !important;
 }
 
 #login-form input, #signup-form input {
@@ -124,13 +125,25 @@ h2 {
     transition: 0.5s ease;
 }
 
-input:-webkit-autofill {
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
     background-color: transparent !important;
-    color: #bbb4aa !important;
-    border-color: #bbb4aa !important;
-    transition: background-color 5000s ease-in-out 0s;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
     -webkit-text-fill-color: #bbb4aa !important;
 }
+
+
+input:-webkit-autofill::after {
+    content: "";
+    background-color: transparent !important;
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+
 
 input:focus ~ label,
 input:valid ~ label {

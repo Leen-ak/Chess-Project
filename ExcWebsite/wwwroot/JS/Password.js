@@ -8,7 +8,7 @@
         const email = $("#email").val().trim();
         if (!validateEmail(email)) {
             alert("Invalid email format. Please enter a vaild email.");
-            return; 
+            return;
 
         }
 
@@ -33,7 +33,7 @@ const SendEmail = async (email) => {
         });
 
         if (!response.ok)
-            throw new Error("Email verification failed."); 
+            throw new Error("Email verification failed.");
 
         const data = await response.json();
         const responseEmail = await fetch(`https://localhost:7223/api/Password/Send-Email`, {
@@ -57,15 +57,15 @@ const SendEmail = async (email) => {
 const extractTokenFromURL = async () => {
     const urlParams = new URLSearchParams(window.location.search);     //window.location.search -> extract everything after ? marks 
     const token = urlParams.get("token");                              //URLSearchParams convert it into an object 
-                                                                       //it will retrieves the value of token from the query string
+    //it will retrieves the value of token from the query string
     if (!token) {
         console.log("Invalid token");
         alert("Invalid reset link. Please request a new one.");
         window.location.href = "mainPage.html";
         return null;
     }
-    console.log("The token is: ", token); 
-    return token; 
+    console.log("The token is: ", token);
+    return token;
 };
 
 const resetPasswordHandler = async () => {
@@ -75,7 +75,7 @@ const resetPasswordHandler = async () => {
 
     if (!token) {
         alert("Invalid reset link. Please Try agian");
-        window.location.href = "mainPage.html"; 
+        window.location.href = "mainPage.html";
         return;
     }
 
@@ -100,7 +100,7 @@ const resetPasswordHandler = async () => {
         const resetPassword = await resetPasswordAPI.json();
         if (resetPasswordAPI.ok) {
             alert("Password has been changed successfully!");
-            window.location.href = "mainPage.html"; 
+            window.location.href = "mainPage.html";
         } else {
             alert(resetPassword.msg || "Password reset failed.");
         }
