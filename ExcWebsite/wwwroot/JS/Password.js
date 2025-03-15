@@ -17,7 +17,7 @@
 
         const password = $("#newPassword").val();
         console.log("The new passwrod is: ", password);
-        extractTokenFromURL();
+        extractTokenFromURL(password);
     });
 });
 
@@ -54,7 +54,7 @@ const SendEmail = async (email) => {
     }
 };
 
-const extractTokenFromURL = () => {
+const extractTokenFromURL = (password) => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
 
@@ -63,10 +63,17 @@ const extractTokenFromURL = () => {
     if (!token) {
         console.log("Invalid token");
         //alert("Invalid reset link. Please request a new one.");
-        //window.location.href = "mainPage.html"; // Redirect to request a new reset email
+       // window.location.href = "mainPage.html"; // Redirect to request a new reset email
     } else {
         resetToken = token;
         console.log("Token successfully extracted:", resetToken);
+
+        console.log("The password fro extractToken is: ", password); 
+        const resetPassword = fetch('https://localhost:7223/api/Password/ResetPassword', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newPassword: password, Token: resetToken })
+        });
     }
 };
 
