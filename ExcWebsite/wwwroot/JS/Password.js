@@ -66,7 +66,7 @@ const SendEmail = async (email) => {
 const extractTokenFromURL = async () => {
     const urlParams = new URLSearchParams(window.location.search);     //window.location.search -> extract everything after ? marks 
     const token = urlParams.get("token");                              //URLSearchParams convert it into an object 
-    //it will retrieves the value of token from the query string
+                                                                       //it will retrieves the value of token from the query string
     if (!token) {
         console.log("Invalid token");
         alert("Invalid reset link. Please request a new one.");
