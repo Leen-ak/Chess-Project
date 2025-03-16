@@ -1,17 +1,13 @@
 ﻿$(() => {
-
-
     $("#submit-btn").on("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
 
         const email = $("#email").val().trim();
         if (!validateEmail(email)) {
-            alert("Invalid email format. Please enter a vaild email.");
+            showPopup("Error", "Invalid Email Format. Please Enter a Valid Email", "error")
             return;
-
         }
-
         await SendEmail(email);
     });
 
@@ -22,8 +18,21 @@
     });
 });
 
-const SendEmail = async (email) => {
+const showPopup = (title, message, icon = "info") => {
+    return Swal.fire({
+        title: title,
+        text: message,
+        icon: icon,
+        confirmButtonText: "Ok",
+        background: "#232323",
+        color: "#bbb4aa",
+        customClass: {
+            confirmButton: "custom-swal-button",
+        }
+    });
+};
 
+const SendEmail = async (email) => {
     try {
         console.log("From getUserId: ", email);
         const response = await fetch('https://localhost:7223/api/Password/VerifyEmail', {
@@ -44,27 +53,26 @@ const SendEmail = async (email) => {
 
         const dataEmail = await responseEmail.json();
         if (!responseEmail.ok) {
-            alert(dataEmail.msg || "Error sending email.");
+            showPopup("Error", "Error Sending Email! Try Again", "error");
         } else {
-            alert("Reset password email has been sent successfully!");
+            showPopup("Success", "Reset Password Email Has Been Sent Successfully", "success");
         }
     } catch (error) {
         console.error("Error:", error);
-        alert("An unexpected error occurred while sending the email. Please try again.");
+        showPopup("Error", "An Unexpected Error Occurred While Sending The Email. Please Try Again", "error");
     }
 };
 
 const extractTokenFromURL = async () => {
     const urlParams = new URLSearchParams(window.location.search);     //window.location.search -> extract everything after ? marks 
     const token = urlParams.get("token");                              //URLSearchParams convert it into an object 
-    //it will retrieves the value of token from the query string
+                                                                       //it will retrieves the value of token from the query string
     if (!token) {
-        console.log("Invalid token");
-        alert("Invalid reset link. Please request a new one.");
-        window.location.href = "mainPage.html";
+        showPopup("Error", "Invalid Reset Link. Please Request A New One By Entering An Email Again", "error").then(() => {
+            window.location.href = "mainPage.html";
+        });
         return null;
     }
-    console.log("The token is: ", token);
     return token;
 };
 
@@ -74,18 +82,19 @@ const resetPasswordHandler = async () => {
     const token = await extractTokenFromURL();
 
     if (!token) {
-        alert("Invalid reset link. Please Try agian");
-        window.location.href = "mainPage.html";
+        showPopup("Error", "Invalid Reset Link. Please Try Again", "error").then(() => {
+            window.location.href = "mainPage.html";
+        });
         return;
     }
 
     if (!password || !confirmPassword) {
-        alert("Both password fields are required.");
+        showPopup("Error", "Both Password Fields Are Required", "error");
         return;
     }
 
     if (password !== confirmPassword) {
-        alert("Passwords do not match.");
+        showPopup("Error", "Passwords Do Not Match", "error"); 
         return;
     }
 
@@ -99,14 +108,15 @@ const resetPasswordHandler = async () => {
 
         const resetPassword = await resetPasswordAPI.json();
         if (resetPasswordAPI.ok) {
-            alert("Password has been changed successfully!");
-            window.location.href = "mainPage.html";
+            showPopup("Success", "Password Has Been Changed Successfully", "success").then(() => {
+                window.location.href = "mainPage.html";
+            });
         } else {
-            alert(resetPassword.msg || "Password reset failed.");
+            showPopup("Error", "Password Reset Failed", "error"); 
         }
     } catch (error) {
         console.error("Error resetting password:", error);
-        alert("An error occurred while resetting the password.");
+        showPopup("Error", "An Error Occurred While Resetting The Password", "error");
     }
 }
 
@@ -114,11 +124,6 @@ const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 };
-
-
-if (window.location.pathname.includes("ResetPassword.html")) {
-    extractTokenFromURL();
-}
 
 $.validator.addMethod("passwordCheck", function (password, element) {
     const passwordLength = password.length;
@@ -178,5 +183,9 @@ const togglePasswordVisibility = (inputSelector, toggleButton) => {
 $("#toggle-password").on("click", function () { togglePasswordVisibility("#newPassword", this) });
 $("#toggle-confirmPassword").on("click", function () { togglePasswordVisibility("#confirmPassword", this) });
 
+if (window.location.pathname.includes("ResetPassword.html")) {
+    extractTokenFromURL();
+}
 //TO FIX
 //1. the messages is not showing good on the input filed here and fot the signup page
+//2. autofill change the background color so i turned it off for now

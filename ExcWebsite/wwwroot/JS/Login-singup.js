@@ -12,6 +12,20 @@
     });
 })
 
+const showPopup = (title, message, icon = "info") => {
+    return Swal.fire({
+        title: title,
+        text: message,
+        icon: icon,
+        confirmButtonText: "Ok",
+        background: "#232323",
+        color: "#bbb4aa",
+        customClass: {
+            confirmButton: "custom-swal-button",
+        }
+    });
+};
+
 const signUpUser = async () => {
     const userData = {
         FirstName: $("#firstname").val(),
@@ -32,11 +46,10 @@ const signUpUser = async () => {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.msg || "Invalid user Information.");
+            showPopup("Error", "Invalid user Information", "error");
             return;
         }
-
-        alert("User added"); 
+        showPopup("Success", "User registered successfully!", "success");
     } catch (error) {
         console.log("Error signing up:", error);
     }
@@ -48,7 +61,6 @@ const loginUser = async () => {
         Password: $("#login-password").val(),
     };
 
-    console.log("Sending login request with: ", userData);
     try {
         const response = await fetch('https://localhost:7223/api/LoginPage/Login', {
             method: 'POST',
@@ -58,13 +70,12 @@ const loginUser = async () => {
         });
 
         const data = await response.json();
-        console.log("Login response:", data);
-
         if (response.ok) {
-            alert("Login successful");
-            window.location.href = "../HTML/Home.html";
+            showPopup("Success", "Login Successful!", "success").then(() => {
+                window.location.href = "../HTML/Home.html";
+            });
         } else {
-            alert(data.msg || "Invalid Credential");
+            showPopup("Error", "Invalid Credential", "error")
         }
     } catch (error) {
         console.log("Error logging in:", error);
