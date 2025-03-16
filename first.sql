@@ -98,4 +98,4 @@ GO
 
 
 /*DELETE from UserInfo where Id = 1;*/
-
+DELETE FROM PasswordResetToken where Id = 5;

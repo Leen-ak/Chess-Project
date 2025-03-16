@@ -66,13 +66,15 @@ const SendEmail = async (email) => {
 const extractTokenFromURL = async () => {
     const urlParams = new URLSearchParams(window.location.search);     //window.location.search -> extract everything after ? marks 
     const token = urlParams.get("token");                              //URLSearchParams convert it into an object 
-                                                                       //it will retrieves the value of token from the query string
+    //it will retrieves the value of token from the query string
     if (!token) {
-        showPopup("Error", "Invalid Reset Link. Please Request A New One By Entering An Email Again", "error").then(() => {
-            window.location.href = "mainPage.html";
-        });
+        console.log("Invalid token");
+        alert("Invalid reset link. Please request a new one.");
+
+        window.location.href = "mainPage.html";
         return null;
     }
+    console.log("The token is: ", token);
     return token;
 };
 
@@ -82,19 +84,19 @@ const resetPasswordHandler = async () => {
     const token = await extractTokenFromURL();
 
     if (!token) {
-        showPopup("Error", "Invalid Reset Link. Please Try Again", "error").then(() => {
-            window.location.href = "mainPage.html";
+        showPopup("Error", "Invalid Reset Link. Please Try Agian", "error").then(() => {
+            window.location.href = "../HTML/mainPage.html";
         });
         return;
     }
 
     if (!password || !confirmPassword) {
-        showPopup("Error", "Both Password Fields Are Required", "error");
+        showPopup("Error", "Both Password Fields are Required", "error");
         return;
     }
 
     if (password !== confirmPassword) {
-        showPopup("Error", "Passwords Do Not Match", "error"); 
+        showPopup("Error", "Passwords Do NOT Match", "error");
         return;
     }
 
@@ -109,14 +111,14 @@ const resetPasswordHandler = async () => {
         const resetPassword = await resetPasswordAPI.json();
         if (resetPasswordAPI.ok) {
             showPopup("Success", "Password Has Been Changed Successfully", "success").then(() => {
-                window.location.href = "mainPage.html";
+                window.location.href = "../HTML/mainPage.html";
             });
         } else {
-            showPopup("Error", "Password Reset Failed", "error"); 
+            showPopup("Error", "Password Reset Failed", "error");
         }
     } catch (error) {
         console.error("Error resetting password:", error);
-        showPopup("Error", "An Error Occurred While Resetting The Password", "error");
+        alert("An error occurred while resetting the password.");
     }
 }
 
@@ -125,7 +127,7 @@ const validateEmail = (email) => {
     return emailRegex.test(email);
 };
 
-$.validator.addMethod("passwordCheck", function (password, element) {
+$.validator.addMethod("passwordCheck", function (password) {
     const passwordLength = password.length;
     const isNumber = /\d/.test(password);
     const isLetter = /[a-z]/.test(password);
