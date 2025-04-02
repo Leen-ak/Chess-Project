@@ -14,8 +14,7 @@ namespace ViewModels
 {
     public class NetworkVM
     {
-        readonly private NetworkDAO _dao;
-        readonly private NetworkService _networkService; 
+        readonly private NetworkService _bus; 
         public int? Id { get; set; }
         public int? FollowerId { get; set; }    
         public int? FollowingId { get; set; }
@@ -27,37 +26,62 @@ namespace ViewModels
 
         public NetworkVM() 
         {
-            _dao = new NetworkDAO();
-            _networkService = new NetworkService();
+            _bus = new NetworkService();
         }
 
-        public async Task<List<NetworkVM>> GetAll() 
+        public async Task<List<NetworkVM>> SuggestedUsers()
         {
-            List<NetworkVM> allUsername = new();
-
+            List<NetworkVM> userInfo = new();
             try
             {
-                List<UserInfo> allUsers = await _networkService.GetAll(); 
-
-                foreach (UserInfo user in allUsers) 
+                List<UserInfo> users = await _bus.GetSuggestedUsers(Id!);
+                foreach(UserInfo u in users)
                 {
-                    NetworkVM netVM = new()
+                    NetworkVM vm = new()
                     {
-                        Id = user.Id, 
-                        Username = user.UserName,
-                        Picture = user.Picture
+                        Id = u.Id,
+                        Username = u.UserName,
+                        Picture = u.Picture,
                     };
-                    allUsername.Add(netVM);
+                    userInfo.Add(vm); 
                 }
+                return userInfo;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 throw;
             }
-            return allUsername; 
         }
+
+        //public async Task<List<NetworkVM>> GetAll() 
+        //{
+        //    List<NetworkVM> allUsername = new();
+
+        //    try
+        //    {
+        //        List<UserInfo> allUsers = await _networkService.GetAll(); 
+
+        //        foreach (UserInfo user in allUsers) 
+        //        {
+        //            NetworkVM netVM = new()
+        //            {
+        //                Id = user.Id, 
+        //                Username = user.UserName,
+        //                Picture = user.Picture
+        //            };
+        //            allUsername.Add(netVM);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //    return allUsername; 
+        //}
         
         //public async Task GetIdByUsername()
         //{

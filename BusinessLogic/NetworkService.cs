@@ -10,11 +10,15 @@ namespace BusinessLogic
     public class NetworkService
     {
         private readonly NetworkDAO _networkDao;
-       
         
         public NetworkService()
         {
             _networkDao = new NetworkDAO();
+        }
+
+        public async Task<List<UserInfo>> GetSuggestedUsers(int? userId)
+        {
+            return await _networkDao.GetSuggestedUsers(userId!); 
         }
 
         ////first get the username in the database to add it to the friend list you might want to follow

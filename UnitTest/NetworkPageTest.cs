@@ -4,18 +4,18 @@ using Xunit;
 
 namespace UnitTest
 {
-    public class LinqTests
+    public class NetworkPageTest
     {
         readonly IRepository<UserInfo> _repoUser;
         readonly IRepository<Follower> _repoFollower;
-        public LinqTests()
+        public NetworkPageTest()
         {
             _repoUser = new RepositoryImplementation<UserInfo>();
             _repoFollower = new RepositoryImplementation<Follower>();
         }
 
         [Fact]
-        public async Task Test1()
+        public async Task TestSuggestUsers()
         {
             NetworkDAO _dao = new NetworkDAO();
             int? testUserId = 2;
@@ -25,7 +25,6 @@ namespace UnitTest
             {
                 Assert.NotEqual(testUserId, user.Id);
             });
-
         }
     }
 }
