@@ -22,29 +22,27 @@ namespace DAL
             _followRepo = new RepositoryImplementation<Follower>();
         }
 
-        public async Task<List<UserInfo>> GetAll()
+        public async Task<List<UserInfo>> GetSuggestedUsers(int? userId)
         {
+
             List<UserInfo> allUsername;
-
+            List<Follower> following;
             try
             {
+                //i got the user info
+                UserInfo? user = await _repo.GetOne(u => u.Id == userId);
+
+                //get all the username 
                 allUsername = await _repo.GetAll();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-            return allUsername;
-        }
+                following = await _followRepo.GetAll();
 
-        public async Task<int?> GetIdByUsername(string username)
-        {
-            try
-            {
-                UserInfo? user = await _repo.GetOne(user => user.UserName == username);
-                return user?.Id;
+                //exclude all the users are following or follower and the same id
+                //check if the userId == Id we do not want to suggest that
+                var filterUser = allUsername.Where(u => u.Id != userId
+                    && !following.Any(f => (f.FollowerId == userId && f.FollowingId == u.Id) //user is following this person
+                    || (f.FollowingId == userId && f.FollowingId == u.Id) //user is followed by this person
+                    )).ToList();
+                return filterUser;
             }
             catch (Exception ex)
             {
@@ -54,109 +52,141 @@ namespace DAL
             }
         }
 
-        public async Task<UserInfo?> GetUsernameById(int? id)
-        {
-            try
-            {
-                return await _repo.GetOne(user => user.Id == id);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
+        //public async Task<List<UserInfo>> GetAll()
+        //{
+        //    List<UserInfo> allUsername;
 
-        //add followers 
-        public async Task<int> Add(Follower user)
-        {
-            try
-            {
-                var existingFollowers = await _followRepo.GetAll();
-                bool exists = existingFollowers.Any(f => f.FollowerId == user.FollowerId && f.FollowingId == user.FollowingId);
+        //    try
+        //    {
+        //        allUsername = await _repo.GetAll();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //    return allUsername;
+        //}
 
-                if (exists)
-                {
-                    throw new InvalidOperationException("The user is already following the selected user");
-                }
+        //public async Task<int?> GetIdByUsername(string username)
+        //{
+        //    try
+        //    {
+        //        UserInfo? user = await _repo.GetOne(user => user.UserName == username);
+        //        return user?.Id;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
 
-                await _followRepo.Add(user);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-            return user.Id;
-        }
+        //public async Task<UserInfo?> GetUsernameById(int? id)
+        //{
+        //    try
+        //    {
+        //        return await _repo.GetOne(user => user.Id == id);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //            MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
 
-        //get status by userId 
-        public async Task<List<Follower>> GetStatusByUserId(int? userId)
-        {
-            try
-            {
-                List<Follower> userStatus = await _followRepo.GetAll();
-                List<Follower> pendingRequest = userStatus
-                    .Where(request => request.FollowingId == userId && request.Status == "Pending").ToList();
-                return pendingRequest;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
+        ////add followers 
+        //public async Task<int> Add(Follower user)
+        //{
+        //    try
+        //    {
+        //        var existingFollowers = await _followRepo.GetAll();
+        //        bool exists = existingFollowers.Any(f => f.FollowerId == user.FollowerId && f.FollowingId == user.FollowingId);
 
-        public async Task<UpdateStatus> Update(Follower user)
-        {
-            UpdateStatus status;
-            try
-            {
+        //        if (exists)
+        //        {
+        //            throw new InvalidOperationException("The user is already following the selected user");
+        //        }
 
-                var existingUser = await _followRepo.GetOne(u => u.FollowerId == user.FollowerId);
-                if (existingUser == null)
-                {
-                    Debug.WriteLine($"User {user.FollowerId} not found in database!");
-                    return UpdateStatus.Failed;
-                }
+        //        await _followRepo.Add(user);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //            MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //    return user.Id;
+        //}
 
-                existingUser.Status = user.Status;
-                status = await _followRepo.Update(existingUser); 
-                return status;
+        ////get status by userId 
+        //public async Task<List<Follower>> GetStatusByUserId(int? userId)
+        //{
+        //    try
+        //    {
+        //        List<Follower> userStatus = await _followRepo.GetAll();
+        //        List<Follower> pendingRequest = userStatus
+        //            .Where(request => request.FollowingId == userId && request.Status == "Pending").ToList();
+        //        return pendingRequest;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //            MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
 
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                status = UpdateStatus.Stale;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-            return status;
-        }
+        //public async Task<UpdateStatus> Update(Follower user)
+        //{
+        //    UpdateStatus status;
+        //    try
+        //    {
 
-        public async Task<(List<Follower> Request, int count)> GetPendingRequestWithCount(int? userId)
-        {
-            try
-            {
-                List<Follower> userStatus = await _followRepo.GetAll() ;
-                List<Follower> pendingStatus = userStatus.Where(
-                    request => request.FollowingId == userId && request.Status == "Pending").ToList();
-                int pendingCount = pendingStatus.Count;
-                return (pendingStatus, pendingCount); 
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
+        //        var existingUser = await _followRepo.GetOne(u => u.FollowerId == user.FollowerId);
+        //        if (existingUser == null)
+        //        {
+        //            Debug.WriteLine($"User {user.FollowerId} not found in database!");
+        //            return UpdateStatus.Failed;
+        //        }
+
+        //        existingUser.Status = user.Status;
+        //        status = await _followRepo.Update(existingUser); 
+        //        return status;
+
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        status = UpdateStatus.Stale;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //    return status;
+        //}
+
+        //public async Task<(List<Follower> Request, int count)> GetPendingRequestWithCount(int? userId)
+        //{
+        //    try
+        //    {
+        //        List<Follower> userStatus = await _followRepo.GetAll() ;
+        //        List<Follower> pendingStatus = userStatus.Where(
+        //            request => request.FollowingId == userId && request.Status == "Pending").ToList();
+        //        int pendingCount = pendingStatus.Count;
+        //        return (pendingStatus, pendingCount); 
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
     }
 }

@@ -59,138 +59,138 @@ namespace ViewModels
             return allUsername; 
         }
         
-        public async Task GetIdByUsername()
-        {
-            try
-            {
-                Id = await _networkService.GetIdByUsername(Username!);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
+        //public async Task GetIdByUsername()
+        //{
+        //    try
+        //    {
+        //        Id = await _networkService.GetIdByUsername(Username!);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
 
-        public async Task GetUsernameById()
-        {
-            try
-            {
-                UserInfo? user = await _networkService.GetUsernameById(Id!);
-                Id = user?.Id;
-                Username = user?.UserName;
-                Picture = user?.Picture;
-            }
-            catch (NullReferenceException nex)
-            {
-                Debug.WriteLine(nex.Message);
-                Username = "Username Not Found!";
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
+        //public async Task GetUsernameById()
+        //{
+        //    try
+        //    {
+        //        UserInfo? user = await _networkService.GetUsernameById(Id!);
+        //        Id = user?.Id;
+        //        Username = user?.UserName;
+        //        Picture = user?.Picture;
+        //    }
+        //    catch (NullReferenceException nex)
+        //    {
+        //        Debug.WriteLine(nex.Message);
+        //        Username = "Username Not Found!";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
 
-        public async Task Add()
-        {
-            try
-            {
-                Follower user = new()
-                {
-                    FollowerId = FollowerId,
-                    FollowingId = FollowingId,
-                    Status = Status
-                };
-                Id = await _networkService.Add(user); 
-            }
-            catch(Exception ex) 
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
+        //public async Task Add()
+        //{
+        //    try
+        //    {
+        //        Follower user = new()
+        //        {
+        //            FollowerId = FollowerId,
+        //            FollowingId = FollowingId,
+        //            Status = Status
+        //        };
+        //        Id = await _networkService.Add(user); 
+        //    }
+        //    catch(Exception ex) 
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
 
-        public async Task GetStatusByUserId()
-        {
-            try
-            {
-                if(Id == null)
-                {
-                    Debug.WriteLine("Error: Id is null in " + GetType().Name + " " + MethodBase.GetCurrentMethod()?.Name);
-                    return; 
-                }
+        //public async Task GetStatusByUserId()
+        //{
+        //    try
+        //    {
+        //        if(Id == null)
+        //        {
+        //            Debug.WriteLine("Error: Id is null in " + GetType().Name + " " + MethodBase.GetCurrentMethod()?.Name);
+        //            return; 
+        //        }
 
-                List<Follower> followers = await _networkService.GetStatusByUserId(Id!);
+        //        List<Follower> followers = await _networkService.GetStatusByUserId(Id!);
 
-                if (followers.Any())
-                {
-                    pendingRequests = followers.Select(f => new NetworkVM
-                    {
-                        FollowerId = f.FollowerId,
-                        FollowingId = f.FollowingId,
-                        Status = f.Status
-                    }).ToList();
-                }
-                else
-                    Status = "No Status Found";
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
+        //        if (followers.Any())
+        //        {
+        //            pendingRequests = followers.Select(f => new NetworkVM
+        //            {
+        //                FollowerId = f.FollowerId,
+        //                FollowingId = f.FollowingId,
+        //                Status = f.Status
+        //            }).ToList();
+        //        }
+        //        else
+        //            Status = "No Status Found";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
 
-        public async Task<int> Update()
-        {
-            int updateStatus;
-            try
-            {
-                Follower user = new()
-                {
-                    FollowerId = FollowerId,
-                    FollowingId = FollowingId,
-                    Status = Status,
-                    Timer = Timer != null ? Convert.FromBase64String(Timer) : null
-                };
-                Debug.WriteLine($"Updating user {user.FollowerId}");
-                updateStatus = Convert.ToInt16(await _networkService.Update(user));
-                Debug.WriteLine($"Update return value:  { updateStatus}"); 
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-            return updateStatus; 
-        }
+        //public async Task<int> Update()
+        //{
+        //    int updateStatus;
+        //    try
+        //    {
+        //        Follower user = new()
+        //        {
+        //            FollowerId = FollowerId,
+        //            FollowingId = FollowingId,
+        //            Status = Status,
+        //            Timer = Timer != null ? Convert.FromBase64String(Timer) : null
+        //        };
+        //        Debug.WriteLine($"Updating user {user.FollowerId}");
+        //        updateStatus = Convert.ToInt16(await _networkService.Update(user));
+        //        Debug.WriteLine($"Update return value:  { updateStatus}"); 
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //    return updateStatus; 
+        //}
 
-        public async Task<(List<NetworkVM>, int )> GetPendingRequestWithCount(int id)
-        {
-            try
-            {
-                var (requests, count) = await _networkService.GetPendingRequestWithCount(id);
-                List<NetworkVM> pendingRequest = requests.Select(f => new NetworkVM { 
-                    FollowerId = f.FollowerId,
-                    FollowingId = f.FollowingId,
-                    Status = Status
-                }).ToList();
-                return (pendingRequest, count); 
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
+        //public async Task<(List<NetworkVM>, int )> GetPendingRequestWithCount(int id)
+        //{
+        //    try
+        //    {
+        //        var (requests, count) = await _networkService.GetPendingRequestWithCount(id);
+        //        List<NetworkVM> pendingRequest = requests.Select(f => new NetworkVM { 
+        //            FollowerId = f.FollowerId,
+        //            FollowingId = f.FollowingId,
+        //            Status = Status
+        //        }).ToList();
+        //        return (pendingRequest, count); 
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
+        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        throw;
+        //    }
+        //}
 
     }
 }
