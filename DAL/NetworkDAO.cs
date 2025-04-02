@@ -24,7 +24,6 @@ namespace DAL
 
         public async Task<List<UserInfo>> GetSuggestedUsers(int? userId)
         {
-
             List<UserInfo> allUsername;
             List<Follower> following;
             try

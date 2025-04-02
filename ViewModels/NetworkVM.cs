@@ -29,12 +29,12 @@ namespace ViewModels
             _bus = new NetworkService();
         }
 
-        public async Task<List<NetworkVM>> SuggestedUsers()
+        public async Task<List<NetworkVM>> SuggestedUsers(int? userId)
         {
             List<NetworkVM> userInfo = new();
             try
             {
-                List<UserInfo> users = await _bus.GetSuggestedUsers(Id!);
+                List<UserInfo> users = await _bus.GetSuggestedUsers(userId!);
                 foreach(UserInfo u in users)
                 {
                     NetworkVM vm = new()
