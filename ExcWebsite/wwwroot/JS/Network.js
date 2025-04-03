@@ -3,23 +3,37 @@
         method: "GET",
         credentials: "include"
     })
-        .then(res => res.json())
-        .then(data => {
-            const username = data.username;
-            const userId = data.userId;
-            console.log("Logged-in username", username);
-            console.log("Loggied-in userId", userId);
-        });
+    .then(res => res.json())
+    .then(data => {
+        const username = data.username;
+        const userId = data.userId;
+        console.log("Logged-in username", username);
+        console.log("Loggied-in userId", userId);
+        GetAllSuggestedFriend(userId); 
+    });
 })
 
-const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-        return parts.pop().split(";").shift();
+const GetAllSuggestedFriend = async (userId) => {
+
+    try {
+        const response = await fetch(`https://localhost:7223/api/Network/GetUsers${userId}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (response.ok)
+            console.log("YES");
+        else
+            console.log("NO"); 
     }
-    return null;
-};
+    catch (error)
+    {
+        console.log(error);
+    }
+}
 
 const buildUserCard = async (data) => {
     const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
