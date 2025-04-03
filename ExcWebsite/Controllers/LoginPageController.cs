@@ -106,6 +106,7 @@ namespace ExcWebsite.Controllers
                     return Unauthorized(new { msg = "Invalid credentials" });
 
                 var token = GenerateJwtToken(vm.userId ,vm.UserName!);
+                Debug.WriteLine("THE USERID IS, " , vm.userId);
                 Response.Cookies.Append("AuthToken", token, new CookieOptions
                 {
                     HttpOnly = true,   // Prevent JavaScript access
