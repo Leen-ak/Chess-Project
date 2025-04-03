@@ -56,7 +56,7 @@ namespace ExcWebsite.Controllers
             }
         }
 
-        private string GenerateJwtToken(string username)
+        private string GenerateJwtToken(int userId, string username)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -65,7 +65,8 @@ namespace ExcWebsite.Controllers
             {
                new Claim(JwtRegisteredClaimNames.Sub, username),
                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-               new Claim(ClaimTypes.Name, username)
+               new Claim(ClaimTypes.Name, username),
+               new Claim("user_id", userId.ToString())
             };
 
             var token = new JwtSecurityToken(
@@ -76,6 +77,21 @@ namespace ExcWebsite.Controllers
                 signingCredentials: credentials
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        public IActionResult GetCurrentUser()
+        {
+            var username = User.Identity?.Name;
+            var userIdClaim = User.FindFirst("user_id")?.Value;
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(userIdClaim))
+                return Unauthorized();
+            return Ok(new 
+            { 
+                username = username,
+                userId = userIdClaim
+            });
         }
 
         //we do not use GET for security reasons like the username and password will be in the request body if it was GET
@@ -89,7 +105,7 @@ namespace ExcWebsite.Controllers
                 if (!isValid)
                     return Unauthorized(new { msg = "Invalid credentials" });
 
-                var token = GenerateJwtToken(vm.UserName!);
+                var token = GenerateJwtToken(vm.userId ,vm.UserName!);
                 Response.Cookies.Append("AuthToken", token, new CookieOptions
                 {
                     HttpOnly = true,   // Prevent JavaScript access

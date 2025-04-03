@@ -13,6 +13,7 @@ namespace ViewModels
     public class LoginVM
     {
         readonly private Login_signup_business _service; 
+        public int userId { get; set; }
         public string? UserName { get; set; }
         public string? Password { get; set; }
 

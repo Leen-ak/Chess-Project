@@ -33,7 +33,7 @@ namespace BusinessLogic
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim("UserId", userId.ToString()),
+                    new Claim("user_id", userId.ToString()),
                     new Claim(ClaimTypes.Name, username)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(_expirationMinutes),

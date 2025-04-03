@@ -18,7 +18,6 @@ namespace ExcWebsite.Controllers
     public class NetworkController : ControllerBase
     {
         private readonly TokenService _tokenService;
-        //private readonly NetworkVM _networkVm;
 
         public NetworkController(IConfiguration configuration)
         {

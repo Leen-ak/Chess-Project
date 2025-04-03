@@ -1,5 +1,15 @@
 ﻿$(() => {
-    const username = getCookie("username");
+    fetch("https://localhost:7223/api/LoginPage/me", {
+        method: "GET",
+        credentials: "include"
+    })
+        .then(res => res.json())
+        .then(data => {
+            const username = data.username;
+            const userId = data.userId;
+            console.log("Logged-in username", username);
+            console.log("Loggied-in userId", userId);
+        });
 })
 
 const getCookie = (name) => {
