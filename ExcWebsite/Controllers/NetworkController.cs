@@ -17,20 +17,18 @@ namespace ExcWebsite.Controllers
     [ApiController]
     public class NetworkController : ControllerBase
     {
-        //private readonly TokenService _tokenService;
+        private readonly TokenService _tokenService;
         //private readonly NetworkVM _networkVm;
 
-        //public NetworkController(IConfiguration configuration)
-        //{
-        //    _tokenService = new TokenService(
-        //        configuration["JwtSettings:Secret"],
-        //        configuration["JwtSettings:Issuer"],
-        //        configuration["JwtSettings:Audience"],
-        //        int.Parse(configuration["JwtSettings:ExpirationMinutes"])
-        //    );
-
-        //    _networkVm = new NetworkVM(); 
-        //}
+        public NetworkController(IConfiguration configuration)
+        {
+            _tokenService = new TokenService(
+                configuration["Jwt:Secret"],
+                configuration["Jwt:Issuer"],
+                configuration["Jwt:Audience"],
+                int.Parse(configuration["Jwt:ExpirationMinutes"])
+            );
+        }
 
         [HttpGet("GetUsers{userId}")]
         public async Task<IActionResult> GetAllUsername(int? userId)
