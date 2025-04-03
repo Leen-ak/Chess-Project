@@ -91,8 +91,6 @@ namespace ExcWebsite.Controllers
                     return Unauthorized(new { msg = "Invalid credentials" });
 
                 var token = GenerateJwtToken(vm.UserName!);
-
-                // ✅Set JWT as HttpOnly cookie
                 Response.Cookies.Append("AuthToken", token, new CookieOptions
                 {
                     HttpOnly = true,   // Prevent JavaScript access
@@ -111,56 +109,11 @@ namespace ExcWebsite.Controllers
             }
         }
 
-
         [HttpPost("logout")]
         public IActionResult Logout()
         {
             Response.Cookies.Delete("AuthToken");
             return Ok(new { msg = "Logged out successfully" });
-        }
-
-        //Just for texting 
-        //[HttpGet("Check-jwt-key")]
-        //public IActionResult CheckJwtKey(IConfiguration config)
-        //{
-        //    string? jwtkey = config["Jwt:Key"];
-        //    return Ok(new { jwtkey = jwtkey ?? "JWT Key is missing!" }); 
-        //}
-
-        //Get by UserName 
-        [HttpGet("username/{username}")]
-        public async Task<IActionResult> GetByUsername(string username)
-        {
-            try
-            {
-                UserVM viewModel = new() { UserName = username };
-                await viewModel.GetByUsername();
-                return Ok(viewModel);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        //Get by Email
-        [HttpGet("email/{email}")]
-        public async Task<IActionResult> GetByEmail(string email)
-        {
-            try
-            {
-                UserVM viewModel = new() { Email = email };
-                await viewModel.GetByEmail();
-                return Ok(viewModel);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
         }
     }
 }

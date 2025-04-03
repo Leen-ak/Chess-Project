@@ -41,8 +41,8 @@ namespace ExcWebsite.Controllers
 
             try
             {
-                Console.WriteLine($"✅ Received Username: {model.UserName}");
-                Console.WriteLine($"✅ Received Image (Base64 Length): {model.PictureBase64.Length}");
+                Console.WriteLine($"Received Username: {model.UserName}");
+                Console.WriteLine($"Received Image (Base64 Length): {model.PictureBase64.Length}");
 
                 // Convert Base64 to byte array
                 byte[] imageBytes = Convert.FromBase64String(model.PictureBase64);
@@ -53,7 +53,7 @@ namespace ExcWebsite.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error in {MethodBase.GetCurrentMethod()?.Name}: {ex}");
+                Console.WriteLine($"Error in {MethodBase.GetCurrentMethod()?.Name}: {ex}");
                 return StatusCode(StatusCodes.Status500InternalServerError, new { msg = "Internal Server Error" });
             }
         }

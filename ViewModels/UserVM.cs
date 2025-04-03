@@ -13,7 +13,6 @@ namespace ViewModels
 {
     public class UserVM
     {
-        readonly private SignUpDAO _dao;
         readonly private Login_signup_business _service; 
         public int? Id { get; set; }
 
@@ -46,7 +45,6 @@ namespace ViewModels
 
         public UserVM() 
         { 
-            _dao = new SignUpDAO();
             _service = new Login_signup_business();
         }
 
@@ -98,61 +96,6 @@ namespace ViewModels
                 throw;
             }
             return updateStatus;
-        }
-
-        public async Task GetByUsername()
-        {
-            try
-            {
-                UserInfo? user = await _service.GetByUsername(UserName!);
-                Id = user!.Id;
-                FirstName = user.Firstname;
-                LastName = user.Lastname;
-                UserName = user.UserName;
-                Email = user.Email;
-                Password = user.Password;
-                Picture = user.Picture;
-                Timer = Convert.ToBase64String(user.Timer!); 
-            }
-            catch (NullReferenceException nex)
-            {
-                Debug.WriteLine(nex.Message);
-                UserName = "Username Not Found!"; 
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
-        }
-
-        public async Task GetByEmail()
-        {
-            try
-            {
-                UserInfo? user = await _service.GetByEmail(Email!);
-                Id = user!.Id;
-                FirstName = user.Firstname;
-                LastName = user.Lastname;
-                UserName = user.UserName;
-                Email = user.Email;
-                Password = user.Password;
-                Picture = user.Picture;
-                Timer = Convert.ToBase64String(user.Timer!);
-            }
-            catch (NullReferenceException nex)
-            {
-                Debug.WriteLine(nex.Message);
-                Email = "Email Not Found!";
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Problem in " + GetType().Name + " " +
-                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-                throw;
-            }
         }
     }
 }

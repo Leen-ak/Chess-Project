@@ -36,19 +36,9 @@ namespace BusinessLogic
             return await _signUpDao.Update(updateUser); 
         }
 
-        public async Task<UserInfo?> GetByUsername(string username)
-        {
-            return await _signUpDao.GetByUsername(username);
-        }
-
         public async Task<UserInfo?> GetPassword(string username)
         {
             return await _signUpDao.GetPassword(username);
-        }
-
-        public async Task<UserInfo?> GetByEmail(string email)
-        {
-            return await _signUpDao.GetByEmail(email);
         }
 
         public bool VerifyPassword(string enteredPassword, string storeHash)
