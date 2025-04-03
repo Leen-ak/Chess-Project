@@ -9,6 +9,7 @@
         const userId = data.userId;
         console.log("Logged-in username", username);
         console.log("Loggied-in userId", userId);
+        GetPhoto(username); 
         GetAllSuggestedFriend(userId); 
     });
 })
@@ -27,13 +28,35 @@ const GetAllSuggestedFriend = async (userId) => {
         if (response.ok)
             console.log("YES");
         else
-            console.log("NO"); 
+            console.log("NO");
     }
-    catch (error)
-    {
+    catch (error) {
         console.log(error);
     }
-}
+};
+
+const GetPhoto = async (username) => {
+    try {
+        const response = await fetch(`https://localhost:7223/update-picture/profile-picture/${username}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (response.ok)
+            console.log(data);
+        else
+            console.log("not found pic"); 
+    }
+    catch (error) {
+        console.log(error)
+    }
+};
+
+
+
 
 const buildUserCard = async (data) => {
     const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";

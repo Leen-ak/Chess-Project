@@ -52,6 +52,7 @@ namespace ViewModels
                 if (user == null)
                     return false;
                 userId = user.Id;
+
                 return _service.VerifyPassword(enteredPassword, user.Password);
             }
             catch (Exception ex)
