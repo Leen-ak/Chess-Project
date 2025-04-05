@@ -11,12 +11,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL
 {
-    public class NetworkDAO
+    public class CopyNetworkDAO
     {
         readonly IRepository<UserInfo> _repo;
         readonly IRepository<Follower> _followRepo;
 
-        public NetworkDAO()
+        public CopyNetworkDAO()
         {
             _repo = new RepositoryImplementation<UserInfo>();
             _followRepo = new RepositoryImplementation<Follower>();
@@ -51,25 +51,26 @@ namespace DAL
             }
         }
 
-        public async Task<int?> AddUser(Follower? user)
+        public async Task<Follower?> GetUserInfoById(int? userId)
         {
             try
             {
-                var existingFollower = await _followRepo.GetAll();
-                bool exists = existingFollower.Any(f => f.FollowerId == user.FollowerId && f.FollowerId == user.FollowingId);
-
-                if (exists)
-                    throw new InvalidOperationException("The user is already following the selected user");
-                await _followRepo.Add(user);
-                user.Status = "Pending"; 
+                return await _followRepo.GetOne(user => user.Id! == userId!);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
-                 MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 throw;
             }
-            return user.Id!;    
+        }
+
+        public async Task SendRequest(int? followerId, int? followingId) //is the user who is logged in 
+        {
+            //first check if the useres already following each other
+
+            //i need to know 2 things the userId who is logged in and the userId that i am sending request too
+
         }
 
 
@@ -120,28 +121,28 @@ namespace DAL
         //}
 
         ////add followers 
-        //public async Task<int> Add(Follower user)
-        //{
-        //    try
-        //    {
-        //        var existingFollowers = await _followRepo.GetAll();
-        //        bool exists = existingFollowers.Any(f => f.FollowerId == user.FollowerId && f.FollowingId == user.FollowingId);
+        public async Task<int> Add(Follower user)
+        {
+            try
+            {
+                var existingFollowers = await _followRepo.GetAll();
+                bool exists = existingFollowers.Any(f => f.FollowerId == user.FollowerId && f.FollowingId == user.FollowingId);
 
-        //        if (exists)
-        //        {
-        //            throw new InvalidOperationException("The user is already following the selected user");
-        //        }
+                if (exists)
+                {
+                    throw new InvalidOperationException("The user is already following the selected user");
+                }
 
-        //        await _followRepo.Add(user);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
-        //            MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-        //        throw;
-        //    }
-        //    return user.Id;
-        //}
+                await _followRepo.Add(user);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                    MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+            return user.Id;
+        }
 
         ////get status by userId 
         //public async Task<List<Follower>> GetStatusByUserId(int? userId)
