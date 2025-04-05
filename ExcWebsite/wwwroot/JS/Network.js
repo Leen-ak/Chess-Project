@@ -4,7 +4,7 @@
 
 async function main() {
     try {
-        const res = await fetch("https://localhost:7223/api/LoginPage/Users", {
+        const res = await fetch("https://localhost:7223/api/MainPage/Users", {
             method: "GET",
             credentials: "include"
         });
@@ -12,8 +12,9 @@ async function main() {
         const data = await res.json();
         const username = data.username;
         const userId = data.userId;
-        const picture = await GetPhoto(username);
+        const picture = await GetPhoto(username); //here is the default picture 
         console.log("The picture is: ", picture);
+        $("#user-image").attr("src", picture);
         GetAllSuggestedFriend(userId, username, picture);
     }
     catch (error) {
@@ -44,7 +45,7 @@ const GetAllSuggestedFriend = async (userId, username, picture) => {
 
 const GetPhoto = async (username) => {
     try {
-        const response = await fetch(`https://localhost:7223/update-picture/profile-picture/${username}`, {
+        const response = await fetch(`https://localhost:7223/api/User/profile-picture/${username}`, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json'
@@ -53,11 +54,13 @@ const GetPhoto = async (username) => {
 
         const data = await response.json();
         if (response.ok)
-            console.log(data);
+            console.log("The data from getting the profile picture api is: ", data); //here there is the right picture 
         else
             console.log("not found pic"); 
 
-        const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
+        console.log("Before the profilePictuer check: ", data.pictureBase64);
+        const profilePicture = data.pictureBase64 ? `data:image/png;base64, ${data.pictureBase64}` : "../images/user.png";
+        console.log("After the profilePictuer check: ", profilePicture);
         return profilePicture; 
     }
     catch (error) {
