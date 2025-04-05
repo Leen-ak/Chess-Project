@@ -33,8 +33,13 @@ const GetAllSuggestedFriend = async (userId, username, picture) => {
 
         const data = await response.json();
         console.log("The data from API is: ", data); 
-        if (response.ok)
-            buildTheCard(userId, username, picture); 
+        if (response.ok) {
+            data.forEach(user => {
+                const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
+                buildTheCard(user.userId, user.username, profilePicture); 
+
+            });
+        }
         else
             console.log("NO");
     }
@@ -58,9 +63,7 @@ const GetPhoto = async (username) => {
         else
             console.log("not found pic"); 
 
-        console.log("Before the profilePictuer check: ", data.pictureBase64);
         const profilePicture = data.pictureBase64 ? `data:image/png;base64, ${data.pictureBase64}` : "../images/user.png";
-        console.log("After the profilePictuer check: ", profilePicture);
         return profilePicture; 
     }
     catch (error) {
