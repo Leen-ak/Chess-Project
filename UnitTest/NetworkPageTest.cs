@@ -44,5 +44,18 @@ namespace UnitTest
             int? userId = await _dao.AddUser(user!);
             Assert.True(userId > 0);
         }
+
+        [Fact]
+        public async Task UpdateStatusTest()
+        {
+            Follower user = new Follower
+            {
+                Id = 1,
+                Status = "Accepted"
+            };
+
+            var result = await _dao.UpdateFollowStatus(user!);
+            Assert.Equal(UpdateStatus.Ok, result);
+        }
     }
 }

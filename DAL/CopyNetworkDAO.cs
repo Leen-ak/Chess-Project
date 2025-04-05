@@ -144,6 +144,39 @@ namespace DAL
             return user.Id;
         }
 
+        public async Task<UpdateStatus> Update(Follower user)
+        {
+            UpdateStatus status;
+            try
+            {
+
+                var existingUser = await _followRepo.GetOne(u => u.FollowerId == user.FollowerId);
+                if (existingUser == null)
+                {
+                    Debug.WriteLine($"User {user.FollowerId} not found in database!");
+                    return UpdateStatus.Failed;
+                }
+
+                existingUser.Status = user.Status;
+                status = await _followRepo.Update(existingUser);
+                return status;
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                status = UpdateStatus.Stale;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+            return status;
+        }
+
+        
+
         ////get status by userId 
         //public async Task<List<Follower>> GetStatusByUserId(int? userId)
         //{
