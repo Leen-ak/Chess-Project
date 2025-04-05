@@ -1,21 +1,27 @@
 ﻿$(() => {
-    fetch("https://localhost:7223/api/LoginPage/me", {
-        method: "GET",
-        credentials: "include"
-    })
-    .then(res => res.json())
-    .then(data => {
+    main();
+});
+
+async function main() {
+    try {
+        const res = await fetch("https://localhost:7223/api/LoginPage/Users", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        const data = await res.json();
         const username = data.username;
         const userId = data.userId;
-        console.log("Logged-in username", username);
-        console.log("Loggied-in userId", userId);
-        GetPhoto(username); 
-        GetAllSuggestedFriend(userId); 
-    });
-})
+        const picture = await GetPhoto(username);
+        console.log("The picture is: ", picture);
+        GetAllSuggestedFriend(userId, username, picture);
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 
-const GetAllSuggestedFriend = async (userId) => {
-
+const GetAllSuggestedFriend = async (userId, username, picture) => {
     try {
         const response = await fetch(`https://localhost:7223/api/Network/GetUsers${userId}`, {
             method: "GET",
@@ -25,8 +31,9 @@ const GetAllSuggestedFriend = async (userId) => {
         });
 
         const data = await response.json();
+        console.log("The data from API is: ", data); 
         if (response.ok)
-            console.log("YES");
+            buildTheCard(userId, username, picture); 
         else
             console.log("NO");
     }
@@ -49,19 +56,20 @@ const GetPhoto = async (username) => {
             console.log(data);
         else
             console.log("not found pic"); 
+
+        const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
+        return profilePicture; 
     }
     catch (error) {
         console.log(error)
     }
+
 };
 
-
-
-
-const buildUserCard = async (data) => {
-    const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
-    buildTheCard(data.id, data.username, profilePicture);
-};
+//const buildUserCard = async (data) => {
+//    const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
+//    buildTheCard(data.id, data.username, profilePicture);
+//};
 
 //cards 
 function buildTheCard(userId, username, profilePicture) {
@@ -76,7 +84,7 @@ function buildTheCard(userId, username, profilePicture) {
     `);
 
     div.appendTo($(".grid-container"));
-    buildFollowList(div, userId, username, profilePicture);
+    //buildFollowList(div, userId, username, profilePicture);
 }
 
 const buildFollowList = async (div, userId, username, profilePicture) => {

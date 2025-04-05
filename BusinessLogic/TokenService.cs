@@ -24,7 +24,7 @@ namespace BusinessLogic
             _expirationMinutes = expirationMinutes;
         }
 
-        public string GenerateToken(int userId, string username, )
+        public string GenerateToken(int userId, string username)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_secret);

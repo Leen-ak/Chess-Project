@@ -18,13 +18,13 @@ namespace ExcWebsite.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginPageController : ControllerBase
+    public class MainPageController : ControllerBase
     {
         //Interface in ASP.NET used to access configuration setting from appsettings.json
         private readonly IConfiguration _config;
         private readonly Login_signup_business _loginBusiness;
 
-        public LoginPageController(IConfiguration config)
+        public MainPageController(IConfiguration config)
         {
             _config = config;
             _loginBusiness = new Login_signup_business();
@@ -79,7 +79,7 @@ namespace ExcWebsite.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        [HttpGet("me")]
+        [HttpGet("Users")]
         [Authorize]
         public IActionResult GetCurrentUser()
         {

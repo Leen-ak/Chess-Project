@@ -11,7 +11,7 @@ using ViewModels;
 namespace ExcWebsite.Controllers
 {
     [ApiController]
-    [Route("update-picture")]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly Home_Business _userBusiness;

@@ -37,7 +37,7 @@ const signUpUser = async () => {
     };
 
     try {
-        const response = await fetch('https://localhost:7223/api/LoginPage/signup', {
+        const response = await fetch('https://localhost:7223/api/MainPage/signup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
@@ -62,7 +62,7 @@ const loginUser = async () => {
     };
 
     try {
-        const response = await fetch('https://localhost:7223/api/LoginPage/Login', {
+        const response = await fetch('https://localhost:7223/api/MainPage/Login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: "include", 
