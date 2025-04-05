@@ -7,7 +7,7 @@
 
 const getUsernameFromServer = async () => {
     try {
-        const response = await fetch("https://localhost:7223/update-picture/profile", {
+        const response = await fetch("https://localhost:7223/api/User/profile", {
             method: "GET",
             credentials: "include"  
         });
@@ -30,7 +30,7 @@ const getUsernameFromServer = async () => {
 
 const GetPhoto = async (username) => {
     try {
-        const response = await fetch(`https://localhost:7223/update-picture/profile-picture/${username}`, {
+        const response = await fetch(`https://localhost:7223/api/User/profile-picture/${username}`, {
             method: 'GET',
             credentials: "include" 
         });
@@ -49,7 +49,7 @@ const GetPhoto = async (username) => {
 };
 
 const logoutUser = async () => {
-    await fetch("https://localhost:7223/logout", {
+    await fetch("https://localhost:7223/api/MainPage/logout", {
         method: "POST",
         credentials: "include"
     });
@@ -86,7 +86,7 @@ const UploadPhoto = async (event) => {
         };
 
         try {
-            const response = await fetch("https://localhost:7223/update-picture/update-picture", {
+            const response = await fetch("https://localhost:7223/api/User/update-picture", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
