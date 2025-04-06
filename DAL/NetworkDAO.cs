@@ -60,8 +60,8 @@ namespace DAL
 
                 if (exists)
                     throw new InvalidOperationException("The user is already following the selected user");
-                await _followRepo.Add(user);
-                user.Status = "Pending"; 
+                await _followRepo.Add(user!);
+                user!.Status = "Pending"; 
             }
             catch(Exception ex)
             {
@@ -82,10 +82,14 @@ namespace DAL
                 if (existingUser == null)
                     return UpdateStatus.Failed;
 
-                if (user.Status == "Accepted" || user.Status == "Rejected")
+                if (user!.Status == "Accepted" || user!.Status == "Rejected")
                 {
                     existingUser.Status = user.Status;
                     status = await _followRepo.Update(existingUser);
+                    if(user.Status == "Accepted")
+                    {
+                        existingUser.remove
+                    }
                 }
                 else
                     return UpdateStatus.Failed;

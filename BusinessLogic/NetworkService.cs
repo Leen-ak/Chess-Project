@@ -21,6 +21,16 @@ namespace BusinessLogic
             return await _networkDao.GetSuggestedUsers(userId!); 
         }
 
+        public async Task<int?> AddUser(Follower? user)
+        {
+            return await _networkDao.AddUser(user!); 
+        }
+
+        public async Task<UpdateStatus> UpdateFollowStatus(Follower? user)
+        {
+            return await _networkDao.UpdateFollowStatus(user!);
+        }
+
         ////first get the username in the database to add it to the friend list you might want to follow
         //public async Task<List<UserInfo>> GetAll()
         //{

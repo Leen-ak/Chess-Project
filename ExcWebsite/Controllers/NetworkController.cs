@@ -18,6 +18,7 @@ namespace ExcWebsite.Controllers
     public class NetworkController : ControllerBase
     {
         private readonly TokenService _tokenService;
+        NetworkVM vm = new();
 
         public NetworkController(IConfiguration configuration)
         {
@@ -33,8 +34,7 @@ namespace ExcWebsite.Controllers
         public async Task<IActionResult> GetAllUsername(int? userId)
         {
             try
-            {
-                NetworkVM vm = new();
+            { 
                 var allUsers = await vm.SuggestedUsers(userId!);
                 return Ok(allUsers); 
             }
@@ -46,23 +46,35 @@ namespace ExcWebsite.Controllers
             }
         }
 
-        //[HttpGet("GetAllUsernames")]
-        //public async Task<IActionResult> GetAll() 
-        //{
-        //    try
-        //    {
-        //        NetworkVM vm = new();
-        //        List<NetworkVM> allUsers = await vm.GetAll();
-        //        return Ok(allUsers);
+        [HttpPost("FollowRequest")]
+        [Authorize]
+        public async Task<IActionResult> FollowRequest([FromBody] NetworkVM request)
+        {
+            try
+            {
+                var followerId = int.Parse(User.FindFirst("user_id")?.Value ?? "0");
+                if (followerId == 0 || request.FollowingId == 0)
+                    return BadRequest(new { msg = "Invalid user IDs" });
 
-        //    }
-        //    catch (Exception ex) 
-        //    {
-        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
-        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
-        //    }
-        //}
+                NetworkVM vm = new NetworkVM
+                {
+                    FollowingId = followerId,
+                    FollowerId = request.FollowingId,
+                    Status = "Pending"
+                };
+                await vm.AddUser();
+
+                if (vm.Id > 0)
+                    return Ok(new { msg = $"Follow request sent from {followerId} to {request.FollowingId}" });
+                return BadRequest(new { msg = "Could not send follow request" });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
 
         //[HttpGet("getUserId/${username}")]
         //public async Task<IActionResult> GetUserId(string username)
@@ -81,40 +93,6 @@ namespace ExcWebsite.Controllers
         //        Debug.WriteLine("Problem in " + GetType().Name + " " +
         //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
         //        throw;
-        //    }
-        //}
-
-        //[HttpGet("GetUserName/{userId}")]
-        //public async Task<IActionResult> GetUsernameById(int userId)
-        //{
-        //    try
-        //    {
-        //        NetworkVM vm = new() { Id = userId };
-        //        await vm.GetUsernameById();
-        //        return Ok(new { vm });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
-        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
-        //    }
-        //}
-
-        //[HttpPost("AddFollowing")]
-        //public async Task<IActionResult> Post(NetworkVM userVM) 
-        //{
-        //    try
-        //    {
-        //        await userVM.Add();
-        //        return userVM.Id > 0 ? Ok(new { msg = $"User {userVM.FollowingId} added {userVM.FollowingId} as a friend!" }) 
-        //            : Ok(new { msg = "Invalid following or follower ID" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine("Problem in " + GetType().Name + " "
-        //            + MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
         //    }
         //}
 

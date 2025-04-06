@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using DAL;
 using BusinessLogic;
 using Microsoft.Identity.Client;
+using Org.BouncyCastle.Crypto;
 
 namespace ViewModels
 {
@@ -46,6 +47,43 @@ namespace ViewModels
                     userInfo.Add(vm); 
                 }
                 return userInfo;
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
+        //[HttpPost("AddFollowing")]
+        //public async Task<IActionResult> Post(NetworkVM userVM) 
+        //{
+        //    try
+        //    {
+        //        await userVM.Add();
+        //        return userVM.Id > 0 ? Ok(new { msg = $"User {userVM.FollowingId} added {userVM.FollowingId} as a friend!" }) 
+        //            : Ok(new { msg = "Invalid following or follower ID" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Problem in " + GetType().Name + " "
+        //            + MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+        //        return StatusCode(StatusCodes.Status500InternalServerError);
+        //    }
+        //}
+
+        public async Task AddUser()
+        {
+            try
+            {
+                Follower user = new()
+                {
+                    FollowerId = FollowerId,
+                    FollowingId = FollowingId,
+                    Status = Status
+                };
+                Id = await _bus.AddUser(user);
             }
             catch(Exception ex)
             {
