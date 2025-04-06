@@ -1,5 +1,12 @@
 ﻿$(() => {
     main();
+    $("#following-btn").on("click", function () {
+        $("#theModal .modal-title").text("Following");
+        let currentCount = parseInt($("#following-count").text()) || 0;
+        if (currentCount === 0)
+            $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
+        $("#theModal").modal('show');
+    });
 });
 
 async function main() {
@@ -83,46 +90,20 @@ function buildTheCard(userId, username, profilePicture) {
             <img src="${profilePicture}" alt="Chess Game Image" class="card-img-top user-image" id="user-image-${userId}" />
             <h2 class="card-title username">${username}</h2>
             <div class="button-section">
-                <button class="btn" id="follow-btn-${userId}">Follow</button>
+                <button class="btn follow-btn" id="follow-btn-${userId}">Follow</button>
             </div>
         </div>
     `);
 
     div.appendTo($(".grid-container"));
+    div.find('.follow-btn').on("click", () => {
+        buildFollowList(div, userId, username, profilePicture);
+    });
     //buildFollowList(div, userId, username, profilePicture);
 }
 
 const buildFollowList = async (div, userId, username, profilePicture) => {
-    div.find(`#follow-btn-${userId}`).on("click", async function () {
-        const response = await fetch(`https://localhost:7223/api/LoginPage/username/${getCookie("username")}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const userData = await response.json();
-        const followData = {
-            followerId: userData.id,
-            followingId: userId,
-            status: "Pending"
-        };
-        console.log("Sending follow request:", followData);
-
-        try {
-            const followResponse = await fetch('https://localhost:7223/api/Network/AddFollowing', {
-                method: 'POST',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(followData)
-            });
-
-            if (followResponse.ok) {
-                console.log("Follow request sent successfully");
-            }
-        } catch (error) {
-            console.log("Error following user: ", error);
-        }
-
+    div.find(`#follow-btn-${userId}`).on("click", async function () {   
         // Move the card to the modal list
         const followingItem = $(`
             <div class="following-item" id="following-${userId}">
