@@ -57,5 +57,16 @@ namespace UnitTest
             var result = await _dao.UpdateFollowStatus(user!);
             Assert.Equal(UpdateStatus.Ok, result);
         }
+
+        [Fact]
+        public async Task GetStatusTest()
+        {
+            int userId = 1;
+            var (pendingRequests, acceptedRequests) = await _dao.GetStatusByUserId(userId);
+            Assert.NotNull(pendingRequests);
+            Assert.NotNull(acceptedRequests);
+
+            Assert.Contains(acceptedRequests, r => r.Id == userId && (r.Status == "Accepted" || r.Status == "Rejected"));
+        }
     }
 }

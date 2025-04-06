@@ -4,6 +4,7 @@
 
 async function main() {
     try {
+        //Getting all user those are not with Accepted or Pending status. 
         const res = await fetch("https://localhost:7223/api/MainPage/Users", {
             method: "GET",
             credentials: "include"
