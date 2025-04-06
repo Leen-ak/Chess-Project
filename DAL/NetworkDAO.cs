@@ -107,53 +107,6 @@ namespace DAL
             return status;
         }
 
-
-        //public async Task<List<UserInfo>> GetAll()
-        //{
-        //    List<UserInfo> allUsername;
-
-        //    try
-        //    {
-        //        allUsername = await _repo.GetAll();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
-        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-        //        throw;
-        //    }
-        //    return allUsername;
-        //}
-
-        //public async Task<int?> GetIdByUsername(string username)
-        //{
-        //    try
-        //    {
-        //        UserInfo? user = await _repo.GetOne(user => user.UserName == username);
-        //        return user?.Id;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
-        //        MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-        //        throw;
-        //    }
-        //}
-
-        //public async Task<UserInfo?> GetUsernameById(int? id)
-        //{
-        //    try
-        //    {
-        //        return await _repo.GetOne(user => user.Id == id);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine("Problem in " + GetType().Name + " " +
-        //            MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
-        //        throw;
-        //    }
-        //}
-
         //get status by userId 
         public async Task<(List<Follower>, List<Follower>)> GetStatusByUserId(int? userId)
         {
