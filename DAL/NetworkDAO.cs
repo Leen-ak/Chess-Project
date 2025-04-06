@@ -39,7 +39,8 @@ namespace DAL
                 //check if the userId == Id we do not want to suggest that
                 var filterUser = allUsername.Where(u => u.Id != userId
                     && !following.Any(f => (f.FollowerId == userId && f.FollowingId == u.Id) //user is following this person
-                    || (f.FollowingId == userId && f.FollowingId == u.Id) //user is followed by this person
+                    || (f.FollowingId == userId && f.FollowingId == u.Id) 
+                    && (f.Status == "Pending" || f.Status == "Accepted")//user is followed by this person
                     )).ToList();
                 return filterUser;
             }
@@ -56,7 +57,7 @@ namespace DAL
             try
             {
                 var existingFollower = await _followRepo.GetAll();
-                bool exists = existingFollower.Any(f => f.FollowerId == user.FollowerId && f.FollowerId == user.FollowingId);
+                bool exists = existingFollower.Any(f => f.FollowerId == user!.FollowerId && f.FollowerId == user.FollowingId);
 
                 if (exists)
                     throw new InvalidOperationException("The user is already following the selected user");
@@ -86,10 +87,6 @@ namespace DAL
                 {
                     existingUser.Status = user.Status;
                     status = await _followRepo.Update(existingUser);
-                    if(user.Status == "Accepted")
-                    {
-                        existingUser.remove
-                    }
                 }
                 else
                     return UpdateStatus.Failed;
