@@ -2,6 +2,7 @@
     main();
     $("#following-btn").on("click", function () {
         $("#theModal .modal-title").text("Following");
+        FollowStatus();
         let currentCount = parseInt($("#following-count").text()) || 0;
         if (currentCount === 0)
             $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
@@ -22,14 +23,26 @@ async function main() {
         const userId = data.userId;
         const picture = await GetPhoto(username); //here is the default picture 
         $("#user-image").attr("src", picture);
-        GetAllSuggestedFriend(userId, username, picture);
+        GetAllSuggestedFriend(userId);
     }
     catch (error) {
         console.log(error);
     }
 }
 
-const GetAllSuggestedFriend = async (userId, username, picture) => {
+function buildFollowingList(userId, username, profilePicture) {
+    const followingItem = $(`
+        <div class="following-item" id="following-${userId}">
+            <img src="${profilePicture}" class="following-pic" alt="${username}" />
+            <span class="following-username">${username}</span>
+            <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
+        </div>
+    `);
+
+    $("#friend-list").append(followingItem);
+}
+
+const GetAllSuggestedFriend = async (userId) => {
     try {
         const response = await fetch(`https://localhost:7223/api/Network/GetUsers${userId}`, {
             method: "GET",
@@ -39,12 +52,13 @@ const GetAllSuggestedFriend = async (userId, username, picture) => {
         });
 
         const data = await response.json();
-        console.log("The data from API is: ", data); 
+        console.log("The data from API is: ", data);
+        const followButton = `<button class="btn follow-btn" id="follow-btn-${userId}">Follow</button>`;
+
         if (response.ok) {
             data.forEach(user => {
                 const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
-                buildTheCard(user.userId, user.username, profilePicture); 
-
+                const card = buildUserCard(".grid-container", user.id, user.username, profilePicture, followButton, "card network-card");
             });
         }
         else
@@ -67,120 +81,91 @@ const GetPhoto = async (username) => {
         const data = await response.json();
         if (response.ok) {
             const profilePicture = data.pictureBase64 ? `data:image/png;base64, ${data.pictureBase64}` : "../images/user.png";
-            return profilePicture; 
+            return profilePicture;
         }
         else
-            console.log("not found pic"); 
+            console.log("not found pic");
     }
     catch (error) {
         console.log(error)
     }
-
 };
 
-//const buildUserCard = async (data) => {
-//    const profilePicture = data.picture ? `data:image/png;base64,${data.picture}` : "../images/user.png";
-//    buildTheCard(data.id, data.username, profilePicture);
-//};
 
-//cards 
-function buildTheCard(userId, username, profilePicture) {
-    const div = $(`
-        <div class="card network-card" id="user-card-${userId}">
-            <img src="${profilePicture}" alt="Chess Game Image" class="card-img-top user-image" id="user-image-${userId}" />
-            <h2 class="card-title username">${username}</h2>
-            <div class="button-section">
-                <button class="btn follow-btn" id="follow-btn-${userId}">Follow</button>
-            </div>
-        </div>
-    `);
+const AddUser = async (userId) => {
+    try {
+        console.log("The user id from addUser API is: ", userId);
+        const response = await fetch(`https://localhost:7223/api/Network/FollowRequest`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ followingId: userId })
 
-    div.appendTo($(".grid-container"));
-    div.find('.follow-btn').on("click", () => {
-        buildFollowList(div, userId, username, profilePicture);
-    });
-    //buildFollowList(div, userId, username, profilePicture);
+        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log("The data from followRequest API IS: ", data); 
+        }
+    }
+    catch (error) {
+        console.log(error); 
+    }
 }
 
-const buildFollowList = async (div, userId, username, profilePicture) => {
-    div.find(`#follow-btn-${userId}`).on("click", async function () {   
-        // Move the card to the modal list
-        const followingItem = $(`
-            <div class="following-item" id="following-${userId}">
-                <img src="${profilePicture}" class="following-pic" alt="${username}" />
-                <span class="following-username">${username}</span>
-                <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
-            </div>
-        `);
-        $("#friend-list").append(followingItem);
-        $(`#user-card-${userId}`).hide();
-
-        let currentCount = parseInt($("#following-count").text()) || 0;
-        if (currentCount >= 0) $("#friend-list").find('.no-followers-text').remove();
-        currentCount++;
-        $("#following-count").text(currentCount);
-    });
-};
-
-const buildRequestList = async (acceptButton, rejectButton) => {
+const FollowStatus = async () => {
     try {
-        const response = await fetch(`https://localhost:7223/api/LoginPage/username/${getCookie("username")}`, {
-            method: 'GET',
+        const response = await fetch(`https://localhost:7223/api/Network/Status`, {
+            method: "GET",
             headers: {
                 'Content-Type': 'application/json'
             }
         });
 
-        const userData = await response.json();
-        const statusResponse = await fetch(`https://localhost:7223/api/Network/Status/${userData.id}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log("The data from GetFollowStatus is: ", data);
 
-        if (statusResponse.ok) {
-            const statusData = await statusResponse.json();
-            const resultArray = statusData.result;
-
-            if (Array.isArray(resultArray) && resultArray.length > 0) {
-                resultArray.forEach(async request => {
-
-                    const getInfo = await fetch(`https://localhost:7223/api/Network/GetUserName/${request.followerId}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    const getUsername = await getInfo.json();
-                    let profilePicture = getUsername.vm.picture ? `data:image/png;base64,${getUsername.vm.picture}` : "../images/user.png";
-
-                    if (request.status === "Pending") {
-                        const requestItem = $(`
-                                <div class="request-item" id="request-${request.followerId}">
-                                    <img src="${profilePicture}" class="request-pic" alt="${getUsername.vm.username}" />
-                                    <span class="request-username">${getUsername.vm.username}</span>
-                                  <button class="btn-accept" data-id="${request.id}">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
-                                        </svg>
-                                    </button>
-                                    <button class="btn-reject" data-id="${request.id}">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M6 6L18 18M6 18L18 6" stroke="red" stroke-width="2"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            `);
-                        $("#friend-list").append(requestItem);
+            const acceptedRequests = data.acceptedRequests;
+            const pendingRequests = data.pendingRequests;
+            pendingRequests.forEach(async request => {
+                const userId = request.followingId;
+                const infoResponse = await fetch(`https://localhost:7223/api/Network/GetUsers${userId}`, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
                 });
-            } else {
-                console.log("No status data available.");
-                $("#friend-list").html('<p class="no-followers-text">You do not have any friend requests.</p>');
-            }
+
+                const userData = await infoResponse.json();
+                const profilePicture = userData.pictureBase64 ? `data:image/png;base64, ${userData.pictureBase64}` : "../images/user.png";
+                buildFollowingList(userData.id, userData.username, profilePicture);
+
+            })
         }
-    } catch (error) {
-        console.log("An error occurred:", error);
     }
-    $("#theModal").modal('show');
-};
+    catch (error) {
+        console.log(error); 
+    }
+}
+
+function buildUserCard(container, userId, username, profilePicture, button, customClass = "") {
+    const card = $(`
+        <div class="${customClass}" id="user-card-${userId}">
+            <img src="${profilePicture}" alt="User Image" class="card-img-top user-image" />
+            <h2 class="card-title username">${username}</h2>
+            <div class="button-section">
+                ${button}
+            </div>
+        </div>
+    `);
+
+    $(container).append(card);
+    return card;
+}
+
+//when the user press follow button it will call the API sendrequest, call API that is counting for accepting and pending status
+//press follow call API (AddUser)
+
+
