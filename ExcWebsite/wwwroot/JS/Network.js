@@ -8,7 +8,23 @@
             $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
         $("#theModal").modal('show');
     });
+
+
 });
+
+$(document).on("click", ".follow-btn", function () {
+    const button = $(this);
+    const userId = button.attr("id").split("-")[2];
+    const action = button.text().trim();
+
+    if (action == "Follow") {
+        AddUser(userId);
+        button.text("Unfollow");
+        console.log(`Follow request sent for user ID: ${userId}`);
+    }
+    else
+        console.log("DID NOT WORK");
+})
 
 async function main() {
     try {
@@ -53,11 +69,11 @@ const GetAllSuggestedFriend = async (userId) => {
 
         const data = await response.json();
         console.log("The data from API is: ", data);
-        const followButton = `<button class="btn follow-btn" id="follow-btn-${userId}">Follow</button>`;
 
         if (response.ok) {
             data.forEach(user => {
                 const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
+                const followButton = `<button class="btn follow-btn" id="follow-btn-${user.id}">Follow</button>`;
                 const card = buildUserCard(".grid-container", user.id, user.username, profilePicture, followButton, "card network-card");
             });
         }
@@ -90,7 +106,6 @@ const GetPhoto = async (username) => {
         console.log(error)
     }
 };
-
 
 const AddUser = async (userId) => {
     try {
@@ -130,7 +145,7 @@ const FollowStatus = async () => {
             const acceptedRequests = data.acceptedRequests;
             const pendingRequests = data.pendingRequests;
             pendingRequests.forEach(async request => {
-                const userId = request.followingId;
+                const userId = request.followerId;
                 const infoResponse = await fetch(`https://localhost:7223/api/Network/GetUsers${userId}`, {
                     method: "GET",
                     headers: {
@@ -140,8 +155,8 @@ const FollowStatus = async () => {
 
                 const userData = await infoResponse.json();
                 const profilePicture = userData.pictureBase64 ? `data:image/png;base64, ${userData.pictureBase64}` : "../images/user.png";
-                buildFollowingList(userData.id, userData.username, profilePicture);
-
+                const unfollowButton = `<button class="btn-unfollow" data-id="${userId}">Unfollow</button>`;
+                buildUserCard("#friend-list", data.followerId, userData.username, profilePicture, unfollowButton, "following-item")
             })
         }
     }
@@ -153,7 +168,7 @@ const FollowStatus = async () => {
 function buildUserCard(container, userId, username, profilePicture, button, customClass = "") {
     const card = $(`
         <div class="${customClass}" id="user-card-${userId}">
-            <img src="${profilePicture}" alt="User Image" class="card-img-top user-image" />
+            <img src="${profilePicture}" alt="User Image" class="card-img-top user-image id="user-image-${userId}" />
             <h2 class="card-title username">${username}</h2>
             <div class="button-section">
                 ${button}
