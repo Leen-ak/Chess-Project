@@ -2,37 +2,38 @@
     main();
     $("#following-btn").on("click", function () {
         $("#theModal .modal-title").text("Following");
+        const followingItems = $("#friend-list .following-item");
         FollowStatus();
-        let currentCount = parseInt($("#following-count").text()) || 0;
-        if (currentCount === 0)
-            $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
         $("#theModal").modal('show');
+        
     });
-
-
 });
 
 $(document).on("click", ".follow-btn", async function () {
     const button = $(this);
     const userId = button.attr("id").split("-")[2];
-    const action = button.text().trim();
-    try {
-        await AddUser(usreId);
-        const followingItem = $(`
-            <div class="following-item" id="following-${userId}">
-                <img src="${profilePicture}" class="following-pic" alt="${username}" />
-                <span class="following-username">${username}</span>
-                <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
-            </div>
-        `);
-        $("#friend-list").append(followingItem);
-        $(`#user-card-${userId}`).remove();
-        console.log("user mmoved to following list");
-    }
-    catch (error) {
-        console.log("Error adding the user card to the following list: ", error);
-    }
+    const username = button.data("username");
+    const profilePicture = button.data("picture");
+
+    console.log("The userId from clicking the follow button is: ", userId);
+    console.log("The username from clicking the username is: ", username);
+    console.log("The profilepicture is: ", profilePicture);
+
+    await AddUser(userId);
+
+    const followingItem = $(`
+        <div class="following-item" id="following-${userId}">
+            <img src="${profilePicture}" class="following-pic" alt="${username}" />
+            <span class="following-username">${username}</span>
+            <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
+        </div>
+    `);
+
+    $("#friend-list").append(followingItem);
+    $(`#user-card-${userId}`).remove();
+    console.log("user moved to following list");
 });
+
 
 async function main() {
     try {
@@ -81,8 +82,7 @@ const GetAllSuggestedFriend = async (userId) => {
         if (response.ok) {
             data.forEach(user => {
                 const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
-                const followButton = `<button class="btn follow-btn" id="follow-btn-${user.id}">Follow</button>`;
-                const card = buildUserCard(".grid-container", user.id, user.username, profilePicture, followButton, "card network-card");
+                const card = buildUserCard(".grid-container", user.id, user.username, profilePicture, "card network-card");
             });
         }
         else
@@ -137,6 +137,7 @@ const AddUser = async (userId) => {
     }
 }
 
+//username is good in console.log, id is good, but the picture is null.
 const FollowStatus = async () => {
     try {
         const response = await fetch(`https://localhost:7223/api/Network/Status`, {
@@ -162,9 +163,14 @@ const FollowStatus = async () => {
                 });
 
                 const userData = await infoResponse.json();
+                console.log("From FollowStatus method: ", userData);
                 const profilePicture = userData.pictureBase64 ? `data:image/png;base64, ${userData.pictureBase64}` : "../images/user.png";
                 const unfollowButton = `<button class="btn-unfollow" data-id="${userId}">Unfollow</button>`;
-                buildUserCard("#friend-list", data.followerId, userData.username, profilePicture, unfollowButton, "following-item")
+
+                console.log("The username from followStatus is: ", userData.username);
+                console.log("The ProfilePicture from followStatus is: ", profilePicture);
+                console.log("The followerId from followStatus is: ", data.followerId);
+                buildUserCard("#friend-list", data.followerId, userData.username, profilePicture, "following-item")
             })
         }
     }
@@ -173,13 +179,18 @@ const FollowStatus = async () => {
     }
 }
 
-function buildUserCard(container, userId, username, profilePicture, button, customClass = "") {
+function buildUserCard(container, userId, username, profilePicture, customClass = "") {
     const card = $(`
         <div class="${customClass}" id="user-card-${userId}">
-            <img src="${profilePicture}" alt="User Image" class="card-img-top user-image id="user-image-${userId}" />
+            <img src="${profilePicture}" alt="User Image" class="card-img-top user-image" id="user-image-${userId}" />
             <h2 class="card-title username">${username}</h2>
             <div class="button-section">
-                ${button}
+                <button class="btn follow-btn"
+                        id="follow-btn-${userId}" 
+                        data-username="${username}" 
+                        data-picture="${profilePicture}">
+                    Follow
+                </button>
             </div>
         </div>
     `);
@@ -192,3 +203,4 @@ function buildUserCard(container, userId, username, profilePicture, button, cust
 //press follow call API (AddUser)
 
 
+//The problem i have now is when i press the modal i have an empty list 
