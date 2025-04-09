@@ -12,19 +12,27 @@
 
 });
 
-$(document).on("click", ".follow-btn", function () {
+$(document).on("click", ".follow-btn", async function () {
     const button = $(this);
     const userId = button.attr("id").split("-")[2];
     const action = button.text().trim();
-
-    if (action == "Follow") {
-        AddUser(userId);
-        button.text("Unfollow");
-        console.log(`Follow request sent for user ID: ${userId}`);
+    try {
+        await AddUser(usreId);
+        const followingItem = $(`
+            <div class="following-item" id="following-${userId}">
+                <img src="${profilePicture}" class="following-pic" alt="${username}" />
+                <span class="following-username">${username}</span>
+                <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
+            </div>
+        `);
+        $("#friend-list").append(followingItem);
+        $(`#user-card-${userId}`).remove();
+        console.log("user mmoved to following list");
     }
-    else
-        console.log("DID NOT WORK");
-})
+    catch (error) {
+        console.log("Error adding the user card to the following list: ", error);
+    }
+});
 
 async function main() {
     try {
