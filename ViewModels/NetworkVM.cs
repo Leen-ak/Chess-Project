@@ -57,6 +57,28 @@ namespace ViewModels
             }
         }
 
+        public async Task<UserInfo?> GetUserById(int? userId)
+        {
+            try
+            {
+                var user = await _bus.GetUserById(userId!);
+                if (user == null)
+                    return null;
+                return new UserInfo
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Picture = user.Picture
+                };
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
         public async Task AddUser()
         {
             try

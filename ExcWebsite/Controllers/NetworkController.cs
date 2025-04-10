@@ -46,6 +46,24 @@ namespace ExcWebsite.Controllers
             }
         }
 
+        [HttpGet("GetUserById/{userId}")]
+        public async Task<IActionResult> GetUser(int? userId)
+        {
+            try
+            {
+                var user = await vm.GetUserById(userId!);
+                if (user == null)
+                    return NotFound(new { msg = "User not found" });
+                return Ok(user); 
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+   MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpPost("FollowRequest")]
         [Authorize]
         public async Task<IActionResult> FollowRequest([FromBody] NetworkVM request)

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL; 
+using DAL;
+using Org.BouncyCastle.Crypto;
 
 namespace BusinessLogic
 {
@@ -19,6 +20,11 @@ namespace BusinessLogic
         public async Task<List<UserInfo>> GetSuggestedUsers(int? userId)
         {
             return await _networkDao.GetSuggestedUsers(userId!); 
+        }
+
+        public async Task<UserInfo?> GetUserById(int? userId)
+        {
+            return await _networkDao.GetUserInfoById(userId!); 
         }
 
         public async Task<int?> AddUser(Follower? user)

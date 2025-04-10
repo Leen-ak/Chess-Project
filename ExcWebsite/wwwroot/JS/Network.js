@@ -2,11 +2,7 @@
     main();
     $("#following-btn").on("click", async function () {
         $("#theModal .modal-title").text("Following");
-
-        // Clear old list first to avoid duplicates
         $("#friend-list").empty();
-
-
 
         //Fetching the status and just the pending ones for the pendingRequests like i want
         try {
@@ -17,7 +13,6 @@
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("The data from list is: ", data); 
                 const pendingRequests = data.pendingRequests;
 
                 if (pendingRequests.length === 0) {
@@ -32,13 +27,10 @@
                         //Here is giving undifind but there is data in the userData i cann see it 
                         const userData = await userResponse.json();
                         const user = userData[0];
-                        console.log("Fetching the user information to display to the list: ", user);
+                        console.log(userData);
 
                         //but from here all the data pring as undefined 
                         const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
-                        console.log("The picture is: ", profilePicture);
-                        console.log("user name is: ", user.username);
-
 
                         const followingItem = $(`
                         <div class="following-item" id="following-${user.id}">
@@ -54,7 +46,6 @@
         } catch (error) {
             console.log("Error loading following list: ", error);
         }
-
         $("#theModal").modal('show');
     });
 
@@ -66,12 +57,7 @@ $(document).on("click", ".follow-btn", async function () {
     const username = button.data("username");
     const profilePicture = button.data("picture");
 
-    console.log("The userId from clicking the follow button is: ", userId);
-    console.log("The username from clicking the username is: ", username);
-    console.log("The profilepicture is: ", profilePicture);
-
     await AddUser(userId);
-
     const followingItem = $(`
         <div class="following-item" id="following-${userId}">
             <img src="${profilePicture}" class="following-pic" alt="${username}" />
@@ -79,10 +65,8 @@ $(document).on("click", ".follow-btn", async function () {
             <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
         </div>
     `);
-
     $("#friend-list").append(followingItem);
     $(`#user-card-${userId}`).remove();
-    console.log("user moved to following list");
 });
 
 
