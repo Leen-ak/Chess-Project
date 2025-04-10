@@ -1,4 +1,10 @@
-﻿$(() => {
+﻿let followingCount = 0; 
+
+//for reminder: The following list is fine for the person who does the follow but not right for the other user...
+$(() => {
+    console.log(followingCount);
+    $("#following-count").text(followingCount);
+
     main();
     $("#following-btn").on("click", async function () {
         $("#theModal .modal-title").text("Following");
@@ -13,10 +19,11 @@
             if (response.ok) {
                 const data = await response.json();
                 const pendingRequests = data.pendingRequests;
-
-                if (pendingRequests.length === 0) {
+                followingCount = pendingRequests.length;
+                if (followingCount === 0) {
                     $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
                 } else {
+                    $("#following-count").text(pendingRequests.length);
                     for (const request of pendingRequests) {
                         const userId = request.followerId;
                         const userResponse = await fetch(`https://localhost:7223/api/Network/GetUserById/${userId}`, {
@@ -57,6 +64,7 @@ $(document).on("click", ".follow-btn", async function () {
     const profilePicture = button.data("picture");
 
     await AddUser(userId);
+    followingCount++;
     const followingItem = $(`
         <div class="following-item" id="following-${userId}">
             <img src="${profilePicture}" class="following-pic" alt="${username}" />
@@ -71,7 +79,6 @@ $(document).on("click", ".follow-btn", async function () {
 
 async function main() {
     try {
-        //Getting all user those are not with Accepted or Pending status. 
         const res = await fetch("https://localhost:7223/api/MainPage/Users", {
             method: "GET",
             credentials: "include"
@@ -80,11 +87,22 @@ async function main() {
         const data = await res.json();
         const username = data.username;
         const userId = data.userId;
-        const picture = await GetPhoto(username); //here is the default picture 
+        const picture = await GetPhoto(username);
         $("#user-image").attr("src", picture);
         GetAllSuggestedFriend(userId);
-    }
-    catch (error) {
+
+        // 🟢 Add this
+        const statusResponse = await fetch(`https://localhost:7223/api/Network/Status`, {
+            method: "GET",
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (statusResponse.ok) {
+            const statusData = await statusResponse.json();
+            const count = statusData.pendingRequests.length;
+            $("#following-count").text(count);
+        }
+
+    } catch (error) {
         console.log(error);
     }
 }
