@@ -1,12 +1,63 @@
 ﻿$(() => {
     main();
-    $("#following-btn").on("click", function () {
+    $("#following-btn").on("click", async function () {
         $("#theModal .modal-title").text("Following");
-        const followingItems = $("#friend-list .following-item");
-        FollowStatus();
+
+        // Clear old list first to avoid duplicates
+        $("#friend-list").empty();
+
+
+
+        //Fetching the status and just the pending ones for the pendingRequests like i want
+        try {
+            const response = await fetch(`https://localhost:7223/api/Network/Status`, {
+                method: "GET",
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("The data from list is: ", data); 
+                const pendingRequests = data.pendingRequests;
+
+                if (pendingRequests.length === 0) {
+                    $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
+                } else {
+                    for (const request of pendingRequests) {
+                        const userResponse = await fetch(`https://localhost:7223/api/Network/GetUsers${request.followerId}`, {
+                            method: "GET",
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+
+                        //Here is giving undifind but there is data in the userData i cann see it 
+                        const userData = await userResponse.json();
+                        const user = userData[0];
+                        console.log("Fetching the user information to display to the list: ", user);
+
+                        //but from here all the data pring as undefined 
+                        const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
+                        console.log("The picture is: ", profilePicture);
+                        console.log("user name is: ", user.username);
+
+
+                        const followingItem = $(`
+                        <div class="following-item" id="following-${user.id}">
+                            <img src="${profilePicture}" class="following-pic" alt="${user.username}" />
+                            <span class="following-username">${user.username}</span>
+                            <button class="btn-unfollow" data-id="${user.id}">Unfollow</button>
+                        </div>
+                    `);
+                        $("#friend-list").append(followingItem);
+                    }
+                }
+            }
+        } catch (error) {
+            console.log("Error loading following list: ", error);
+        }
+
         $("#theModal").modal('show');
-        
     });
+
 });
 
 $(document).on("click", ".follow-btn", async function () {
