@@ -4,7 +4,6 @@
         $("#theModal .modal-title").text("Following");
         $("#friend-list").empty();
 
-        //Fetching the status and just the pending ones for the pendingRequests like i want
         try {
             const response = await fetch(`https://localhost:7223/api/Network/Status`, {
                 method: "GET",
@@ -19,23 +18,23 @@
                     $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
                 } else {
                     for (const request of pendingRequests) {
-                        const userResponse = await fetch(`https://localhost:7223/api/Network/GetUsers${request.followerId}`, {
+                        const userId = request.followerId;
+                        const userResponse = await fetch(`https://localhost:7223/api/Network/GetUserById/${userId}`, {
                             method: "GET",
                             headers: { 'Content-Type': 'application/json' }
                         });
 
-                        //Here is giving undifind but there is data in the userData i cann see it 
-                        const userData = await userResponse.json();
-                        const user = userData[0];
-                        console.log(userData);
+                        if (!userResponse.ok) {
+                            console.log(`Failed to fetch user with ID ${userId}`);
+                            continue;
+                        }
 
-                        //but from here all the data pring as undefined 
+                        const user = await userResponse.json();
                         const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
-
                         const followingItem = $(`
                         <div class="following-item" id="following-${user.id}">
-                            <img src="${profilePicture}" class="following-pic" alt="${user.username}" />
-                            <span class="following-username">${user.username}</span>
+                            <img src="${profilePicture}" class="following-pic" alt="${user.userName}" />
+                            <span class="following-username">${user.userName}</span>
                             <button class="btn-unfollow" data-id="${user.id}">Unfollow</button>
                         </div>
                     `);
