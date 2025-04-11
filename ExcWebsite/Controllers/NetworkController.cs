@@ -76,8 +76,8 @@ namespace ExcWebsite.Controllers
 
                 NetworkVM vm = new NetworkVM
                 {
-                    FollowingId = followerId,
-                    FollowerId = request.FollowingId,
+                    FollowerId = followerId,
+                    FollowingId = request.FollowingId,
                     Status = "Pending"
                 };
                 await vm.AddUser();

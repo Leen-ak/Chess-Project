@@ -1,6 +1,7 @@
 ﻿let followingCount = 0; 
 
 //for reminder: The following list is fine for the person who does the follow but not right for the other user...
+//and it looks like this is a backend problem not from frontend
 $(() => {
     console.log(followingCount);
     $("#following-count").text(followingCount);
@@ -19,7 +20,7 @@ $(() => {
             if (response.ok) {
                 const data = await response.json();
                 const pendingRequests = data.pendingRequests;
-                followingCount = pendingRequests.length;
+               // followingCount = pendingRequests.length;
                 if (followingCount === 0) {
                     $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
                 } else {
@@ -98,8 +99,8 @@ async function main() {
         });
         if (statusResponse.ok) {
             const statusData = await statusResponse.json();
-            const count = statusData.pendingRequests.length;
-            $("#following-count").text(count);
+            const followingCount = statusData.pendingSent.length;
+            $("#following-count").text(followingCount);
         }
 
     } catch (error) {

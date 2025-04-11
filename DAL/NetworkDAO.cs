@@ -76,7 +76,7 @@ namespace DAL
             try
             {
                 var existingFollower = await _followRepo.GetAll();
-                bool exists = existingFollower.Any(f => f.FollowerId == user!.FollowerId && f.FollowerId == user.FollowingId);
+                bool exists = existingFollower.Any(f => f.FollowerId == user!.FollowerId && f.FollowingId == user.FollowingId);
 
                 if (exists)
                     throw new InvalidOperationException("The user is already following the selected user");
@@ -124,18 +124,26 @@ namespace DAL
         }
 
         //get status by userId 
-        public async Task<(List<Follower>, List<Follower>)> GetStatusByUserId(int? userId)
+        public async Task<(List<Follower> PendingSent, List<Follower> PendingReceived, List<Follower> Accepted)> GetStatusByUserId(int? userId)
         {
             try
             {
-                List<Follower> allRequests = await _followRepo.GetAll(); 
-                var pendingRequests = allRequests
-                      .Where(r => (r.FollowingId == userId || r.FollowerId == userId) && r.Status == "Pending")
-                      .ToList();
-                var acceptedRequests = allRequests
-                    .Where(r => (r.FollowingId == userId || r.FollowerId == userId) && r.Status == "Accepted")
+
+                List<Follower> allRequests = await _followRepo.GetAll();
+
+                var pendingSent = allRequests
+                    .Where(r => r.FollowerId == userId && r.Status == "Pending")
                     .ToList();
-                return (pendingRequests, acceptedRequests);
+
+                var pendingReceived = allRequests
+                    .Where(r => r.FollowingId == userId && r.Status == "Pending")
+                    .ToList();
+
+                var acceptedRequests = allRequests
+                    .Where(r => (r.FollowerId == userId || r.FollowingId == userId) && r.Status == "Accepted")
+                    .ToList();
+
+                return (pendingSent, pendingReceived, acceptedRequests);
             }
             catch (Exception ex)
             {

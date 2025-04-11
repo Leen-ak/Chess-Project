@@ -23,8 +23,9 @@ namespace ViewModels
         public string? Username {  get; set; }
         public  byte[]? Picture { get; set; }
         public string? Timer { get; set; }
-        public List<NetworkVM> PendingRequests { get; set; } = new();
-        public List<NetworkVM> AcceptedRequest { get; set; } = new(); 
+        public List<NetworkVM> PendingSent { get; set; } = new();
+        public List<NetworkVM> PendingReceived { get; set; } = new();
+        public List<NetworkVM> AcceptedRequest { get; set; } = new();
 
         public NetworkVM() 
         {
@@ -109,15 +110,23 @@ namespace ViewModels
                     return;
                 }
 
-                var (pendingRequest, acceptedRequest) = await _bus.GetStatusByUserId(Id!);
+                var (pendingSent, pendingReceived, acceptedRequest) = await _bus.GetStatusByUserId(Id!);
 
-                if (pendingRequest.Any() || acceptedRequest.Any())
+                if (pendingSent.Any() || pendingReceived.Any() || acceptedRequest.Any())
                 {
-                    PendingRequests = pendingRequest.Select(f => new NetworkVM
+                    PendingSent = pendingSent.Select(f => new NetworkVM
                     {
                         FollowerId = f.FollowerId,
                         FollowingId = f.FollowingId,
                         Status = f.Status
+                    }).ToList();
+
+                    PendingReceived = pendingReceived.Select(f => new NetworkVM
+                    {
+                        FollowerId = f.FollowerId,
+                        FollowingId = f.FollowingId,
+                        Status = f.Status
+
                     }).ToList();
 
                     AcceptedRequest = acceptedRequest.Select(f => new NetworkVM

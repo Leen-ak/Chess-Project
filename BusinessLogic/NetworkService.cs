@@ -37,7 +37,7 @@ namespace BusinessLogic
             return await _networkDao.UpdateFollowStatus(user!);
         }
 
-        public async Task<(List<Follower>, List<Follower>)> GetStatusByUserId(int? userId)
+        public async Task<(List<Follower> PendingSent, List<Follower> PendingReceived, List<Follower> Accepted)> GetStatusByUserId(int? userId)
         {
             return await _networkDao.GetStatusByUserId(userId);
         }
