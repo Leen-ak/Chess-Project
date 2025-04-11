@@ -19,14 +19,14 @@ $(() => {
 
             if (response.ok) {
                 const data = await response.json();
-                const pendingRequests = data.pendingRequests;
-               // followingCount = pendingRequests.length;
-                if (followingCount === 0) {
+                console.log("The data that i wanna se is: ", data);
+                const pendingRequests = data.pendingSent;
+                if (pendingRequests.lenght === 0) {
                     $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
                 } else {
                     $("#following-count").text(pendingRequests.length);
                     for (const request of pendingRequests) {
-                        const userId = request.followerId;
+                        const userId = request.followingId;
                         const userResponse = await fetch(`https://localhost:7223/api/Network/GetUserById/${userId}`, {
                             method: "GET",
                             headers: { 'Content-Type': 'application/json' }
