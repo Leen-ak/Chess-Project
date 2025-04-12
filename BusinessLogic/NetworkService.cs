@@ -41,5 +41,10 @@ namespace BusinessLogic
         {
             return await _networkDao.GetStatusByUserId(userId);
         }
+
+        public async Task<int?> DeleteUser(Follower? user)
+        {
+            return await _networkDao.DeleteUser(user!);
+        }
     }
 }
