@@ -14,8 +14,6 @@ namespace UnitTest
             _repoUser = new RepositoryImplementation<UserInfo>();
             _repoFollower = new RepositoryImplementation<Follower>();
             _dao = new NetworkDAO();
-
-
         }
 
         [Fact]
@@ -62,11 +60,26 @@ namespace UnitTest
         public async Task GetStatusTest()
         {
             int userId = 1;
-            var (pendingRequests, acceptedRequests) = await _dao.GetStatusByUserId(userId);
+            var (PendingReceived, pendingRequests, acceptedRequests) = await _dao.GetStatusByUserId(userId);
             Assert.NotNull(pendingRequests);
             Assert.NotNull(acceptedRequests);
 
             Assert.Contains(acceptedRequests, r => r.Id == userId && (r.Status == "Accepted" || r.Status == "Rejected"));
+        }
+
+        [Fact]
+        public async Task DeleteUser()
+        {
+            Follower? user = new Follower
+            {
+                Id = 5,
+                FollowerId = 6,
+                FollowingId = 5
+            };
+
+            int? userId = await _dao.DeleteUser(user!);
+            Assert.NotNull(user);
+            Assert.Equal(user.Id, userId);
         }
     }
 }

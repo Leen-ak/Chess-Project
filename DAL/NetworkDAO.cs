@@ -96,17 +96,14 @@ namespace DAL
         {
             try
             {
-                var existingUser = await _followRepo.GetOne(f => f.FollowerId == user!.FollowerId && f.FollowingId == user!.FollowingId)
+                var existingUser = await _followRepo.GetOne(f => f.FollowerId == user!.FollowerId && f.FollowingId == user!.FollowingId);
 
                 if (existingUser == null) 
                     throw new InvalidOperationException("The user is already following the selected user"); 
-                
-                if(existingUser != null)
-                {
+
                     await _followRepo.Delete(existingUser!.Id);
-                    return existingUser!.Id;
-                }
                 
+                return existingUser!.Id;
             }
             catch (Exception ex)
             {
