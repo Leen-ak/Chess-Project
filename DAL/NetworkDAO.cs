@@ -92,6 +92,30 @@ namespace DAL
             return user.Id!;
         }
 
+        public async Task<int?> DeleteUser(Follower? user)
+        {
+            try
+            {
+                var existingUser = await _followRepo.GetOne(f => f.FollowerId == user!.FollowerId && f.FollowingId == user!.FollowingId)
+
+                if (existingUser == null) 
+                    throw new InvalidOperationException("The user is already following the selected user"); 
+                
+                if(existingUser != null)
+                {
+                    await _followRepo.Delete(existingUser!.Id);
+                    return existingUser!.Id;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
         public async Task<UpdateStatus> UpdateFollowStatus(Follower? user)
         {
             UpdateStatus status;

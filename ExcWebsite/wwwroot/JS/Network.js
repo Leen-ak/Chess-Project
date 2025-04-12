@@ -180,11 +180,15 @@ const AddUser = async (userId) => {
             },
             credentials: 'include',
             body: JSON.stringify({ followingId: userId })
-
         });
         const data = await response.json();
         if (response.ok) {
-            console.log("The data from followRequest API IS: ", data); 
+            console.log("The data from followRequest API IS: ", data);
+            console.log("The length of pending sent is: ", data[0].pendingSent.lenght);
+            console.log("The length of pending recived is: ", data[0].pendingRecives.lenght);
+            console.log("The data of pending requests?? ", data[0].pendingRequests.lenght)
+            $("#following-count").text(data.pendingSent);
+
         }
     }
     catch (error) {
