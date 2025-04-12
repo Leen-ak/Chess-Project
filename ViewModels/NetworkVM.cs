@@ -100,6 +100,30 @@ namespace ViewModels
             }
         }
 
+        public async Task<int?> DeleteUser(Follower? user)
+        {
+            try
+            {
+                Follower userToDelete = new()
+                {
+                    Id = user!.Id,
+                    FollowerId = user!.FollowerId,
+                    FollowingId = user!.FollowingId
+                };
+
+                if (userToDelete!.Id == null)
+                    return -1; 
+
+                return await _bus.DeleteUser(userToDelete!); 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
         public async Task GetStatusByUserId()
         {
             try
