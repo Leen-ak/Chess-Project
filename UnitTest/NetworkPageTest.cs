@@ -72,9 +72,9 @@ namespace UnitTest
         {
             Follower? user = new Follower
             {
-                Id = 1,
+                Id = 2,
                 FollowerId = 1,
-                FollowingId = 3
+                FollowingId = 2
             };
 
             int? userId = await _dao.DeleteUser(user!);

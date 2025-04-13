@@ -19,7 +19,7 @@ $(() => {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("The data that i wanna se is: ", data);
+                console.log("The data that i wanna see is: ", data);
                 const pendingRequests = data.pendingSent;
                 const pendingRecives = data.pendingRecives;
                 if (pendingRequests.lenght === 0) {
@@ -60,6 +60,11 @@ $(() => {
 
 });
 
+$(document).on("click", ".btn-unfollow", function () {
+    const followingId = $(this).data("id");
+    UnfollowUser(followingId);
+});
+
 $(document).on("click", ".follow-btn", async function () {
     const button = $(this);
     const userId = button.attr("id").split("-")[2];
@@ -68,15 +73,9 @@ $(document).on("click", ".follow-btn", async function () {
 
     await AddUser(userId);
     followingCount++;
-    const followingItem = $(`
-        <div class="following-item" id="following-${userId}">
-            <img src="${profilePicture}" class="following-pic" alt="${username}" />
-            <span class="following-username">${username}</span>
-            <button class="btn-unfollow" data-id="${userId}">Unfollow</button>
-        </div>
-    `);
-    $("#friend-list").append(followingItem);
-    $(`#user-card-${userId}`).remove();
+    $("#following-count").text(followingCount);
+    const card = buildUserCard("#friend-list", userId, username, profilePicture, ".grid-container")
+    $(`.grid-container #user-card-${userId}`).remove();
 });
 
 
@@ -101,7 +100,7 @@ async function main() {
         });
         if (statusResponse.ok) {
             const statusData = await statusResponse.json();
-            const followingCount = statusData.pendingSent.length;
+            followingCount = statusData.pendingSent.length;
             $("#following-count").text(followingCount);
         }
 
@@ -188,7 +187,6 @@ const AddUser = async (userId) => {
             console.log("The length of pending recived is: ", data[0].pendingRecives.lenght);
             console.log("The data of pending requests?? ", data[0].pendingRequests.lenght)
             $("#following-count").text(data.pendingSent);
-
         }
     }
     catch (error) {
@@ -196,6 +194,41 @@ const AddUser = async (userId) => {
     }
 }
 
+const UnfollowUser = async (followingId) => {
+    const userInfo = await fetch("https://localhost:7223/api/MainPage/Users", {
+        method: "GET",
+        credentials: "include"
+    });
+
+    if (!userInfo.ok) {
+        console.log("Failed to fetch current user info");
+        return;
+    }
+
+    const data = await userInfo.json();
+    const followerId = data.userId;
+    console.log("Unfollow btn followerId is: ", followerId);
+    console.log("Unfollow btn followingId is: ", followingId);
+    try {
+        const response = await fetch('https://localhost:7223/api/Network/UnfollowUser', {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+
+                followerId: followerId,
+                followingId: followingId
+            })
+        });
+        const data = await response.json();
+        console.log(data);
+    }
+    catch (error) {
+        console.log(error);
+    }
+};
 function buildUserCard(container, userId, username, profilePicture, customClass = "") {
     const card = $(`
         <div class="${customClass}" id="user-card-${userId}">
