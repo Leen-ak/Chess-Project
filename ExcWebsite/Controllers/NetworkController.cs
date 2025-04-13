@@ -59,7 +59,7 @@ namespace ExcWebsite.Controllers
             catch(Exception ex)
             {
                 Debug.WriteLine("Problem in " + GetType().Name + " " +
-   MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -128,6 +128,30 @@ namespace ExcWebsite.Controllers
                 };
 
                 await vm.GetStatusByUserId();
+                return Ok(vm);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut("UpdateStatus")]
+        [Authorize]
+        public async Task<IActionResult> UpdateStatus([FromBody] NetworkVM updateUser)
+        {
+            try
+            {
+                NetworkVM vm = new()
+                {
+                    Id = updateUser.Id,
+                    FollowerId = updateUser.FollowerId,
+                    FollowingId = updateUser.FollowingId,
+                    Status = updateUser.Status
+                };
+                await vm.UpdateFollowStatus();
                 return Ok(vm);
             }
             catch (Exception ex)

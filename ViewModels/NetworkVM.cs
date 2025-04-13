@@ -168,5 +168,26 @@ namespace ViewModels
                 throw;
             }
         }
+
+        public async Task UpdateFollowStatus()
+        {
+            try
+            {
+                Follower updateUser = new()
+                {
+                  Id = this.Id,
+                  FollowerId = this.FollowerId,
+                  FollowingId = this.FollowingId,
+                  Status = this.Status
+                };
+                await _bus.UpdateFollowStatus(updateUser); 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ $(() => {
     console.log(followingCount);
     $("#following-count").text(followingCount);
     $("#request-count").text(requestCount);
+    $("follower-count").text(followerCount);
 
     main();
     $("#following-btn").on("click", async function () {
@@ -47,6 +48,12 @@ $(document).on("click", ".follow-btn", async function () {
     $("#following-count").text(followingCount);
     const card = buildUserCard("#friend-list", userId, username, profilePicture, "")
     $(`.grid-container #user-card-${userId}`).remove();
+});
+
+$(document).on("click", "btn-accept", async function () {
+    try {
+        const response = await fetch('https://localhost:7223/api/Network/')
+    }
 });
 
 async function requestList() {
@@ -189,9 +196,8 @@ async function main() {
             console.log("followingCount is: ", followingCount);
             console.log("request count is: ", requestCount);
 
-            $("#following-count").text(followingCount);
             $("#follower-count").text(followerCount);
-            $("#request-count").text(requestCount.length); 
+
         }
 
     } catch (error) {
