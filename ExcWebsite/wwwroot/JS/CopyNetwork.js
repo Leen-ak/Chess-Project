@@ -27,6 +27,59 @@ $(() => {
         $("#friend-list").empty();
         buildRequestList(acceptButton, rejectButton);
     });
+
+    $("#following-btn").on("click", async function () {
+        $("#theModal .modal-title").text("Following");
+        $("#friend-list").empty();
+
+        try {
+            const response = await fetch(`https://localhost:7223/api/Network/Status`, {
+                method: "GET",
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("The data that i wanna see is: ", data);
+                const pendingRequests = data.pendingSent;
+                const pendingRecives = data.pendingRecives;
+                if (pendingRequests.lenght === 0) {
+                    $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
+                    return;
+                }
+
+                $("#following-count").text(pendingRequests.length);
+
+                for (const request of pendingRequests) {
+                    const userId = request.followingId;
+                    const userResponse = await fetch(`https://localhost:7223/api/Network/GetUserById/${userId}`, {
+                        method: "GET",
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (!userResponse.ok) {
+                        console.log(`Failed to fetch user with ID ${userId}`);
+                        continue;
+                    }
+
+                    const user = await userResponse.json();
+                    const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
+                    const followingItem = $(`
+                        <div class="following-item" id="following-${user.id}">
+                            <img src="${profilePicture}" class="following-pic" alt="${user.userName}" />
+                            <span class="following-username">${user.userName}</span>
+                            <button class="btn-unfollow" data-id="${user.id}">Unfollow</button>
+                        </div>
+                    `);
+                    $("#friend-list").append(followingItem);
+                }
+            }
+        } catch (error) {
+            console.log("Error loading following list: ", error);
+        }
+        $("#theModal").modal('show');
+    });
+});
 })
 
 const getCookie = (name) => {

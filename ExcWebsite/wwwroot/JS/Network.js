@@ -8,56 +8,13 @@ $(() => {
 
     main();
     $("#following-btn").on("click", async function () {
-        $("#theModal .modal-title").text("Following");
-        $("#friend-list").empty();
-
-        try {
-            const response = await fetch(`https://localhost:7223/api/Network/Status`, {
-                method: "GET",
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log("The data that i wanna see is: ", data);
-                const pendingRequests = data.pendingSent;
-                const pendingRecives = data.pendingRecives;
-                if (pendingRequests.lenght === 0) {
-                    $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
-                    return;
-                }
-
-                $("#following-count").text(pendingRequests.length);
-                for (const request of pendingRequests) {
-                    const userId = request.followingId;
-                    const userResponse = await fetch(`https://localhost:7223/api/Network/GetUserById/${userId}`, {
-                        method: "GET",
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-
-                    if (!userResponse.ok) {
-                        console.log(`Failed to fetch user with ID ${userId}`);
-                        continue;
-                    }
-
-                    const user = await userResponse.json();
-                    const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
-                    const followingItem = $(`
-                        <div class="following-item" id="following-${user.id}">
-                            <img src="${profilePicture}" class="following-pic" alt="${user.userName}" />
-                            <span class="following-username">${user.userName}</span>
-                            <button class="btn-unfollow" data-id="${user.id}">Unfollow</button>
-                        </div>
-                    `);
-                    $("#friend-list").append(followingItem);   
-                }
-            }
-        } catch (error) {
-            console.log("Error loading following list: ", error);
-        }
-        $("#theModal").modal('show');
+        followingList(); 
     });
+
+
 });
+
+
 
 $(document).on("click", ".btn-unfollow", async function () {
     const followingId = $(this).data("id");
@@ -87,6 +44,57 @@ $(document).on("click", ".follow-btn", async function () {
     $(`.grid-container #user-card-${userId}`).remove();
 });
 
+async function followingList() {
+    $("#theModal .modal-title").text("Following");
+    $("#friend-list").empty();
+
+    try {
+        const response = await fetch(`https://localhost:7223/api/Network/Status`, {
+            method: "GET",
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log("The data that i wanna see is: ", data);
+            const pendingRequests = data.pendingSent;
+            if (pendingRequests.lenght === 0) {
+                $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
+                return;
+            }
+
+            $("#following-count").text(pendingRequests.length);
+
+            for (const request of pendingRequests) {
+                const userId = request.followingId;
+                const userResponse = await fetch(`https://localhost:7223/api/Network/GetUserById/${userId}`, {
+                    method: "GET",
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!userResponse.ok) {
+                    console.log(`Failed to fetch user with ID ${userId}`);
+                    continue;
+                }
+
+                const user = await userResponse.json();
+                const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
+                const followingItem = $(`
+                        <div class="following-item" id="following-${user.id}">
+                            <img src="${profilePicture}" class="following-pic" alt="${user.userName}" />
+                            <span class="following-username">${user.userName}</span>
+                            <button class="btn-unfollow" data-id="${user.id}">Unfollow</button>
+                        </div>
+                    `);
+                $("#friend-list").append(followingItem);
+            }
+        }
+    } catch (error) {
+        console.log("Error loading following list: ", error);
+    }
+    $("#theModal").modal('show');
+}
+
 async function main() {
     try {
         const res = await fetch("https://localhost:7223/api/MainPage/Users", {
@@ -108,6 +116,7 @@ async function main() {
         });
         if (statusResponse.ok) {
             const statusData = await statusResponse.json();
+            
             followingCount = statusData.pendingSent.length;
             $("#following-count").text(followingCount);
         }
@@ -190,10 +199,6 @@ const AddUser = async (userId) => {
         });
         const data = await response.json();
         if (response.ok) {
-            console.log("The data from followRequest API IS: ", data);
-            console.log("The length of pending sent is: ", data[0].pendingSent.lenght);
-            console.log("The length of pending recived is: ", data[0].pendingRecives.lenght);
-            console.log("The data of pending requests?? ", data[0].pendingRequests.lenght)
             $("#following-count").text(data.pendingSent);
         }
     }
@@ -258,6 +263,8 @@ function buildUserCard(container, userId, username, profilePicture, customClass 
     return card;
 }
 
-//when the user press follow button it will call the API sendrequest, call API that is counting for accepting and pending status
-//press follow call API (AddUser)
-//The problem i have now is when i press the modal i have an empty list 
+//TODO FOR TODAY
+//1. CALLING followers and showing the followers in the followers list
+//2. accept the user or decline the request
+//3. what happen when i accept or reject the friend request
+//4. when there is not following to show or followers it should print that
