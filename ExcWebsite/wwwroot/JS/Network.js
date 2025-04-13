@@ -1,10 +1,13 @@
 ﻿let followingCount = 0; 
+let requestCount = 0;
+let followerCount = 0; 
 
 //for reminder: The following list is fine for the person who does the follow but not right for the other user...
 //and it looks like this is a backend problem not from frontend
 $(() => {
     console.log(followingCount);
     $("#following-count").text(followingCount);
+    $("#request-count").text(requestCount);
 
     main();
     $("#following-btn").on("click", async function () {
@@ -181,7 +184,14 @@ async function main() {
             const statusData = await statusResponse.json();
             
             followingCount = statusData.pendingSent.length;
+            requestCount = statusData.pendingReceived;
+            console.log("The aray size is: ", requestCount.length);
+            console.log("followingCount is: ", followingCount);
+            console.log("request count is: ", requestCount);
+
             $("#following-count").text(followingCount);
+            $("#follower-count").text(followerCount);
+            $("#request-count").text(requestCount.length); 
         }
 
     } catch (error) {
@@ -327,7 +337,7 @@ function buildUserCard(container, userId, username, profilePicture, customClass 
 }
 
 //TODO FOR TODAY
-//1. CALLING followers and showing the followers in the followers list
+//1. CALLING Friend Request and showing the request in the request list
 //2. accept the user or decline the request
 //3. what happen when i accept or reject the friend request
 //4. when there is not following to show or followers it should print that
