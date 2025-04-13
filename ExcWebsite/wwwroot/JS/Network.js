@@ -10,11 +10,13 @@ $(() => {
     $("#following-btn").on("click", async function () {
         followingList(); 
     });
-
-
+    $("#follower-btn").on("click", async function () {
+        followerList();
+    });
+    $("#request-btn").on("click", async function () {
+        requestList();
+    });
 });
-
-
 
 $(document).on("click", ".btn-unfollow", async function () {
     const followingId = $(this).data("id");
@@ -43,6 +45,67 @@ $(document).on("click", ".follow-btn", async function () {
     const card = buildUserCard("#friend-list", userId, username, profilePicture, "")
     $(`.grid-container #user-card-${userId}`).remove();
 });
+
+async function requestList() {
+    console.log("Helllllo");
+    $("#theModal .modal-title").text("Friend Requests");
+    $("#friend-list").empty();
+
+    try {
+        const response = await fetch(`https://localhost:7223/api/Network/Status`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log("The data from followerList API is: ", data);
+            const pendingRecive = data.pendingReceived;
+
+            for (const request of pendingRecive) {
+                const followerId = request.followerId;
+                const userResponse = await fetch(`https://localhost:7223/api/Network/GetUserById/${followerId}`, {
+                    method: "GET",
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!userResponse.ok) {
+                    console.log(`Failed to fetch user with ID ${followerId}`);
+                    continue;
+                }
+
+                const user = await userResponse.json();
+                const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
+                const followerItem = $(`
+                     <div class="following-item" id="following-${user.id}">
+                            <img src="${profilePicture}" class="following-pic" alt="${user.userName}" />
+                            <span class="following-username">${user.userName}</span>
+                          <button class="btn-action btn-accept" data-id="${user.id}">
+                            <svg class="icon-accept" width="24" height="24" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+                            </svg>
+                          </button>
+
+                            <button class="btn-action btn-reject" data-id="${user.id}">
+                                <svg class="icon-reject" width="24" height="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 6L18 18M6 18L18 6" stroke="red" stroke-width="2"/>
+                                </svg>
+                            </button>
+                      </div>
+                 `);
+                $("#friend-list").append(followerItem);
+            }
+        }
+
+        //pendingRecives 
+
+    }
+    catch (error) {
+        console.log(error); 
+    }
+
+    $("#theModal").modal('show');
+};
 
 async function followingList() {
     $("#theModal .modal-title").text("Following");

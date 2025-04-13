@@ -83,7 +83,7 @@ h2 {
     padding: 10px;
 }
 
-.btn.btn-primary, .btn  {
+.btn.btn-primary, .btn{
     background: transparent;
     border: 1px solid #bbb4aa;
     border-radius: 40px;
@@ -218,31 +218,43 @@ h2 {
 }
 
 /*accept button*/
- .btn-accept, .btn-reject{
-    background: none;
+.btn-action {
+    background: transparent;
     border: 2px solid transparent;
-    border-radius: 50%; 
-    padding: 5px;
+    border-radius: 50%;
+    padding: 8px;
     cursor: pointer;
-}
-.btn-accept {
-    border-color: green;
-    margin: 2%;
-    transform: scale(1);
-    transition: transform 0.3s;
-}
-.btn-reject {
-    border-color: red;
-    transform: scale(1);
-    transition: transform 0.3s;
+    transition: background 0.3s, transform 0.3s;
 }
 
+    .btn-action svg {
+        transition: fill 0.3s, stroke 0.3s;
+    }
+
+/* Accept button hover */
 .btn-accept:hover {
-    transform: scale(1.2);
+    background-color: green;
 }
+
+    .btn-accept:hover .icon-accept {
+        fill: white; /* Or transparent if you prefer */
+    }
+
+/* Reject button hover */
 .btn-reject:hover {
-    transform: scale(1.2);
+    background-color: red;
 }
+
+    .btn-reject:hover .icon-reject path{
+        stroke: white; /* Or transparent if you prefer */
+    }
+
+/* Optional: Add smooth scale effect on hover */
+.btn-action:hover {
+    transform: scale(1.1);
+}
+
+
 
 
 

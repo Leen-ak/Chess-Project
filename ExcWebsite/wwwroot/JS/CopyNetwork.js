@@ -40,7 +40,7 @@ $(() => {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("The data that i wanna see is: ", data);
+                console.log("The data from followingList API is: ", data);
                 const pendingRequests = data.pendingSent;
                 const pendingRecives = data.pendingRecives;
                 if (pendingRequests.lenght === 0) {
