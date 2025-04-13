@@ -60,10 +60,24 @@ $(() => {
 
 });
 
-$(document).on("click", ".btn-unfollow", function () {
+$(document).on("click", ".btn-unfollow", async function () {
     const followingId = $(this).data("id");
-    UnfollowUser(followingId);
+
+    await UnfollowUser(followingId);
+
+    // Get username and profile picture from the current card
+    const card = $(`#following-${followingId}`);
+    const username = card.find(".following-username").text();
+    const profilePicture = card.find("img").attr("src");
+
+    // Remove the old card
+    card.remove();
+
+    // Build a new fresh card for the grid container
+    buildUserCard(".grid-container", followingId, username, profilePicture, "card network-card");
 });
+
+
 
 $(document).on("click", ".follow-btn", async function () {
     const button = $(this);
@@ -74,7 +88,7 @@ $(document).on("click", ".follow-btn", async function () {
     await AddUser(userId);
     followingCount++;
     $("#following-count").text(followingCount);
-    const card = buildUserCard("#friend-list", userId, username, profilePicture, ".grid-container")
+    const card = buildUserCard("#friend-list", userId, username, profilePicture, "")
     $(`.grid-container #user-card-${userId}`).remove();
 });
 
@@ -229,6 +243,7 @@ const UnfollowUser = async (followingId) => {
         console.log(error);
     }
 };
+
 function buildUserCard(container, userId, username, profilePicture, customClass = "") {
     const card = $(`
         <div class="${customClass}" id="user-card-${userId}">
