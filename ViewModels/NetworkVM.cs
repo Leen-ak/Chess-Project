@@ -100,21 +100,18 @@ namespace ViewModels
             }
         }
 
-        public async Task<int?> DeleteUser(Follower? user)
+        public async Task DeleteUser()
         {
             try
             {
                 Follower userToDelete = new()
                 {
-                    Id = user!.Id,
-                    FollowerId = user!.FollowerId,
-                    FollowingId = user!.FollowingId
+                    Id = this.Id,
+                    FollowerId = this.FollowerId,
+                    FollowingId = this.FollowingId
                 };
 
-                if (userToDelete!.Id == null)
-                    return -1; 
-
-                return await _bus.DeleteUser(userToDelete!); 
+                 await _bus.DeleteUser(userToDelete!); 
             }
             catch (Exception ex)
             {

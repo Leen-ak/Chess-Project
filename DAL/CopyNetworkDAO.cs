@@ -121,7 +121,7 @@ namespace DAL
         //}
 
         ////add followers 
-        public async Task<int> Add(Follower user)
+        public async Task<int?> Add(Follower? user)
         {
             try
             {

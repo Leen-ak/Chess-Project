@@ -9,7 +9,7 @@ namespace DAL
 {
     public class ChessEntity
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         [Timestamp] public byte[]? Timer { get; set; }
     }
 }

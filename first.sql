@@ -72,7 +72,7 @@ CONSTRAINT FK_PasswordResetTokens_User FOREIGN KEY (UserId) REFERENCES UserInfo(
 );
 GO
 
-/* Create a stored procedure to retrieve all the username that is in the databse */
+/*Create a stored procedure to retrieve all the username that is in the database */
 CREATE PROCEDURE dbo.GetAllUserName
 AS
 BEGIN
@@ -98,4 +98,4 @@ GO
 
 
 /*DELETE from UserInfo where Id = 1;*/
-DELETE FROM PasswordResetToken where Id = 5;
+/*DELETE FROM PasswordResetToken where Id = 5;*/

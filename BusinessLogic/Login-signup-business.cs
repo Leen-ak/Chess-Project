@@ -26,10 +26,10 @@ namespace BusinessLogic
             return hasher.HashPassword(null, password);
         }
 
-        public async Task<int> Add(UserInfo newUser)
+        public async Task<int?> Add(UserInfo? newUser)
         {
-            newUser.Password = HashPassword(newUser.Password);
-            return await _signUpDao.Add(newUser);
+            newUser!.Password = HashPassword(newUser!.Password);
+            return await _signUpDao.Add(newUser!);
         }
         public async Task<UpdateStatus> Update(UserInfo updateUser)
         {

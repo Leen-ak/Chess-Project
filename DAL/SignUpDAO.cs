@@ -13,7 +13,7 @@ namespace DAL
             _repo = new RepositoryImplementation<UserInfo>();
         }
 
-        public async Task<int> Add(UserInfo NewUser)
+        public async Task<int?> Add(UserInfo? NewUser)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace DAL
                     MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
                 throw; 
             }
-            return NewUser.Id;
+            return NewUser!.Id;
         }
 
         public async Task<UpdateStatus> Update(UserInfo updateUser)

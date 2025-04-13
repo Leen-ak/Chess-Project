@@ -134,7 +134,7 @@ namespace DAL
         {
             try
             {
-                 var record = await _passRepo.GetOne(t => t.ResetToken == token);
+                var record = await _passRepo.GetOne(t => t.ResetToken == token);
                 if (record == null)
                     Debug.WriteLine("Token is not found");
                 if (record!.RestTokenExpiry < DateTime.UtcNow)
@@ -148,7 +148,7 @@ namespace DAL
                     Debug.WriteLine("UserId is not found");
                 user!.Password = HashPassword(newPassword!);
                 await _repo.Update(user);
-                await _passRepo.Delete(record.Id!);
+                await _passRepo.Delete(record!.Id);
                 Debug.WriteLine("Password has been reset successfully"); 
             }
             catch(Exception ex)

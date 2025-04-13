@@ -56,7 +56,7 @@ namespace ExcWebsite.Controllers
             }
         }
 
-        private string GenerateJwtToken(int userId, string username)
+        private string GenerateJwtToken(int? userId, string username)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -97,11 +97,11 @@ namespace ExcWebsite.Controllers
         //we do not use GET for security reasons like the username and password will be in the request body if it was GET
         // or maybe in the URL, server logs, so instead we do post it keeps the credentials hidden from the URL 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginVM vm)
+        public async Task<IActionResult> Login(LoginVM? vm)
         {
             try
             {
-                bool isValid = await vm.ValidateLogin(vm.Password!);
+                bool isValid = await vm!.ValidateLogin(vm.Password!);
                 if (!isValid)
                     return Unauthorized(new { msg = "Invalid credentials" });
 

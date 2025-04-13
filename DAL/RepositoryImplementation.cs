@@ -28,7 +28,7 @@ namespace DAL
             return entity;
         }
 
-        public async Task<int> Delete(int id)
+        public async Task<int> Delete(int? id)
         {
             T? currentEntity = await GetOne(ent => ent.Id == id);
             Debug.WriteLine($"Searching for entity with ID: {currentEntity}");

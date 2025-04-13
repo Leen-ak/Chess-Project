@@ -94,6 +94,24 @@ namespace ExcWebsite.Controllers
             }
         }
 
+        [HttpDelete("UnfollowUser")]
+        [Authorize]
+        public async Task<IActionResult> DeleteUser([FromBody] NetworkVM user)
+        {
+            var followerId = int.Parse(User.FindFirst("user_id")?.Value ?? "0");
+            if (followerId == 0 || user.FollowingId == 0)
+                return BadRequest(new { msg = "Invalid user IDs" });
+
+            NetworkVM vm = new NetworkVM
+            {
+                FollowerId = user.FollowerId,
+                FollowingId = user.FollowingId
+            };
+
+            await vm.DeleteUser();
+            return Ok(new { msg =$"User {vm.Id} unfollowed successfully"});
+
+        }
 
         [HttpGet("Status")]
         [Authorize]
