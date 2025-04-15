@@ -58,7 +58,7 @@ $(document).on("click", ".btn-accept", async function () {
     });
 
     const data = await response.json();
-    const array = data.pendingReceived
+    const array = data.pendingReceived;
 
     for (const r of array) {
         console.log("The data from followerList *** API is: ", data);
@@ -70,7 +70,6 @@ $(document).on("click", ".btn-accept", async function () {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                Id: r.id,
                 followerId: r.followerId,
                 followingId: r.followingId,
                 status: "Accepted"
@@ -80,13 +79,6 @@ $(document).on("click", ".btn-accept", async function () {
         if (response.ok) {
             const data = await response.json();
         }
-    }
-
-    try {
-
-    }
-    catch (error) {
-        console.log(error);
     }
 });
 
