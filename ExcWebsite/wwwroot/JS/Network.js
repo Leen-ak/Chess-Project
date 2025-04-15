@@ -82,6 +82,40 @@ $(document).on("click", ".btn-accept", async function () {
     }
 });
 
+$(document).on("click", ".btn-reject", async function () {
+    console.log("Hey i am the reject button");
+    const userId = $(this).data("id");
+
+    const response = await fetch(`https://localhost:7223/api/Network/Status`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    const data = await response.json();
+    const array = data.pendingReceived;
+
+    for (const r of array) {
+        console.log("The data from followerList *** API is: ", data);
+        console.log("The id is: ", r.id);
+        console.log("The followerId is: ", r.followerId);
+        console.log("The followingId is: ", r.followingId);
+
+        const response = await fetch('https://localhost:7223/api/Network/UpdateStatus', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                followerId: r.followerId,
+                followingId: r.followingId,
+                status: "Rejected"
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+        }
+    }
+});
+
 async function requestList() {
     $("#theModal .modal-title").text("Friend Requests");
     $("#friend-list").empty();
