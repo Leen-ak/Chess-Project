@@ -16,7 +16,6 @@ namespace BusinessLogic
         {
             _networkDao = new NetworkDAO();
         }
-
         public async Task<List<UserInfo>> GetSuggestedUsers(int? userId)
         {
             return await _networkDao.GetSuggestedUsers(userId!); 

@@ -5,7 +5,6 @@ let followerCount = 0;
 //for reminder: The following list is fine for the person who does the follow but not right for the other user...
 //and it looks like this is a backend problem not from frontend
 $(() => {
-    console.log(followingCount);
     $("#following-count").text(followingCount);
     $("#request-count").text(requestCount);
     $("follower-count").text(followerCount);
@@ -50,14 +49,48 @@ $(document).on("click", ".follow-btn", async function () {
     $(`.grid-container #user-card-${userId}`).remove();
 });
 
-$(document).on("click", "btn-accept", async function () {
+$(document).on("click", ".btn-accept", async function () {
+    const userId = $(this).data("id");
+
+    const response = await fetch(`https://localhost:7223/api/Network/Status`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    const data = await response.json();
+    const array = data.pendingReceived
+
+    for (const r of array) {
+        console.log("The data from followerList *** API is: ", data);
+        console.log("The id is: ", r.id);
+        console.log("The followerId is: ", r.followerId);
+        console.log("The followingId is: ", r.followingId);
+
+        const response = await fetch('https://localhost:7223/api/Network/UpdateStatus', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                Id: r.id,
+                followerId: r.followerId,
+                followingId: r.followingId,
+                status: "Accepted"
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+        }
+    }
+
     try {
-        const response = await fetch('https://localhost:7223/api/Network/')
+
+    }
+    catch (error) {
+        console.log(error);
     }
 });
 
 async function requestList() {
-    console.log("Helllllo");
     $("#theModal .modal-title").text("Friend Requests");
     $("#friend-list").empty();
 
@@ -69,7 +102,6 @@ async function requestList() {
 
         if (response.ok) {
             const data = await response.json();
-            console.log("The data from followerList API is: ", data);
             const pendingRecive = data.pendingReceived;
 
             for (const request of pendingRecive) {
@@ -106,9 +138,6 @@ async function requestList() {
                 $("#friend-list").append(followerItem);
             }
         }
-
-        //pendingRecives 
-
     }
     catch (error) {
         console.log(error); 
@@ -129,7 +158,6 @@ async function followingList() {
 
         if (response.ok) {
             const data = await response.json();
-            console.log("The data that i wanna see is: ", data);
             const pendingRequests = data.pendingSent;
             if (pendingRequests.lenght === 0) {
                 $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
@@ -192,10 +220,9 @@ async function main() {
             
             followingCount = statusData.pendingSent.length;
             requestCount = statusData.pendingReceived;
-            console.log("The aray size is: ", requestCount.length);
-            console.log("followingCount is: ", followingCount);
-            console.log("request count is: ", requestCount);
-
+            //console.log("The aray size is: ", requestCount.length);
+            //console.log("followingCount is: ", followingCount);
+            //console.log("request count is: ", requestCount);
             $("#follower-count").text(followerCount);
 
         }
@@ -227,7 +254,6 @@ const GetAllSuggestedFriend = async (userId) => {
         });
 
         const data = await response.json();
-        console.log("The data from API is: ", data);
 
         if (response.ok) {
             data.forEach(user => {

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Core;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -118,7 +119,7 @@ namespace DAL
             UpdateStatus status;
             try
             {
-                var existingUser = await _followRepo.GetOne(u => u.Id == user.Id);
+                var existingUser = await _followRepo.GetOne(u => u.FollowerId == user.FollowerId && u.FollowingId == user.FollowingId);
 
                 if (existingUser == null)
                     return UpdateStatus.Failed;

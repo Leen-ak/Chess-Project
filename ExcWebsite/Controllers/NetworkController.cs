@@ -146,7 +146,6 @@ namespace ExcWebsite.Controllers
             {
                 NetworkVM vm = new()
                 {
-                    Id = updateUser.Id,
                     FollowerId = updateUser.FollowerId,
                     FollowingId = updateUser.FollowingId,
                     Status = updateUser.Status
