@@ -78,14 +78,13 @@ $(document).on("click", ".btn-accept", async function () {
 
         if (response.ok) {
             const data = await response.json();
+            
         }
     }
 });
 
 $(document).on("click", ".btn-reject", async function () {
-    console.log("Hey i am the reject button");
     const userId = $(this).data("id");
-
     const response = await fetch(`https://localhost:7223/api/Network/Status`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
@@ -115,6 +114,59 @@ $(document).on("click", ".btn-reject", async function () {
         }
     }
 });
+
+async function followerList() {
+    $("#theModal .modal-title").text("Followers");
+    $("#friend-list").empty();
+
+    try {
+        const response = await fetch(`https://localhost:7223/api/Network/Status`, {
+            method: "GET",
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const acceptRequest = data.acceptedRequest;
+            if (acceptRequest.lenght === 0) {
+                $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
+                return;
+            }
+
+            $("#following-count").text(acceptRequest.length);
+
+            for (const request of acceptRequest) {
+                const userId = request.followerId;
+                const userResponse = await fetch(`https://localhost:7223/api/Network/GetUserById/${userId}`, {
+                    method: "GET",
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!userResponse.ok) {
+                    console.log(`Failed to fetch user with ID ${userId}`);
+                    continue;
+                }
+
+                const user = await userResponse.json();
+                const profilePicture = user.picture ? `data:image/png;base64, ${user.picture}` : "../images/user.png";
+                const followerItem = $(`
+                       <div class="following-item" id="following-${user.id}">
+                           <img src="${profilePicture}" class="following-pic" alt="${user.userName}" />
+                           <span class="following-username">${user.userName}</span>
+                           <button class="btn-follow-back" data-id="${user.id}">Follow Back</button>
+                       </div>
+                   `);
+                $("#friend-list").append(followerItem);
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+    
+    $("#follower-list").empty();
+    $("#theModal").modal('show');
+
+}
 
 async function requestList() {
     $("#theModal .modal-title").text("Friend Requests");
@@ -377,7 +429,7 @@ const UnfollowUser = async (followingId) => {
 function buildUserCard(container, userId, username, profilePicture, customClass = "") {
     const card = $(`
         <div class="${customClass}" id="user-card-${userId}">
-            <img src="${profilePicture}" alt="User Image" class="card-img-top user-image" id="user-image-${userId}" />
+            <img src="${profilePicture}" alt="User Image" class="card-img-top user-image following-pic" id="user-image-${userId}" />
             <h2 class="card-title username">${username}</h2>
             <div class="button-section">
                 <button class="btn follow-btn"

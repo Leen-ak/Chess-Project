@@ -99,7 +99,7 @@ h2 {
     justify-content: center;
 }
 
-.btn:hover, .btn-unfollow:hover {
+.btn:hover, .btn-unfollow:hover, .btn-follow-back:hover{
     background: #bbb4aa;
     color: #232323;
     border-color: #bbb4aa;
@@ -189,6 +189,19 @@ h2 {
     transition: background 0.3s ease;
     margin-left: 35%;
 }
+
+.btn-follow-back {
+    background-color: transparent;
+    border: 1px solid #bbb4aa;
+    padding: 8px 8px;
+    color: #bbb4aa;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-left: 35%;
+}
+
+
 
 .following-item img {
     width: 50px;
