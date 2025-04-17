@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.AspNetCore.Authorization;
+using Org.BouncyCastle.Crypto.Macs;
 
 
 namespace ExcWebsite.Controllers
@@ -160,6 +161,34 @@ namespace ExcWebsite.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpGet("AcceptedStatusCount")]
+        [Authorize]
+        public async Task<ActionResult<object>> GetAcceptedRequests()
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst("user_id")?.Value ?? "0");
+
+                if (userId == 0)
+                    return BadRequest(new { msg = "Invalid user ID" });
+
+                NetworkVM vm = new NetworkVM
+                {
+                    FollowingId = userId
+                };
+
+                var (acceptedRequests, count) = await vm.GetAcceptedRequestWithCount();
+                return Ok(new { acceptedRequests, count });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                                MethodBase.GetCurrentMethod()?.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { msg = "Server error" });
+            }
+        }
+
     }
 }
 

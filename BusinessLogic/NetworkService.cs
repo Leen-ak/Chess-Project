@@ -45,5 +45,10 @@ namespace BusinessLogic
         {
             return await _networkDao.DeleteUser(user!);
         }
+
+        public async Task<(List<Follower> Request, int count)> GetAcceptedRequestWithCount(int? userId)
+        {
+            return await _networkDao.GetAcceptedRequestWithCount(userId!); 
+        }
     }
 }

@@ -192,5 +192,23 @@ namespace DAL
                 throw;
             }
         }
+
+        public async Task<(List<Follower> Request, int count)> GetAcceptedRequestWithCount(int? userId)
+        {
+            try
+            {
+                List<Follower> userStatus = await _followRepo.GetAll();
+                List<Follower> acceptRequest = userStatus.Where(
+                    request => request.FollowingId == userId && request.Status == "Accepted").ToList();
+                int acceptCount = acceptRequest.Count;
+                return (acceptRequest, acceptCount);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
     }
 }

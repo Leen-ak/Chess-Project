@@ -172,7 +172,13 @@ async function requestList() {
     $("#theModal .modal-title").text("Friend Requests");
     $("#friend-list").empty();
 
+
+    //requestCount = 
+
     try {
+
+
+
         const response = await fetch(`https://localhost:7223/api/Network/Status`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }

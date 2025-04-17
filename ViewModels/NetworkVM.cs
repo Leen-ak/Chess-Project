@@ -168,7 +168,6 @@ namespace ViewModels
                 throw;
             }
         }
-
         public async Task UpdateFollowStatus()
         {
             try
@@ -181,6 +180,26 @@ namespace ViewModels
                   Status = this.Status
                 };
                 await _bus.UpdateFollowStatus(updateUser); 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<(List<Follower> Request, int count)> GetAcceptedRequestWithCount()
+        {
+            try{
+                Follower statusCount = new()
+                {
+                    Id = this.Id,
+                    FollowerId = this.FollowerId,
+                    FollowingId = this.FollowingId,
+                    Status = this.Status
+                };
+                return await _bus.GetAcceptedRequestWithCount(statusCount.FollowingId!);
             }
             catch (Exception ex)
             {
