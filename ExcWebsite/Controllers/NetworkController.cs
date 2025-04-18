@@ -162,6 +162,29 @@ namespace ExcWebsite.Controllers
             }
         }
 
+        [HttpGet("PendingRequestsCount")]
+        [Authorize]
+        public async Task<ActionResult> GetPendingRequests()
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst("user_id")?.Value ?? "0");
+                if (userId == 0)
+                    return BadRequest(new { msg = "Invalid user ID" });
+                NetworkVM vm = new NetworkVM()
+                {
+                    FollowingId = userId
+                };
+                var (pendingRequests, count) = await vm.GetPendingRequestWithCount();
+                return Ok(vm);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Problem in " + GetType().Name + " " +
+                MethodBase.GetCurrentMethod()!.Name + " " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
         [HttpGet("AcceptedStatusCount")]
         [Authorize]
         public async Task<ActionResult<object>> GetAcceptedRequests()
