@@ -21,19 +21,15 @@ $(() => {
     });
 });
 
+//when i add a user the user will go to the following list and it will show the unfollow button
 $(document).on("click", ".btn-unfollow", async function () {
-    const followingId = $(this).data("id");
+    const followingId = $(this).data("id"); //for example will be 2 (moe) 
     await UnfollowUser(followingId);
-
-    //Get username and profile picture from the current card
     const card = $(`#following-${followingId}`);
-    const username = card.find(".following-username").text();
-    const profilePicture = card.find("img").attr("src");
+    const username = card.find(".following-username").text(); //it is gonna be moe
+    const profilePicture = card.find("img").attr("src"); 
     card.remove();
-    buildUserCard(".grid-container", followingId, username, profilePicture, "card network-card");
-    followingCount--;
-    $("#following-count").text(followingCount);
-
+    buildUserCard(".grid-container", followingId, username, profilePicture, "card network-card", "Follow");
 });
 
 $(document).on("click", ".follow-btn", async function () {
@@ -41,16 +37,14 @@ $(document).on("click", ".follow-btn", async function () {
     const userId = button.attr("id").split("-")[2];
     const username = button.data("username");
     const profilePicture = button.data("picture");
-
     await AddUser(userId);
-    followingCount++;
-    $("#following-count").text(followingCount);
     const card = buildUserCard("#friend-list", userId, username, profilePicture, "")
     $(`.grid-container #user-card-${userId}`).remove();
 });
 
 $(document).on("click", ".btn-accept", async function () {
-    const userId = $(this).data("id");
+    const userId = $(this).data("id"); //leen's id
+    console.log("Fromm btn-accept the userId is: ", userId); //it is right (1) 
 
     const response = await fetch(`https://localhost:7223/api/Network/Status`, {
         method: 'GET',
@@ -58,27 +52,28 @@ $(document).on("click", ".btn-accept", async function () {
     });
 
     const data = await response.json();
-    const array = data.pendingReceived;
+    const pendingList = data.pendingReceived;
 
-    for (const r of array) {
+    for (const request of pendingList) {
         console.log("The data from followerList *** API is: ", data);
-        console.log("The id is: ", r.id);
-        console.log("The followerId is: ", r.followerId);
-        console.log("The followingId is: ", r.followingId);
+        console.log("The followerId is: ", request.followerId);
+        console.log("The followingId is: ", request.followingId);
 
-        const response = await fetch('https://localhost:7223/api/Network/UpdateStatus', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                followerId: r.followerId,
-                followingId: r.followingId,
-                status: "Accepted"
-            })
-        });
+        if (request.followerId == userId) {
+            const response = await fetch('https://localhost:7223/api/Network/UpdateStatus', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    followerId: request.followerId,
+                    followingId: request.followingId,
+                    status: "Accepted"
+                })
+            });
+        }
 
         if (response.ok) {
             const data = await response.json();
-            
+            console.log("The data from accept button after update the status is: ", data);
         }
     }
 });
@@ -176,9 +171,6 @@ async function requestList() {
     //requestCount = 
 
     try {
-
-
-
         const response = await fetch(`https://localhost:7223/api/Network/Status`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
@@ -243,6 +235,8 @@ async function followingList() {
         if (response.ok) {
             const data = await response.json();
             const pendingRequests = data.pendingSent;
+            const acceptedRequests = data.acceptedRequest;
+
             if (pendingRequests.lenght === 0) {
                 $("#friend-list").html('<p class="no-followers-text">You are not following any user yet</p>');
                 return;
@@ -432,7 +426,7 @@ const UnfollowUser = async (followingId) => {
     }
 };
 
-function buildUserCard(container, userId, username, profilePicture, customClass = "") {
+function buildUserCard(container, userId, username, profilePicture, customClass ="", customButton="Follow") {
     const card = $(`
         <div class="${customClass}" id="user-card-${userId}">
             <img src="${profilePicture}" alt="User Image" class="card-img-top user-image following-pic" id="user-image-${userId}" />
@@ -442,7 +436,7 @@ function buildUserCard(container, userId, username, profilePicture, customClass 
                         id="follow-btn-${userId}" 
                         data-username="${username}" 
                         data-picture="${profilePicture}">
-                    Follow
+                    ${customButton}
                 </button>
             </div>
         </div>
@@ -457,3 +451,7 @@ function buildUserCard(container, userId, username, profilePicture, customClass 
 //2. accept the user or decline the request
 //3. what happen when i accept or reject the friend request
 //4. when there is not following to show or followers it should print that
+
+
+//today
+//1. when i accept a user it will acept and change everyone in the list becuase i am doing for loop for that i guess 
