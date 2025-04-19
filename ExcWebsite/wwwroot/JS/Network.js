@@ -55,11 +55,11 @@ $(document).on("click", ".btn-accept", async function () {
     const pendingList = data.pendingReceived;
 
     for (const request of pendingList) {
-        console.log("The data from followerList *** API is: ", data);
+        console.log("The data from accept button *** API is: ", data);
         console.log("The followerId is: ", request.followerId);
         console.log("The followingId is: ", request.followingId);
 
-        if (request.followerId == userId) {
+        if (request.followerId === userId) {
             const response = await fetch('https://localhost:7223/api/Network/UpdateStatus', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -86,27 +86,30 @@ $(document).on("click", ".btn-reject", async function () {
     });
 
     const data = await response.json();
-    const array = data.pendingReceived;
+    const pendingList = data.pendingReceived;
 
-    for (const r of array) {
-        console.log("The data from followerList *** API is: ", data);
-        console.log("The id is: ", r.id);
-        console.log("The followerId is: ", r.followerId);
-        console.log("The followingId is: ", r.followingId);
+    for (const request of pendingList) {
+        console.log("The data from reject button *** API is: ", data);
+        console.log("The userId from reject button is: ", userId); 
+        console.log("The followerId is: ", request.followerId);
+        console.log("The followingId is: ", request.followingId);
 
-        const response = await fetch('https://localhost:7223/api/Network/UpdateStatus', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                followerId: r.followerId,
-                followingId: r.followingId,
-                status: "Rejected"
-            })
-        });
+        if (request.followerId === userId) {
+            const response = await fetch('https://localhost:7223/api/Network/UpdateStatus', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    followerId: request.followerId,
+                    followingId: request.followingId,
+                    status: "Rejected"
+                })
+            });
+        }
 
         if (response.ok) {
             const data = await response.json();
         }
+
     }
 });
 

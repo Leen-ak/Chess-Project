@@ -40,12 +40,13 @@ namespace DAL
                 //check if the userId == Id we do not want to suggest that
                 var filterUser = allUsername.Where(u => u.Id != userId
                 && !following.Any(f =>
-                (f.FollowerId == userId && f.FollowingId == u.Id) // you follow them
+                (f.FollowerId == userId && f.FollowingId == u.Id && f.Status != "Rejected") // you follow them
                 ||
                 (f.FollowingId == userId && f.FollowerId == u.Id &&
                 (f.Status == "Pending" || f.Status == "Accepted")) // they follow you
                 )).ToList();
 
+                //if the status is pending or accepted is not gonna show in .grid-container 
                 return filterUser;
             }
             catch (Exception ex)
